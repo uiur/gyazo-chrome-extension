@@ -1,0 +1,23 @@
+{
+  "name": "Gyazo Extension",
+  "description": "Grab any image on the web and share it instantly.",
+  "short_name": "Gyazo",
+  "version": "1.0.1",
+  "author": "Nota inc.",
+  "permissions": [
+    "contextMenus",
+    "tabs",
+    "clipboardWrite",
+    "clipboardRead"
+  ],
+  "background": {
+    "scripts": ["main.js","jquery-1.10.2.min.js"],
+    "persistent": false
+  },
+  "icons": {
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+  "web_accessible_resources": ["jquery-1.10.2.min.map"],
+  "manifest_version": 2
+}
