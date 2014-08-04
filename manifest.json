@@ -5,6 +5,8 @@
   "version": "1.0.1",
   "author": "Nota inc.",
   "permissions": [
+    "<all_urls>",
+    "notifications",
     "contextMenus",
     "tabs",
     "clipboardWrite",

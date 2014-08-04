@@ -4,31 +4,41 @@ var client_id = "df9edab530e84b4c56f9fcfa209aff1131c7d358a91d85cc20b9229e515d67d
 function onClickHandler(info, tab) {
 
   if (info.menuItemId == "gyazo_image") {
-    $.ajax({
-      type: 'POST',
-      url:  host,
-      data: {
-        client_id: client_id,
-        url: info.srcUrl,
-        title: tab.title,
-        referer: tab.url
-      },
-      crossDomain: true,
-      success: function(data) {
-        chrome.tabs.create({url:data.get_image_url, selected:false}, function(newTab){
-          var handler = function (tabId, changeInfo) {
-            if (newTab.id == tabId && changeInfo.url) {
-              saveToClipboard(changeInfo.url);
-              chrome.tabs.onUpdated.removeListener(handler);
-            }
-          };
-          chrome.tabs.onUpdated.addListener(handler);
-        });
-      },
-      error: function(XMLHttpRequest, textStatus, errorThrown) {
-        window.alert("Status: " + XMLHttpRequest.status + "\n Error: " + textStatus + "\n Message: " + errorThrown.message);
-      }
-    });
+    var image = new Image();
+    var canvas =  document.createElement('canvas');
+    var ctx = canvas.getContext("2d");
+    image.crossOrigin = "Anonymous";
+    image.onload = function(){
+      canvas.width = image.width;
+      canvas.height = image.height;
+      ctx.drawImage(image, 0, 0);
+      $.ajax({
+        type: 'POST',
+        url:  host,
+        data: {
+          client_id: client_id,
+          url: canvas.toDataURL(),
+          title: tab.title,
+          referer: tab.url
+        },
+        crossDomain: true,
+        success: function(data) {
+          chrome.tabs.create({url:data.get_image_url, selected:false}, function(newTab){
+            var handler = function (tabId, changeInfo) {
+              if (newTab.id == tabId && changeInfo.url) {
+                saveToClipboard(changeInfo.url);
+                chrome.tabs.onUpdated.removeListener(handler);
+              }
+            };
+            chrome.tabs.onUpdated.addListener(handler);
+          });
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+          window.alert("Status: " + XMLHttpRequest.status + "\n Error: " + textStatus + "\n Message: " + errorThrown.message);
+        }
+      });
+    }
+    image.src = info.srcUrl;
   }
 }
 
