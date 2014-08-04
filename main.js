@@ -8,6 +8,41 @@ function onClickHandler(info, tab) {
     var canvas =  document.createElement('canvas');
     var ctx = canvas.getContext("2d");
     image.crossOrigin = "Anonymous";
+    var notification = {
+      progress: 3,
+      limit: 30,
+      id: 'gyazo_notification_' + Date.now(),
+      newTabId: null,
+      progressIncreament: function(){
+        this.progress = this.progress < this.limit - 5 ? this.progress + 5 : this.limit;
+      }
+    };
+    chrome.notifications.create(notification.id,{
+      type: "progress",
+      title: "Uploading to Gyazo",
+      message: "Uploading...",
+      progress: notification.progress,
+      iconUrl: "icon128.png",
+      priority: 2
+    },function(){})
+    var timer_id = window.setInterval(function(){
+      chrome.notifications.update(notification.id,{
+        progress: notification.progress
+      },function(){});
+      notification.progressIncreament();
+      if(notification.newTabId){
+        chrome.tabs.get(notification.newTabId,function(newTab){
+          if(newTab.status === 'complete'){
+            chrome.notifications.update(notification.id,{
+              title: "Finish Uploading",
+              message: "copy gyazo URL to your clipboard",
+              progress: 100
+            },function(){});
+            window.removeInterval(timer_id);
+          }
+        })
+      }
+    },500);
     image.onload = function(){
       canvas.width = image.width;
       canvas.height = image.height;
@@ -24,10 +59,13 @@ function onClickHandler(info, tab) {
         crossDomain: true,
         success: function(data) {
           chrome.tabs.create({url:data.get_image_url, selected:false}, function(newTab){
+            notification.limit = 80;
+            notification.newTabId = newTab.id;
             var handler = function (tabId, changeInfo) {
               if (newTab.id == tabId && changeInfo.url) {
                 saveToClipboard(changeInfo.url);
                 chrome.tabs.onUpdated.removeListener(handler);
+                notification.newTabId = tabId;
               }
             };
             chrome.tabs.onUpdated.addListener(handler);
