@@ -13,7 +13,7 @@ function onClickHandler(info, tab) {
       limit: 30,
       id: 'gyazo_notification_' + Date.now(),
       newTabId: null,
-      progressIncreament: function(){
+      progressIncrement: function(){
         this.progress = this.progress < this.limit - 5 ? this.progress + 5 : this.limit;
       }
     };
@@ -29,7 +29,7 @@ function onClickHandler(info, tab) {
       chrome.notifications.update(notification.id,{
         progress: notification.progress
       },function(){});
-      notification.progressIncreament();
+      notification.progressIncrement();
       if(notification.newTabId){
         chrome.tabs.get(notification.newTabId,function(newTab){
           if(newTab.status === 'complete'){
