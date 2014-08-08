@@ -38,7 +38,7 @@ function onClickHandler(info, tab) {
               message: "copy gyazo URL to your clipboard",
               progress: 100
             },function(){});
-            window.removeInterval(timer_id);
+            window.clearInterval(timer_id);
           }
         })
       }
