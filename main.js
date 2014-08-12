@@ -36,7 +36,7 @@ function onClickHandler(info, tab) {
           if(newTab.status === 'complete'){
             chrome.notifications.update(notification.id,{
               title: "Finish Uploading",
-              message: "copy gyazo URL to your clipboard",
+              message: "Gyazo URL has been copied to your clipboard",
               progress: 100
             },function(){});
             window.clearInterval(timer_id);
@@ -57,8 +57,8 @@ function onClickHandler(info, tab) {
           title: tab.title,
           referer: tab.url
         },
-        crossDomain: true,
-        success: function(data) {
+        crossDomain: true})
+      .done(function(data) {
           chrome.tabs.create({url:data.get_image_url, selected:false}, function(newTab){
             notification.limit = 80;
             notification.newTabId = newTab.id;
@@ -71,11 +71,10 @@ function onClickHandler(info, tab) {
             };
             chrome.tabs.onUpdated.addListener(handler);
           });
-        },
-        error: function(XMLHttpRequest, textStatus, errorThrown) {
+        })
+        .fail(function(XMLHttpRequest, textStatus, errorThrown) {
           window.alert("Status: " + XMLHttpRequest.status + "\n Error: " + textStatus + "\n Message: " + errorThrown.message);
-        }
-      });
+        });
     }
     image.src = info.srcUrl;
   }
