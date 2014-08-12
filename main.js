@@ -60,8 +60,8 @@ function onClickHandler(info, tab) {
     xhr.send();
     chrome.notifications.create(notification.id,{
       type: "progress",
-      title: "Uploading to Gyazo",
-      message: "Uploading...",
+      title: chrome.i18n.getMessage("uploadingTitle"),
+      message: chrome.i18n.getMessage("uploadingMessage"),
       progress: notification.progress,
       iconUrl: "icon128.png",
       priority: 2
@@ -75,8 +75,8 @@ function onClickHandler(info, tab) {
         chrome.tabs.get(notification.newTabId,function(newTab){
           if(newTab.status === 'complete'){
             chrome.notifications.update(notification.id,{
-              title: "Finish Uploading",
-              message: "Gyazo URL has been copied to your clipboard",
+              title: chrome.i18n.getMessage("uploadingFinishTitle"),
+              message: chrome.i18n.getMessage("uploadingFinishMessage"),
               progress: 100
             },function(){});
             window.clearInterval(timer_id);
