@@ -8,13 +8,14 @@ function onClickHandler(info, tab) {
     var canvas =  document.createElement('canvas');
     var ctx = canvas.getContext("2d");
     image.crossOrigin = "Anonymous";
+    const INCREMENT_SIZE = 5;
     var notification = {
       progress: 3,
       limit: 30,
       id: 'gyazo_notification_' + Date.now(),
       newTabId: null,
       progressIncrement: function(){
-        this.progress = this.progress < this.limit - 5 ? this.progress + 5 : this.limit;
+        this.progress = Math.min(this.progress + INCREMENT_SIZE, this.limit);
       }
     };
     chrome.notifications.create(notification.id,{
