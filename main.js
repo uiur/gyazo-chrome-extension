@@ -24,11 +24,16 @@ var UploadNotification = function(callback){
     chrome.notifications.update(this.id, opt, callback);
   };
   this.finish = function(callback){
+    var self = this;
     this.update({
       title: chrome.i18n.getMessage('uploadingFinishTitle'),
       message: chrome.i18n.getMessage('uploadingFinishMessage'),
       progress: 100
-    },callback);
+    },function(){
+      window.setTimeout(function(){
+        chrome.notifications.clear(self.id);
+      },1200);
+    });
   };
   callback = callback || function(){};
   chrome.notifications.create(this.id,{
