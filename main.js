@@ -117,11 +117,20 @@ function onClickHandler(info, tab) {
     chrome.tabs.sendMessage(tab.id, {action: 'gyazoCapture'}, function(mes){});
   },
   gyazoWhole: function(){
+    var notificationId = 'gyazoCapturing_' + Date.now();
+    chrome.notifications.create(notificationId, {
+      type: 'basic',
+      title: chrome.i18n.getMessage('captureTitle'),
+      message: chrome.i18n.getMessage('captureMessage'),
+      iconUrl: 'icon128.png',
+      priority: 2
+    }, function(){});
     chrome.tabs.sendMessage(tab.id, {
       action: 'gyazoWhole',
       context: {
         tabId: tab.id,
-        winId: tab.windowId
+        winId: tab.windowId,
+        notificationId: notificationId
       },
       data: {}
     },function(){})
@@ -190,6 +199,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             var sh = request.data.height - request.data.captureTop;
             var sy = request.data.windowInnerHeight - sh;
             img.addEventListener('load',function(){
+              console.log(request.context);
+              chrome.notifications.clear(request.context.notificationId,function(){});
               ctx.drawImage(img, 0, sy, request.data.width, sh, 0, request.data.captureTop, request.data.width, sh);
               postToGyazo(canvas.toDataURL('image/png'),request.data.title, request.data.url);
             });
@@ -214,6 +225,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                   tabId: request.context.tabId,
                   winId: request.context.winId,
                   canvas: canvas.toDataURL(),
+                  notificationId: request.context.notificationId
                 }
               },function(){})
             });
