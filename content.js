@@ -87,7 +87,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
       layer.addEventListener('mousedown', mousedownHandler);
       document.addEventListener('keydown', keydownHandler);
       window.addEventListener('contextmenu', cancelGyazo);
-      layer.addEventListener('mousedown',mousedownHandler);
     },
     wholeCaptureInit: function() {
       var context = request.context;
