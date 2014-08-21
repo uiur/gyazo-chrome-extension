@@ -87,6 +87,30 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
       layer.addEventListener('mousedown', mousedownHandler);
       document.addEventListener('keydown', keydownHandler);
       window.addEventListener('contextmenu', cancelGyazo);
+      layer.addEventListener('mousedown',mousedownHandler);
+    },
+    'gyazoWhole': function(){
+      var captureTop = request.data.captureButtom || 0;
+      var captureButtom = captureTop + window.innerHeight;
+      var bodyHeight = request.data.height || document.body.clientHeight;
+      window.scroll(0, captureTop);
+      var data = {
+        width: request.data.width || document.body.clientWidth,
+        height: bodyHeight,
+        windowInnerHeight: window.innerHeight,
+        title: request.data.title || document.title,
+        url: request.data.url || location.href,
+        finish: (bodyHeight <= captureButtom),
+        captureTop: captureTop,
+        captureButtom: captureButtom
+      };
+      window.setTimeout(function(){
+        chrome.runtime.sendMessage(chrome.runtime.id,{
+          action: 'gyazoWholeCapture',
+          data: data,
+          context: request.context
+        });
+      }, 50);
     }
   };
   if(request.action in actions){

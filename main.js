@@ -115,6 +115,16 @@ function onClickHandler(info, tab) {
   },
   gyazoCapture: function() {
     chrome.tabs.sendMessage(tab.id, {action: 'gyazoCapture'}, function(mes){});
+  },
+  gyazoWhole: function(){
+    chrome.tabs.sendMessage(tab.id, {
+      action: 'gyazoWhole',
+      context: {
+        tabId: tab.id,
+        winId: tab.windowId
+      },
+      data: {}
+    },function(){})
   }
 };
 if(info.menuItemId in GyazoFuncs) {
@@ -135,32 +145,98 @@ chrome.runtime.onInstalled.addListener(function() {
     id: 'gyazoCapture',
     contexts: ['all']
   });
+  chrome.contextMenus.create({
+    'title': 'Whole Page',
+    'id': 'gyazoWhole'
+  });
 });
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  if(request.action === 'gyazoCaptureSize') {
-    chrome.tabs.captureVisibleTab(null, {format: 'png'}, function(data) {
-      var d = request.data;
-      var canvas = document.createElement('canvas');
-      canvas.width = d.w;
-      canvas.height = d.h;
-      var ctx = canvas.getContext('2d');
-      var img = new Image();
-      img.addEventListener('load',function() {
-        ctx.drawImage(img, d.x * d.s , d.y * d.s , d.w * d.s , d.h * d.s, 0, 0, d.w, d.h);
-        var data = {
-          imageData: canvas.toDataURL('image/png'),
-          width: d.w,
-          height: d.h,
-          title: d.t,
-          url: d.u,
-          scale: d.s
+  var messageHandlers = {
+    gyazoCaptureSize: function(){
+      chrome.tabs.captureVisibleTab(null, {format: 'png'}, function(data) {
+        var d = request.data;
+        var canvas = document.createElement('canvas');
+        canvas.width = d.w;
+        canvas.height = d.h;
+        var ctx = canvas.getContext('2d');
+        var img = new Image();
+        img.addEventListener('load',function() {
+          ctx.drawImage(img, d.x * d.s , d.y * d.s , d.w * d.s , d.h * d.s, 0, 0, d.w, d.h);
+          var data = {
+            imageData: canvas.toDataURL('image/png'),
+            width: d.w,
+            height: d.h,
+            title: d.t,
+            url: d.u,
+            scale: d.s
+          };
+          postToGyazo(data);
+        });
+        img.src = data;
+      })
+    },
+    gyazoWholeCapture: function(){
+      if(request.data.finish){
+        var img = new Image();
+        var canvas = document.createElement('canvas');
+        canvas.width = request.data.width;
+        canvas.height = request.data.height;
+        var ctx = canvas.getContext('2d');
+        img.addEventListener('load', function(){
+          ctx.drawImage(img,0,0);
+          chrome.tabs.captureVisibleTab(null, {format: 'png'}, function(data){
+            var img = new Image();
+            var sh = request.data.height - request.data.captureTop;
+            var sy = request.data.windowInnerHeight - sh;
+            img.addEventListener('load',function(){
+              ctx.drawImage(img, 0, sy, request.data.width, sh, 0, request.data.captureTop, request.data.width, sh);
+              postToGyazo(canvas.toDataURL('image/png'),request.data.title, request.data.url);
+            });
+            img.src = data;
+          });
+        });
+        img.src = request.context.canvas;
+      }else{
+        var canvas = document.createElement('canvas');
+        canvas.width = request.data.width;
+        canvas.height = request.data.height;
+        var ctx = canvas.getContext('2d');
+        var getCapture = function(){
+          chrome.tabs.captureVisibleTab(null, {format: 'png'}, function(data){
+            var img = new Image();
+            img.addEventListener('load',function(){
+              ctx.drawImage(img, 0, request.data.captureTop);
+              chrome.tabs.sendMessage(request.context.tabId, {
+                action: 'gyazoWhole',
+                data: request.data,
+                context: {
+                  tabId: request.context.tabId,
+                  winId: request.context.winId,
+                  canvas: canvas.toDataURL(),
+                }
+              },function(){})
+            });
+            img.src = data;
+          })
         };
-        postToGyazo(data);
-      });
-      img.src = data;
-    })
+        if(request.context.canvas){
+          var img = new Image();
+          img.addEventListener('load', function(){
+            ctx.drawImage(img,0,0);
+            getCapture();
+          });
+          img.src = request.context.canvas;
+        }else{
+          getCapture();
+        }
+      }
+    }
   }
+  if(request.action in messageHandlers){
+    messageHandlers[request.action]();
+  }
+
   sendResponse();
 })
 
