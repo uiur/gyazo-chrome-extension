@@ -90,7 +90,19 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
       layer.addEventListener('mousedown',mousedownHandler);
     },
     'gyazoWhole': function(){
+      var context = request.context;
       var captureTop = request.data.captureButtom || 0;
+      if(captureTop === 0){
+        context.scrollY = window.scrollY;
+        context.overflow = document.documentElement.style.overflow;
+        context.overflowY = document.documentElement.style.overflowY;
+        document.documentElement.style.overflow = 'hidden';
+        document.documentElement.style.overflowY = 'hidden';
+        var fixedTop = document.getElementsByClassName('navbar-fixed-top');
+        Array.prototype.slice.apply(fixedTop).forEach(function(element, index){
+          element.style.position = 'absolute';
+        });
+      }
       var captureButtom = captureTop + window.innerHeight;
       var bodyHeight = request.data.height || document.body.clientHeight;
       window.scroll(0, captureTop);
@@ -108,9 +120,18 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
         chrome.runtime.sendMessage(chrome.runtime.id,{
           action: 'gyazoWholeCapture',
           data: data,
-          context: request.context
+          context: context
         });
       }, 50);
+    },
+    'gyazoWholeFinish': function(){
+      document.documentElement.style.overflow = request.context.overflow;
+      document.documentElement.style.overflowY = request.context.overflowY;
+      var fixedTop = document.getElementsByClassName('navbar-fixed-top');
+      Array.prototype.slice.apply(fixedTop).forEach(function(element, index){
+        element.style.position = 'fixed';
+      });
+      window.scroll(0, request.context.scrollY);
     }
   };
   if(request.action in actions){

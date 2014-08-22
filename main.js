@@ -203,6 +203,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
               chrome.notifications.clear(request.context.notificationId,function(){});
               ctx.drawImage(img, 0, sy, request.data.width, sh, 0, request.data.captureTop, request.data.width, sh);
               postToGyazo(canvas.toDataURL('image/png'),request.data.title, request.data.url);
+              chrome.tabs.sendMessage(request.context.tabId, {
+                action: 'gyazoWholeFinish',
+                context: request.context
+              })
             });
             img.src = data;
           });
@@ -225,7 +229,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                   tabId: request.context.tabId,
                   winId: request.context.winId,
                   canvas: canvas.toDataURL(),
-                  notificationId: request.context.notificationId
+                  notificationId: request.context.notificationId,
+                  overflow: request.context.overflow,
+                  overflowY: request.context.overflowY,
+                  scrollY: request.context.scrollY
                 }
               },function(){})
             });
