@@ -46,12 +46,13 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
       };
       var mouseupHandler = function(e) {
         document.body.style.webkitUserSelect = tempUserSelect;
-        data.w = Math.abs(e.clientX - startX);
-        data.h = Math.abs(e.clientY - startY);
-        data.x = Math.min(e.clientX, startX);
-        data.y = Math.min(e.clientY, startY);
+        data.w = Math.abs(e.clientX - startX) * window.devicePixelRatio;
+        data.h = Math.abs(e.clientY - startY) * window.devicePixelRatio;
+        data.x = Math.min(e.clientX, startX) * window.devicePixelRatio;
+        data.y = Math.min(e.clientY, startY) * window.devicePixelRatio;
         data.t = document.title;
         data.u = location.href;
+        data.s = window.devicePixelRatio;
         document.body.removeChild(layer);
         //wait for rewrite by removeChild
         window.setTimeout(function() {

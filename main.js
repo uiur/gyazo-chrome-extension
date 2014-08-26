@@ -45,7 +45,7 @@ var UploadNotification = function(callback) {
   }, callback);
 };
 
-function postToGyazo(data, title, url) {
+function postToGyazo(data) {
   var notification =  new UploadNotification();
   var timerId = window.setInterval(function() {
     notification.progressIncrement();
@@ -63,9 +63,12 @@ function postToGyazo(data, title, url) {
     url: host,
     data: {
       client_id: clientId,
-      url: data,
-      title: title,
-      referer: url
+      url: data.imageData,
+      title: data.title,
+      referer: data.url,
+      width: data.width || '',
+      height: data.height || '',
+      scale: data.scale || ''
     },
     crossDomain: true
   })
@@ -99,7 +102,11 @@ function onClickHandler(info, tab) {
         var blob = xhr.response;
         var fileReader = new FileReader();
         fileReader.onload = function(e) {
-          postToGyazo(fileReader.result, tab.title, tab.url);
+          postToGyazo({
+            imageData: fileReader.result,
+            title: tab.title,
+            url: tab.url
+          });
         };
         fileReader.readAsDataURL(blob);
       }
@@ -140,7 +147,15 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       var img = new Image();
       img.addEventListener('load',function() {
         ctx.drawImage(img, d.x, d.y, d.w, d.h, 0, 0, d.w, d.h);
-        postToGyazo(canvas.toDataURL('image/png'), d.t, d.u);
+        var data = {
+          imageData: canvas.toDataURL('image/png'),
+          width: d.w,
+          height: d.h,
+          title: d.t,
+          url: d.u,
+          scale: d.s
+        };
+        postToGyazo(data);
       });
       img.src = data;
     })
