@@ -25,6 +25,14 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
         background: 'rgba(0,0,0,0.1)',
         position: 'fixed'
       });
+      var keydownHandler = function(e){
+        // If press Esc Key, cancel it
+        if(e.keyCode === 27){
+          document.body.removeChild(layer);
+          document.body.style.webkitUserSelect = tempUserSelect;
+          document.removeEventListener('keydown', keydownHandler);
+        }
+      };
       var mousedownHandler = function(e) {
         startX = e.clientX;
         startY = e.clientY;
@@ -46,6 +54,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
       };
       var mouseupHandler = function(e) {
         document.body.style.webkitUserSelect = tempUserSelect;
+        document.removeEventListener('keydown', keydownHandler);
         data.w = Math.abs(e.clientX - startX) * window.devicePixelRatio;
         data.h = Math.abs(e.clientY - startY) * window.devicePixelRatio;
         data.x = Math.min(e.clientX, startX) * window.devicePixelRatio;
@@ -63,6 +72,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
         },100);
       };
       layer.addEventListener('mousedown', mousedownHandler);
+      document.addEventListener('keydown', keydownHandler);
     }
   };
   if(request.action in actions){
