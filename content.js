@@ -22,7 +22,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
         });
       };
       selectionElm.styleUpdate({
-        background: 'rgba(0,0,0,0.4)',
+        background: 'rgba(0,0,0,0.1)',
         position: 'fixed'
       });
       var mousedownHandler = function(e) {
