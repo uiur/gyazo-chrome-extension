@@ -53,12 +53,13 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
         data.t = document.title;
         data.u = location.href;
         document.body.removeChild(layer);
+        //wait for rewrite by removeChild
         window.setTimeout(function(){
           chrome.runtime.sendMessage(chrome.runtime.id,{
             action: 'gyazoCaptureSize',
             data: data
           },function(){});
-        },500);
+        },100);
       };
       layer.addEventListener('mousedown',mousedownHandler);
     }
