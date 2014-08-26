@@ -119,13 +119,13 @@ chrome.contextMenus.onClicked.addListener(onClickHandler);
 
 chrome.runtime.onInstalled.addListener(function() {
   chrome.contextMenus.create({
-    'title': 'Gyazo It',
-    'id': 'gyazoIt',
-    'contexts': ['image']
+    title: 'Gyazo It',
+    id: 'gyazoIt',
+    contexts: ['image']
   });
   chrome.contextMenus.create({
-    'title': 'Capture',
-    'id': 'gyazoCapture'
+    title: 'Capture',
+    id: 'gyazoCapture'
   });
 });
 
