@@ -202,7 +202,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
               console.log(request.context);
               chrome.notifications.clear(request.context.notificationId,function(){});
               ctx.drawImage(img, 0, sy, request.data.width, sh, 0, request.data.captureTop, request.data.width, sh);
-              postToGyazo(canvas.toDataURL('image/png'),request.data.title, request.data.url);
+              postToGyazo({
+                imageData: canvas.toDataURL('image/png'),
+                title: request.data.title,
+                url: request.data.url});
               chrome.tabs.sendMessage(request.context.tabId, {
                 action: 'gyazoWholeFinish',
                 context: request.context
