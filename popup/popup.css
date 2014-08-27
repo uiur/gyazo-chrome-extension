@@ -6,6 +6,7 @@ div.button{
   padding-left: 10px;
   padding-top: 3px;
   padding-bottom: 3px;
+  cursor: pointer;
 }
 div.button:hover {
   background-color: rgba(1, 117, 152, 0.2);

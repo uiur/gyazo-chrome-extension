@@ -163,6 +163,9 @@ chrome.runtime.onInstalled.addListener(function() {
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   var messageHandlers = {
+    gyazoWholeCaptureFromPopup: function() {
+      onClickHandler({menuItemId: 'gyazoWhole'}, request.tab);
+    },
     gyazoCaptureSize: function(){
       chrome.tabs.captureVisibleTab(null, {format: 'png'}, function(data) {
         var d = request.data;
