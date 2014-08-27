@@ -73,7 +73,7 @@ function postToGyazo(data) {
     crossDomain: true
   })
     .done(function(data) {
-      chrome.tabs.create({url:data.get_image_url, selected:false}, function(newTab){
+      chrome.tabs.create({url:data.get_image_url, active:false}, function(newTab){
         notification.nextLimit();
         notification.newTabId = newTab.id;
         var handler = function (tabId, changeInfo) {
