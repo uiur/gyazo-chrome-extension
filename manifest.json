@@ -21,6 +21,10 @@
     "scripts": ["main.js","libs/jquery-1.10.2.min.js", "libs/utils.js"],
     "persistent": false
   },
+  "browser_action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": "icon48.png"
+  },
   "icons": {
     "48": "icon48.png",
     "128": "icon128.png"

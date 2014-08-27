@@ -1,0 +1,12 @@
+body{
+  width: 250px;
+}
+div.button{
+  color: #545454;
+  padding-left: 10px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+div.button:hover {
+  background-color: rgba(1, 117, 152, 0.2);
+}
