@@ -37,7 +37,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
         startX = e.clientX;
         startY = e.clientY;
         selectionElm.styleUpdate({
-          border: '1px solid #ffffff',
+          border: '1px solid rgba(255, 255, 255, 0.3)',
           left: startX + 'px',
           top: startY + 'px'
         });
@@ -47,8 +47,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
       };
       var mousemoveHandler = function(e) {
         selectionElm.styleUpdate({
-          width: Math.abs(e.clientX - startX) + 'px',
-          height: Math.abs(e.clientY - startY) + 'px',
+          width: (Math.abs(e.clientX - startX) - 1) + 'px',
+          height: (Math.abs(e.clientY - startY) - 1) + 'px',
           left: Math.min(e.clientX, startX) + 'px',
           top: Math.min(e.clientY, startY) + 'px'
         });
