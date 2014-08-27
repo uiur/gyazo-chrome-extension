@@ -30,7 +30,7 @@ var UploadNotification = function(callback) {
       progress: 100
     },function(){
       window.setTimeout(function() {
-        chrome.notifications.clear(self.id);
+        chrome.notifications.clear(self.id, function(){});
       },1200);
     });
   };
