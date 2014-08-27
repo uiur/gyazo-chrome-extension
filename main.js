@@ -132,7 +132,8 @@ chrome.runtime.onInstalled.addListener(function() {
   });
   chrome.contextMenus.create({
     title: 'Capture',
-    id: 'gyazoCapture'
+    id: 'gyazoCapture',
+    contexts: ['all']
   });
 });
 
