@@ -22,7 +22,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
         });
       };
       selectionElm.styleUpdate({
-        background: 'rgba(51, 51, 51, 0.1)',
+        background: 'rgba(92, 92, 92, 0.3)',
         position: 'fixed'
       });
       var keydownHandler = function(e){
@@ -37,7 +37,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
         startX = e.clientX;
         startY = e.clientY;
         selectionElm.styleUpdate({
-          border: '1px solid rgba(255, 255, 255, 0.3)',
+          border: '1px solid rgba(255, 255, 255, 0.8)',
           left: startX + 'px',
           top: startY + 'px'
         });
