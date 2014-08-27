@@ -6,7 +6,7 @@ var UploadNotification = function(callback) {
   this.limitLevel = 0;
   this.limit = this.limitValues[this.limitLevel];
   this.nextLimit = function() {
-    if(this.limitValues + 1 < this.limitValues.length) {
+    if(this.limitLevel + 1 < this.limitValues.length) {
       this.limitLevel += 1;
     }
     this.limit = this.limitValues[this.limitLevel]
