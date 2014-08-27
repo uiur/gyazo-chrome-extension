@@ -9,7 +9,7 @@ var UploadNotification = function(callback) {
     if(this.limitValues + 1 < this.limitValues.length) {
       this.limitLevel += 1;
     }
-    this.limit = this.limitvalues[this.limitLevel]
+    this.limit = this.limitValues[this.limitLevel]
   };
   this.id = 'gyazo_notification_' + Date.now();
   this.newTabId = null;
