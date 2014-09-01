@@ -60,7 +60,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
       var mouseupHandler = function(e) {
         document.body.style.webkitUserSelect = tempUserSelect;
         document.removeEventListener('keydown', keydownHandler);
-        window.addEventListener('contextmenu', cancelGyazo);
+        window.addEventListener('contextmenu', function(event){
+          cancelGyazo();
+          event.preventDefault();
+        });
         data.w = Math.abs(e.clientX - startX);
         data.h = Math.abs(e.clientY - startY);
         if(data.h < 1 || data.w < 1){
