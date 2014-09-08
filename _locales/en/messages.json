@@ -1,0 +1,14 @@
+{
+  "uploadingTitle": {
+    "message": "Uploading to Gyazo"
+  },
+  "uploadingMessage": {
+    "message": "Uploading..."
+  },
+  "uploadingFinishTitle": {
+    "message": "Finish Uploading"
+  },
+  "uploadingFinishMessage": {
+    "message": "Gyazo URL has been copied to your clipboard"
+  }
+}

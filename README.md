@@ -22,3 +22,7 @@ Whenever you capture an image the original address and title of the page the ima
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
 
+## Coding Style
+
+- Airbnb's coding style
+  - https://github.com/airbnb/javascript
