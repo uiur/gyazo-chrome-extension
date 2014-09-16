@@ -126,7 +126,7 @@ function onClickHandler(info, tab) {
       priority: 2
     }, function(){});
     chrome.tabs.sendMessage(tab.id, {
-      action: 'gyazoWhole',
+      action: 'wholeCaptureInit',
       context: {
         tabId: tab.id,
         winId: tab.windowId,
@@ -156,7 +156,8 @@ chrome.runtime.onInstalled.addListener(function() {
   });
   chrome.contextMenus.create({
     'title': 'Whole Page',
-    'id': 'gyazoWhole'
+    'id': 'gyazoWhole',
+    contexts: ['all']
   });
 });
 
@@ -185,96 +186,60 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         img.src = data;
       })
     },
-    gyazoWholeCapture: function(){
-      if(request.data.finish){
-        var img = new Image();
-        var canvas = document.createElement('canvas');
-        canvas.width = request.data.width;
-        canvas.height = request.data.height;
-        var ctx = canvas.getContext('2d');
-        img.addEventListener('load', function(){
-          ctx.drawImage(img,0,0);
-          chrome.tabs.captureVisibleTab(null, {format: 'png'}, function(data){
-            var img = new Image();
-            var sh = request.data.height - request.data.captureTop;
-            var sy = request.data.windowInnerHeight - sh;
-            img.addEventListener('load',function(){
-              console.log(request.context);
-              chrome.notifications.clear(request.context.notificationId,function(){});
-              ctx.drawImage(img, 0, sy, request.data.width, sh, 0, request.data.captureTop, request.data.width, sh);
-              postToGyazo({
-                imageData: canvas.toDataURL('image/png'),
-                title: request.data.title,
-                url: request.data.url});
+    wholeCaptureManager: function() {
+      if(request.data.captureButtom < request.data.height) {
+        chrome.tabs.captureVisibleTab(request.context.winId, {format: 'png'}, function(data) {
+          var canvas = request.canvasData || document.createElement('canvas');
+          canvasUtils.appendImageToCanvas(
+            canvas,
+            data,
+            request.data.height,
+            request.data.width,
+            request.data.captureTop,
+            function(canvas) {
               chrome.tabs.sendMessage(request.context.tabId, {
-                action: 'gyazoWholeFinish',
+                action: 'scrollNextPage',
+                canvasData: canvas.toDataURL('image/png'),
+                data: request.data,
                 context: request.context
-              })
-            });
-            img.src = data;
+              });
+            }
+          );
+        });
+      }else{
+        chrome.tabs.captureVisibleTab(request.context.winId, {format: 'png'}, function(data){
+          var sh = request.data.height - request.data.captureTop;
+          var sy = request.data.windowInnerHeight - sh;
+          canvasUtils.trimCaptureImage(data, 0, sy, request.data.width, sh, window.devicePixelRatio, function(canvas) {
+            canvasUtils.appendImageToCanvas(
+              request.canvasData,
+              canvas.toDataURL('image/png'),
+              request.data.height,
+              request.data.width,
+              request.data.captureTop,
+              function(canvas){
+                chrome.notifications.clear(request.context.notificationId,function(){});
+                postToGyazo({
+                  imageData: canvas.toDataURL('image/png'),
+                  title: request.data.title,
+                  url: request.data.url
+                });
+                chrome.tabs.sendMessage(request.context.tabId, {
+                  action: 'wholeCaptureFinish',
+                  context: request.context
+                })
+              }
+            );
           });
         });
-        img.src = request.context.canvas;
-      }else{
-        var canvas = document.createElement('canvas');
-        canvas.width = request.data.width;
-        canvas.height = request.data.height;
-        var ctx = canvas.getContext('2d');
-        var getCapture = function(){
-          chrome.tabs.captureVisibleTab(null, {format: 'png'}, function(data){
-            var img = new Image();
-            img.addEventListener('load',function(){
-              ctx.drawImage(img, 0, request.data.captureTop);
-              chrome.tabs.sendMessage(request.context.tabId, {
-                action: 'gyazoWhole',
-                data: request.data,
-                context: {
-                  tabId: request.context.tabId,
-                  winId: request.context.winId,
-                  canvas: canvas.toDataURL(),
-                  notificationId: request.context.notificationId,
-                  overflow: request.context.overflow,
-                  overflowY: request.context.overflowY,
-                  scrollY: request.context.scrollY
-                }
-              },function(){})
-            });
-            img.src = data;
-          })
-        };
-        if(request.context.canvas){
-          var img = new Image();
-          img.addEventListener('load', function(){
-            ctx.drawImage(img,0,0);
-            getCapture();
-          });
-          img.src = request.context.canvas;
-        }else{
-          getCapture();
-        }
       }
     }
   }
   if(request.action in messageHandlers){
     messageHandlers[request.action]();
   }
-
-  sendResponse();
 })
 
 function tabUpdateListener(tabId, changeInfo, tab) {
   saveToClipboard(changeInfo.url);
-}
-
-function saveToClipboard(str) {
-    var textArea = document.createElement('textarea');
-    textArea.style.cssText = 'position:absolute;left:-100%';
-
-    document.body.appendChild(textArea);
-
-    textArea.value = str;
-    textArea.select();
-    document.execCommand('copy');
-
-    document.body.removeChild(textArea);
 }

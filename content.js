@@ -89,42 +89,54 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
       window.addEventListener('contextmenu', cancelGyazo);
       layer.addEventListener('mousedown',mousedownHandler);
     },
-    'gyazoWhole': function(){
+    wholeCaptureInit: function() {
       var context = request.context;
-      var captureTop = request.data.captureButtom || 0;
-      if(captureTop === 0){
-        context.scrollY = window.scrollY;
-        context.overflow = document.documentElement.style.overflow;
-        context.overflowY = document.documentElement.style.overflowY;
-        document.documentElement.style.overflow = 'hidden';
-        document.documentElement.style.overflowY = 'hidden';
-        var fixedTop = document.getElementsByClassName('navbar-fixed-top');
-        Array.prototype.slice.apply(fixedTop).forEach(function(element, index){
-          element.style.position = 'absolute';
-        });
-      }
-      var captureButtom = captureTop + window.innerHeight;
-      var bodyHeight = request.data.height || document.body.clientHeight;
-      window.scroll(0, captureTop);
+      context.scrollY = window.scrollY;
+      context.overflow = document.documentElement.style.overflow;
+      context.overflowY = document.documentElement.style.overflowY;
+      document.documentElement.style.overflow = 'hidden';
+      document.documentElement.style.overflowY = 'hidden';
+      //I want twitter bootstrap's navigation bar not to follow scrolling
+      var fixedTopNavs = document.getElementsByClassName('navbar-fixed-top');
+      Array.prototype.slice.apply(fixedTopNavs).forEach(function(element, index){
+        element.style.position = 'absolute';
+      });
+      window.scroll(0, 0);
       var data = {
-        width: request.data.width || document.body.clientWidth,
-        height: bodyHeight,
+        width: document.body.clientWidth,
+        height: document.body.clientHeight,
         windowInnerHeight: window.innerHeight,
-        title: request.data.title || document.title,
-        url: request.data.url || location.href,
-        finish: (bodyHeight <= captureButtom),
-        captureTop: captureTop,
-        captureButtom: captureButtom
+        title: document.title,
+        url: location.href,
+        captureTop: 0,
+        captureButtom: window.innerHeight
       };
+      //waiting for repaint after scroll
       window.setTimeout(function(){
         chrome.runtime.sendMessage(chrome.runtime.id,{
-          action: 'gyazoWholeCapture',
+          action: 'wholeCaptureManager',
           data: data,
           context: context
         });
       }, 50);
     },
-    'gyazoWholeFinish': function(){
+    scrollNextPage: function(){
+      var data = request.data;
+      var captureTop = data.captureButtom;
+      var captureButtom = captureTop + window.innerHeight;
+      window.scroll(0, captureTop);
+      data.captureTop = captureTop;
+      data.captureButtom = captureButtom;
+      window.setTimeout(function(){
+        chrome.runtime.sendMessage(chrome.runtime.id,{
+          action: 'wholeCaptureManager',
+          canvasData: request.canvasData,
+          data: data,
+          context: request.context
+        });
+      }, 50);
+    },
+    wholeCaptureFinish: function(){
       document.documentElement.style.overflow = request.context.overflow;
       document.documentElement.style.overflowY = request.context.overflowY;
       var fixedTop = document.getElementsByClassName('navbar-fixed-top');
