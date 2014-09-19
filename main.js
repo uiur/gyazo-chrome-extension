@@ -210,7 +210,14 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         chrome.tabs.captureVisibleTab(request.context.winId, {format: 'png'}, function(data){
           var sh = request.data.height - request.data.captureTop;
           var sy = request.data.windowInnerHeight - sh;
-          canvasUtils.trimImage(data, 0, sy, request.data.width, sh, window.devicePixelRatio, function(canvas) {
+          canvasUtils.trimImage({
+            imageData: data,
+            startX: 0,
+            startY: sy,
+            width: request.data.width,
+            height: sh,
+            scale: window.devicePixelRatio,
+            callback: function(canvas) {
             canvasUtils.appendImageToCanvas(
               request.canvasData,
               canvas.toDataURL('image/png'),
@@ -230,7 +237,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                 })
               }
             );
-          });
+          }});
         });
       }
     }

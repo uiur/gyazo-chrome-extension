@@ -38,7 +38,14 @@ var canvasUtils = {
       })
     });
   },
-  trimImage: function(imageData, startX, startY, width, height, scale, callback) {
+  trimImage: function(argObj) {
+    var imageData = argObj.imageData;
+    var startX = argObj.startX;
+    var startY = argObj.startY;
+    var width = argObj.width;
+    var height = argObj.height;
+    var scale = argObj.scale || 1.0;
+    var callback = argObj.callback || function(){};
     if(typeof imageData === 'string' && imageData.substr(0,5) === 'data:'){
       imageLoader(imageData, function(img){
         var canvas = document.createElement('canvas');
