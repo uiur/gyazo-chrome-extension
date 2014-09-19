@@ -38,21 +38,41 @@ var canvasUtils = {
       })
     });
   },
-  trimCaptureImage: function(imageData, startX, startY, width, height, scale, callback) {
-    this.appendImageToCanvas(document.createElement('canvas'), imageData, height, width, 0, function(canvas){
-      var ctx = canvas.getContext('2d');
-      var originalWidth = width;
-      var originalHeight = height;
-      if(scale){
-        startX *= scale;
-        startY *= scale;
-        height *= scale;
-        width *= scale;
-      }
-      imageLoader(canvas.toDataURL('image/png'), function(img){
+  trimImage: function(imageData, startX, startY, width, height, scale, callback) {
+    if(typeof imageData === 'string' && imageData.substr(0,5) === 'data:'){
+      imageLoader(imageData, function(img){
+        var canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        var ctx = canvas.getContext('2d');
+        var originalWidth = width;
+        var originalHeight = height;
+        if(scale){
+          startX *= scale;
+          startY *= scale;
+          height *= scale;
+          width *= scale;
+        }
         ctx.drawImage(img, startX, startY, width, height, 0, 0, originalWidth, originalHeight);
         callback(canvas);
       })
-    })
+    }else if(typeof imageData === 'object'){
+      //maybe <canvas>
+      this.appendImageToCanvas(document.createElement('canvas'), imageData, height, width, 0, function(canvas){
+        var ctx = canvas.getContext('2d');
+        var originalWidth = width;
+        var originalHeight = height;
+        if(scale){
+          startX *= scale;
+          startY *= scale;
+          height *= scale;
+          width *= scale;
+        }
+        imageLoader(canvas.toDataURL('image/png'), function(img){
+          ctx.drawImage(img, startX, startY, width, height, 0, 0, originalWidth, originalHeight);
+          callback(canvas);
+        })
+      })
+    }
   }
 }
