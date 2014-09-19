@@ -104,7 +104,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
       window.scroll(0, 0);
       var data = {
         width: document.body.clientWidth,
-        height: document.body.clientHeight,
+        height: Math.max(document.body.clientHeight, document.body.offsetHeight, document.body.scrollHeight),
         windowInnerHeight: window.innerHeight,
         title: document.title,
         url: location.href,
