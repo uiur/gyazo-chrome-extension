@@ -216,7 +216,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             startY: sy,
             width: request.data.width,
             height: sh,
-            scale: window.devicePixelRatio,
+            scale: request.data.scale,
             callback: function(canvas) {
             canvasUtils.appendImageToCanvas(
               request.canvasData || document.createElement('canvas'),
@@ -229,7 +229,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                 postToGyazo({
                   imageData: canvas.toDataURL('image/png'),
                   title: request.data.title,
-                  url: request.data.url
+                  url: request.data.url,
+                  width: request.data.width,
+                  height: request,data.height,
+                  scale: request.data.scale
                 });
                 chrome.tabs.sendMessage(request.context.tabId, {
                   action: 'wholeCaptureFinish',
