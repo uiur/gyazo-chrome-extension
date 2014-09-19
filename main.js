@@ -219,7 +219,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             scale: window.devicePixelRatio,
             callback: function(canvas) {
             canvasUtils.appendImageToCanvas(
-              request.canvasData,
+              request.canvasData || document.createElement('canvas'),
               canvas.toDataURL('image/png'),
               request.data.height,
               request.data.width,
