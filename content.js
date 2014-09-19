@@ -109,7 +109,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
         title: document.title,
         url: location.href,
         captureTop: 0,
-        captureButtom: window.innerHeight
+        captureButtom: window.innerHeight,
+        scale: window.devicePixelRatio
       };
       //waiting for repaint after scroll
       window.setTimeout(function(){
