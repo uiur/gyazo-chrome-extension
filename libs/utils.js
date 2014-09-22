@@ -44,7 +44,7 @@ var canvasUtils = {
     var startY = argObj.startY;
     var width = argObj.width;
     var height = argObj.height;
-    var scale = argObj.scale || 1.0;
+    var scale = argObj.scale  || 1.0;
     var callback = argObj.callback || function(){};
     if(typeof imageData === 'string' && imageData.substr(0,5) === 'data:'){
       imageLoader(imageData, function(img){
@@ -52,15 +52,7 @@ var canvasUtils = {
         canvas.width = width;
         canvas.height = height;
         var ctx = canvas.getContext('2d');
-        var originalWidth = width;
-        var originalHeight = height;
-        if(scale){
-          startX *= scale;
-          startY *= scale;
-          height *= scale;
-          width *= scale;
-        }
-        ctx.drawImage(img, startX, startY, width, height, 0, 0, originalWidth, originalHeight);
+        ctx.drawImage(img, startX, startY, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
         callback(canvas);
       })
     }else if(typeof imageData === 'object'){

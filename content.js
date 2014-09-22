@@ -102,15 +102,17 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
         element.style.position = 'absolute';
       });
       window.scroll(0, 0);
+      var zoom = Math.round(screen.width / window.innerWidth * 100) / 100;
       var data = {
-        width: document.body.clientWidth,
-        height: Math.max(document.body.clientHeight, document.body.offsetHeight, document.body.scrollHeight),
+        width: screen.width,
+        height: Math.max(document.body.clientHeight, document.body.offsetHeight, document.body.scrollHeight) * zoom,
         windowInnerHeight: window.innerHeight,
         title: document.title,
         url: location.href,
         captureTop: 0,
         captureButtom: window.innerHeight,
-        scale: window.devicePixelRatio
+        scale: window.devicePixelRatio * zoom,
+        zoom: zoom
       };
       //waiting for repaint after scroll
       window.setTimeout(function(){
@@ -124,7 +126,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
     scrollNextPage: function(){
       var data = request.data;
       var captureTop = data.captureButtom;
-      var captureButtom = captureTop + window.innerHeight;
+      var captureButtom = captureTop + data.windowInnerHeight;
       window.scroll(0, captureTop);
       data.captureTop = captureTop;
       data.captureButtom = captureButtom;

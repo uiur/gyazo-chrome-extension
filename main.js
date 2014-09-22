@@ -187,7 +187,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       })
     },
     wholeCaptureManager: function() {
-      if(request.data.captureButtom < request.data.height) {
+      if(request.data.captureButtom * request.data.zoom < request.data.height) {
         chrome.tabs.captureVisibleTab(request.context.winId, {format: 'png'}, function(data) {
           var canvas = request.canvasData || document.createElement('canvas');
           canvasUtils.appendImageToCanvas(
@@ -195,7 +195,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             data,
             request.data.height,
             request.data.width,
-            request.data.captureTop,
+            request.data.captureTop * request.data.zoom,
             function(canvas) {
               chrome.tabs.sendMessage(request.context.tabId, {
                 action: 'scrollNextPage',
@@ -208,8 +208,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         });
       }else{
         chrome.tabs.captureVisibleTab(request.context.winId, {format: 'png'}, function(data){
-          var sh = request.data.height - request.data.captureTop;
-          var sy = request.data.windowInnerHeight - sh;
+          var sh = request.data.height - request.data.captureTop * request.data.zoom;
+          var sy = request.data.windowInnerHeight * request.data.zoom - sh;
           canvasUtils.trimImage({
             imageData: data,
             startX: 0,
@@ -217,13 +217,14 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             width: request.data.width,
             height: sh,
             scale: request.data.scale,
+            zoom: request.data.zoom,
             callback: function(canvas) {
             canvasUtils.appendImageToCanvas(
               request.canvasData || document.createElement('canvas'),
               canvas.toDataURL('image/png'),
               request.data.height,
               request.data.width,
-              request.data.captureTop,
+              request.data.captureTop * request.data.zoom,
               function(canvas){
                 chrome.notifications.clear(request.context.notificationId,function(){});
                 postToGyazo({
