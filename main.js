@@ -193,10 +193,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
           canvasUtils.appendImageToCanvas({
             canvasData: canvas,
             imageSrc: data,
-            pageHeight: request.data.height * request.data.zoom * request.data.scale,
+            pageHeight: request.data.height * request.data.zoom,
             imageHeight: request.data.windowInnerHeight,
             width: request.data.width * request.data.scale,
-            top: request.data.captureTop * request.data.zoom * request.data.scale,
+            top: request.data.captureTop * request.data.zoom,
             scale: request.data.scale,
             callback: function(canvas) {
               chrome.tabs.sendMessage(request.context.tabId, {
@@ -224,10 +224,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             canvasUtils.appendImageToCanvas({
               canvasData: request.canvasData || document.createElement('canvas'),
               imageSrc: canvas.toDataURL('image/png'),
-              pageHeight: request.data.height * request.data.zoom * request.data.scale,
+              pageHeight: request.data.height * request.data.zoom,
               imageHeight: request.data.windowInnerHeight,
               width: request.data.width * request.data.scale,
-              top: request.data.captureTop * request.data.zoom * request.data.scale,
+              top: request.data.captureTop * request.data.zoom,
               scale: request.data.scale,
               callback: function(canvas){
                 chrome.notifications.clear(request.context.notificationId,function(){});
