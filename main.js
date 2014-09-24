@@ -193,9 +193,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
           canvasUtils.appendImageToCanvas(
             canvas,
             data,
-            request.data.height * request.data.zoom,
-            request.data.width,
-            request.data.captureTop * request.data.zoom,
+            request.data.height * request.data.zoom * request.data.scale,
+            request.data.width * request.data.scale,
+            request.data.captureTop * request.data.zoom * request.data.scale,
             function(canvas) {
               chrome.tabs.sendMessage(request.context.tabId, {
                 action: 'scrollNextPage',
@@ -213,18 +213,18 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
           canvasUtils.trimImage({
             imageData: data,
             startX: 0,
-            startY: sy,
+            startY: sy * request.data.zoom,
             width: request.data.width,
-            height: sh,
+            height: sh * request.data.zoom,
             scale: request.data.scale,
             zoom: request.data.zoom,
             callback: function(canvas) {
             canvasUtils.appendImageToCanvas(
               request.canvasData || document.createElement('canvas'),
               canvas.toDataURL('image/png'),
-              request.data.height * request.data.zoom,
-              request.data.width,
-              request.data.captureTop * request.data.zoom,
+              request.data.height * request.data.zoom * request.data.scale,
+              request.data.width * request.data.scale,
+              request.data.captureTop * request.data.zoom * request.data.scale,
               function(canvas){
                 chrome.notifications.clear(request.context.notificationId,function(){});
                 var ctx = canvas.getContext('2d');
