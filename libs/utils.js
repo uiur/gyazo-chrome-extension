@@ -36,12 +36,12 @@ var canvasUtils = {
     }
     var canvas = document.createElement('canvas');
     canvas.width = width / scale;
-    canvas.height = pageHeight / scale;
+    canvas.height = pageHeight;
     var ctx = canvas.getContext('2d');
     imageLoader(canvasData, function(img) {
       ctx.drawImage(img, 0, 0);
       imageLoader(imageSrc, function(img) {
-        ctx.drawImage(img, 0, 0, width, imageHeight * scale, 0, top / scale, width / scale, imageHeight);
+        ctx.drawImage(img, 0, 0, width, imageHeight * scale, 0, top, width / scale, imageHeight);
         callback(canvas);
       })
     });
@@ -58,8 +58,8 @@ var canvasUtils = {
     if(typeof imageData === 'string' && imageData.substr(0,5) === 'data:'){
       imageLoader(imageData, function(img){
         var canvas = document.createElement('canvas');
-        canvas.width = width;
-        canvas.height = height;
+        canvas.width = width * scale;
+        canvas.height = height * scale;
         var ctx = canvas.getContext('2d');
         startX *= scale;
         startY *= scale;
