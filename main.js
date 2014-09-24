@@ -190,13 +190,15 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       if(request.data.captureButtom < request.data.height) {
         chrome.tabs.captureVisibleTab(request.context.winId, {format: 'png'}, function(data) {
           var canvas = request.canvasData || document.createElement('canvas');
-          canvasUtils.appendImageToCanvas(
-            canvas,
-            data,
-            request.data.height * request.data.zoom * request.data.scale,
-            request.data.width * request.data.scale,
-            request.data.captureTop * request.data.zoom * request.data.scale,
-            function(canvas) {
+          canvasUtils.appendImageToCanvas({
+            canvasData: canvas,
+            imageSrc: data,
+            pageHeight: request.data.height * request.data.zoom * request.data.scale,
+            imageHeight: request.data.windowInnerHeight,
+            width: request.data.width * request.data.scale,
+            top: request.data.captureTop * request.data.zoom * request.data.scale,
+            scale: request.data.scale,
+            callback: function(canvas) {
               chrome.tabs.sendMessage(request.context.tabId, {
                 action: 'scrollNextPage',
                 canvasData: canvas.toDataURL('image/png'),
@@ -204,7 +206,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                 context: request.context
               });
             }
-          );
+          });
         });
       }else{
         chrome.tabs.captureVisibleTab(request.context.winId, {format: 'png'}, function(data){
@@ -219,16 +221,16 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             scale: request.data.scale,
             zoom: request.data.zoom,
             callback: function(canvas) {
-            canvasUtils.appendImageToCanvas(
-              request.canvasData || document.createElement('canvas'),
-              canvas.toDataURL('image/png'),
-              request.data.height * request.data.zoom * request.data.scale,
-              request.data.width * request.data.scale,
-              request.data.captureTop * request.data.zoom * request.data.scale,
-              function(canvas){
+            canvasUtils.appendImageToCanvas({
+              canvasData: request.canvasData || document.createElement('canvas'),
+              imageSrc: canvas.toDataURL('image/png'),
+              pageHeight: request.data.height * request.data.zoom * request.data.scale,
+              imageHeight: request.data.windowInnerHeight,
+              width: request.data.width * request.data.scale,
+              top: request.data.captureTop * request.data.zoom * request.data.scale,
+              scale: request.data.scale,
+              callback: function(canvas){
                 chrome.notifications.clear(request.context.notificationId,function(){});
-                var ctx = canvas.getContext('2d');
-                ctx.scale(1/request.data.scale, 1/request.data.scale);
                 postToGyazo({
                   imageData: canvas.toDataURL('image/png'),
                   title: request.data.title,
@@ -242,7 +244,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                   context: request.context
                 })
               }
-            );
+            });
           }});
         });
       }

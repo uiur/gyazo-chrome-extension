@@ -21,19 +21,27 @@ function saveToClipboard(str) {
 
 
 var canvasUtils = {
-  appendImageToCanvas: function(canvasData, imageSrc, height, width, top, callback) {
+  appendImageToCanvas: function(argObj) {
+    var canvasData = argObj.canvasData;
+    var imageSrc = argObj.imageSrc;
+    var pageHeight = argObj.pageHeight;
+    var imageHeight = argObj.imageHeight;
+    var width = argObj.width;
+    var top = argObj.top;
+    var scale = argObj.scale || 1.0;
+    var callback = argObj.callback;
     // If 1st argument is Object (maybe <canvas>), convert to dataURL.
     if(typeof canvasData === 'object'){
       canvasData = canvasData.toDataURL();
     }
     var canvas = document.createElement('canvas');
-    canvas.width = width;
-    canvas.height = height;
+    canvas.width = width / scale;
+    canvas.height = pageHeight / scale;
     var ctx = canvas.getContext('2d');
     imageLoader(canvasData, function(img) {
       ctx.drawImage(img, 0, 0);
       imageLoader(imageSrc, function(img) {
-        ctx.drawImage(img, 0, top);
+        ctx.drawImage(img, 0, 0, width, imageHeight, 0, top / scale, width / scale, imageHeight / scale);
         callback(canvas);
       })
     });
@@ -62,7 +70,15 @@ var canvasUtils = {
       })
     }else if(typeof imageData === 'object'){
       //maybe <canvas>
-      this.appendImageToCanvas(document.createElement('canvas'), imageData, height, width, 0, function(canvas){
+      this.appendImageToCanvas({
+        canvasData: document.createElement('canvas'),
+        imageSrc: imageData,
+        pageHeight: height,
+        imageHeight: height,
+        width: width,
+        top: 0,
+        scale: scale,
+        callback: function(canvas){
         var ctx = canvas.getContext('2d');
         var originalWidth = width;
         var originalHeight = height;
@@ -74,7 +90,7 @@ var canvasUtils = {
           ctx.drawImage(img, startX, startY, width, height, 0, 0, originalWidth, originalHeight);
           callback(canvas);
         })
-      })
+      }})
     }
   }
 }
