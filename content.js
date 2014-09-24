@@ -102,7 +102,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
         element.style.position = 'absolute';
       });
       window.scroll(0, 0);
-      var zoom = Math.round(screen.width / window.innerWidth * 100) / 100;
+      var zoom = Math.round(window.outerWidth / window.innerWidth * 100) / 100;
       var data = {
         width: screen.width,
         height: Math.max(document.body.clientHeight, document.body.offsetHeight, document.body.scrollHeight) * zoom,
@@ -111,7 +111,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
         url: location.href,
         captureTop: 0,
         captureButtom: window.innerHeight,
-        scale: window.devicePixelRatio * zoom,
+        scale: window.devicePixelRatio,
         zoom: zoom
       };
       //waiting for repaint after scroll
