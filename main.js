@@ -228,7 +228,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
               function(canvas){
                 chrome.notifications.clear(request.context.notificationId,function(){});
                 var ctx = canvas.getContext('2d');
-                ctx.scale(1/request.data.scale ,1/request.data.scale);
+                ctx.scale(1/request.data.scale, 1/request.data.scale);
                 postToGyazo({
                   imageData: canvas.toDataURL('image/png'),
                   title: request.data.title,
