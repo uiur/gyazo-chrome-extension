@@ -104,8 +104,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
       window.scroll(0, 0);
       var zoom = Math.round(window.outerWidth / window.innerWidth * 100) / 100;
       var data = {
-        width: screen.width,
-        height: Math.max(document.body.clientHeight, document.body.offsetHeight, document.body.scrollHeight) * zoom,
+        width: window.outerWidth,
+        height: Math.max(document.body.clientHeight, document.body.offsetHeight, document.body.scrollHeight),
         windowInnerHeight: window.innerHeight,
         title: document.title,
         url: location.href,

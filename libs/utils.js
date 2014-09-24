@@ -45,6 +45,7 @@ var canvasUtils = {
     var width = argObj.width;
     var height = argObj.height;
     var scale = argObj.scale  || 1.0;
+    var zoom = argObj.zoom || 1.0;
     var callback = argObj.callback || function(){};
     if(typeof imageData === 'string' && imageData.substr(0,5) === 'data:'){
       imageLoader(imageData, function(img){
@@ -52,7 +53,11 @@ var canvasUtils = {
         canvas.width = width;
         canvas.height = height;
         var ctx = canvas.getContext('2d');
-        ctx.drawImage(img, startX, startY, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
+        startX *= scale;
+        startY *= scale;
+        height *= scale * zoom;
+        width *= scale * zoom;
+        ctx.drawImage(img, startX, startY, width, height, 0, 0, width, height);
         callback(canvas);
       })
     }else if(typeof imageData === 'object'){
@@ -61,12 +66,10 @@ var canvasUtils = {
         var ctx = canvas.getContext('2d');
         var originalWidth = width;
         var originalHeight = height;
-        if(scale){
-          startX *= scale;
-          startY *= scale;
-          height *= scale;
-          width *= scale;
-        }
+        startX *= scale;
+        startY *= scale;
+        height *= scale * zoom;
+        width *= scale * zoom;
         imageLoader(canvas.toDataURL('image/png'), function(img){
           ctx.drawImage(img, startX, startY, width, height, 0, 0, originalWidth, originalHeight);
           callback(canvas);
