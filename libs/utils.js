@@ -41,7 +41,7 @@ var canvasUtils = {
     imageLoader(canvasData, function(img) {
       ctx.drawImage(img, 0, 0);
       imageLoader(imageSrc, function(img) {
-        ctx.drawImage(img, 0, 0, width, imageHeight, 0, top / scale, width / scale, imageHeight / scale);
+        ctx.drawImage(img, 0, 0, width, imageHeight * scale, 0, top / scale, width / scale, imageHeight / scale);
         callback(canvas);
       })
     });
