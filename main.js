@@ -193,11 +193,12 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
           canvasUtils.appendImageToCanvas({
             canvasData: canvas,
             imageSrc: data,
-            pageHeight: request.data.height * request.data.zoom,
+            pageHeight: request.data.height,
             imageHeight: request.data.windowInnerHeight,
-            width: request.data.width * request.data.scale,
-            top: request.data.captureTop * request.data.zoom,
+            width: request.data.width,
+            top: request.data.captureTop,
             scale: request.data.scale,
+            zoom: request.data.zoom,
             callback: function(canvas) {
               chrome.tabs.sendMessage(request.context.tabId, {
                 action: 'scrollNextPage',
@@ -215,20 +216,21 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
           canvasUtils.trimImage({
             imageData: data,
             startX: 0,
-            startY: sy * request.data.zoom,
+            startY: sy,
             width: request.data.width,
-            height: sh * request.data.zoom,
+            height: sh,
             scale: request.data.scale,
             zoom: request.data.zoom,
             callback: function(canvas) {
             canvasUtils.appendImageToCanvas({
               canvasData: request.canvasData || document.createElement('canvas'),
               imageSrc: canvas.toDataURL('image/png'),
-              pageHeight: request.data.height * request.data.zoom,
+              pageHeight: request.data.height,
               imageHeight: request.data.windowInnerHeight,
-              width: request.data.width * request.data.scale,
-              top: request.data.captureTop * request.data.zoom,
+              width: request.data.width,
+              top: request.data.captureTop,
               scale: request.data.scale,
+              zoom: request.data.zoom,
               callback: function(canvas){
                 chrome.notifications.clear(request.context.notificationId,function(){});
                 postToGyazo({
