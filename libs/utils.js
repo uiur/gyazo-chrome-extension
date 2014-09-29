@@ -29,7 +29,7 @@ var canvasUtils = {
     var pageHeight = argObj.pageHeight * zoom;
     var imageHeight = argObj.imageHeight;
     var width = argObj.width;
-    var top = argObj.top * zoom;
+    var top = argObj.top * zoom / scale;
     var callback = argObj.callback;
     // If 1st argument is Object (maybe <canvas>), convert to dataURL.
     if(typeof canvasData === 'object'){
