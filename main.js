@@ -175,7 +175,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         var ctx = canvas.getContext('2d');
         var img = new Image();
         img.addEventListener('load',function() {
-          ctx.drawImage(img, d.x * d.s , d.y * d.s , d.w * d.s , d.h * d.s, 0, 0, d.w, d.h);
+          ctx.drawImage(img, d.x * d.s , d.y * d.s , d.w, d.h, 0, 0, d.w, d.h);
           var data = {
             imageData: canvas.toDataURL('image/png'),
             width: d.w,
