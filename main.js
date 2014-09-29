@@ -181,8 +181,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             width: d.w,
             height: d.h,
             title: d.t,
-            url: d.u,
-            scale: d.s
+            url: d.u
           };
           postToGyazo(data);
         });

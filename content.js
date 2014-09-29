@@ -66,8 +66,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
         });
         var zoom = Math.round(window.outerWidth / window.innerWidth * 100) / 100;
         var scale = window.devicePixelRatio / zoom;
-        data.w = Math.abs(e.clientX - startX) / scale;
-        data.h = Math.abs(e.clientY - startY) / scale;
+        data.w = Math.abs(e.clientX - startX);
+        data.h = Math.abs(e.clientY - startY);
         if(data.h < 1 || data.w < 1){
           document.body.removeChild(layer);
           return false;
