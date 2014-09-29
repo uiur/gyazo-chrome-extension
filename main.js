@@ -145,17 +145,17 @@ chrome.contextMenus.onClicked.addListener(onClickHandler);
 
 chrome.runtime.onInstalled.addListener(function() {
   chrome.contextMenus.create({
-    title: 'Capture this image',
+    title: chrome.i18n.getMessage("contextMenuImage"),
     id: 'gyazoIt',
     contexts: ['image']
   });
   chrome.contextMenus.create({
-    title: 'Capture selected area',
+    title: chrome.i18n.getMessage("contextMenuSelect"),
     id: 'gyazoCapture',
     contexts: ['all']
   });
   chrome.contextMenus.create({
-    'title': 'Capture whole page',
+    'title': chrome.i18n.getMessage("contextMenuWhole"),
     'id': 'gyazoWhole',
     contexts: ['all']
   });

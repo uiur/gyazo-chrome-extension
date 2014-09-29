@@ -16,5 +16,14 @@
   },
   "captureMessage": {
     "message": "お待ちください"
+  },
+  "contextMenuImage": {
+    "message": "この画像をアップロード"
+  },
+  "contextMenuSelect": {
+    "message": "範囲を指定してキャプチャー"
+  },
+  "contextMenuWhole": {
+    "message": "ページ全体をキャプチャー"
   }
 }

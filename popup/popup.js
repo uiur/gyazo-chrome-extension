@@ -1,4 +1,6 @@
 $(function() {
+  $('#capture').append(chrome.i18n.getMessage("contextMenuSelect"));
+  $('#whole').append(chrome.i18n.getMessage("contextMenuWhole"));
   $('#capture').on('click', function() {
     chrome.tabs.query({currentWindow: true, active: true}, function(tabs) {
       chrome.tabs.sendMessage(tabs[0].id, {action: 'gyazoCapture'}, function(mes){});

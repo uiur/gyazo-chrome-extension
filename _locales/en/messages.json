@@ -16,5 +16,14 @@
   },
   "captureMessage": {
     "message": "Please wait"
+  },
+  "contextMenuImage": {
+    "message": "Capture this image"
+  },
+  "contextMenuSelect": {
+    "message": "Capture selected area"
+  },
+  "contextMenuWhole": {
+    "message": "Capture whole page"
   }
 }
