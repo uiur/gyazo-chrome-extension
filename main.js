@@ -40,7 +40,7 @@ var UploadNotification = function(callback) {
     title: chrome.i18n.getMessage('uploadingTitle'),
     message: chrome.i18n.getMessage('uploadingMessage'),
     progress: this.progress,
-    iconUrl: 'icon128.png',
+    iconUrl: '/icons/gyazo-bg-256.png',
     priority: 2
   }, callback);
 };
@@ -122,7 +122,7 @@ function onClickHandler(info, tab) {
       type: 'basic',
       title: chrome.i18n.getMessage('captureTitle'),
       message: chrome.i18n.getMessage('captureMessage'),
-      iconUrl: 'icon128.png',
+      iconUrl: '/icons/gyazo-bg-256.png',
       priority: 2
     }, function(){});
     chrome.tabs.sendMessage(tab.id, {
@@ -145,17 +145,17 @@ chrome.contextMenus.onClicked.addListener(onClickHandler);
 
 chrome.runtime.onInstalled.addListener(function() {
   chrome.contextMenus.create({
-    title: 'Gyazo It',
+    title: 'Capture this image',
     id: 'gyazoIt',
     contexts: ['image']
   });
   chrome.contextMenus.create({
-    title: 'Capture',
+    title: 'Capture selected area',
     id: 'gyazoCapture',
     contexts: ['all']
   });
   chrome.contextMenus.create({
-    'title': 'Whole Page',
+    'title': 'Capture whole page',
     'id': 'gyazoWhole',
     contexts: ['all']
   });
