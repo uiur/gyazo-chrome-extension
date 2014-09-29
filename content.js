@@ -87,6 +87,66 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
       layer.addEventListener('mousedown', mousedownHandler);
       document.addEventListener('keydown', keydownHandler);
       window.addEventListener('contextmenu', cancelGyazo);
+      layer.addEventListener('mousedown',mousedownHandler);
+    },
+    wholeCaptureInit: function() {
+      var context = request.context;
+      context.scrollY = window.scrollY;
+      context.overflow = document.documentElement.style.overflow;
+      context.overflowY = document.documentElement.style.overflowY;
+      document.documentElement.style.overflow = 'hidden';
+      document.documentElement.style.overflowY = 'hidden';
+      //I want twitter bootstrap's navigation bar not to follow scrolling
+      var fixedTopNavs = document.getElementsByClassName('navbar-fixed-top');
+      Array.prototype.slice.apply(fixedTopNavs).forEach(function(element, index){
+        element.style.position = 'absolute';
+      });
+      window.scroll(0, 0);
+      var zoom = Math.round(window.outerWidth / window.innerWidth * 100) / 100;
+      var data = {
+        width: window.outerWidth,
+        height: Math.max(document.body.clientHeight, document.body.offsetHeight, document.body.scrollHeight),
+        windowInnerHeight: window.innerHeight,
+        title: document.title,
+        url: location.href,
+        captureTop: 0,
+        captureButtom: window.innerHeight,
+        scale: window.devicePixelRatio / zoom,
+        zoom: zoom
+      };
+      //waiting for repaint after scroll
+      window.setTimeout(function(){
+        chrome.runtime.sendMessage(chrome.runtime.id,{
+          action: 'wholeCaptureManager',
+          data: data,
+          context: context
+        });
+      }, 50);
+    },
+    scrollNextPage: function(){
+      var data = request.data;
+      var captureTop = data.captureButtom;
+      var captureButtom = captureTop + data.windowInnerHeight;
+      window.scroll(0, captureTop);
+      data.captureTop = captureTop;
+      data.captureButtom = captureButtom;
+      window.setTimeout(function(){
+        chrome.runtime.sendMessage(chrome.runtime.id,{
+          action: 'wholeCaptureManager',
+          canvasData: request.canvasData,
+          data: data,
+          context: request.context
+        });
+      }, 50);
+    },
+    wholeCaptureFinish: function(){
+      document.documentElement.style.overflow = request.context.overflow;
+      document.documentElement.style.overflowY = request.context.overflowY;
+      var fixedTop = document.getElementsByClassName('navbar-fixed-top');
+      Array.prototype.slice.apply(fixedTop).forEach(function(element, index){
+        element.style.position = 'fixed';
+      });
+      window.scroll(0, request.context.scrollY);
     }
   };
   if(request.action in actions){

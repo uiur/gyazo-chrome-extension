@@ -10,5 +10,11 @@
   },
   "uploadingFinishMessage": {
     "message": "Gyazo URL has been copied to your clipboard"
+  },
+  "captureTitle": {
+    "message": "Capturing..."
+  },
+  "captureMessage": {
+    "message": "please wait"
   }
 }

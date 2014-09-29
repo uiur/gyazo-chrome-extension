@@ -18,7 +18,7 @@
     "run_at": "document_end"
   }],
   "background": {
-    "scripts": ["main.js","jquery-1.10.2.min.js"],
+    "scripts": ["main.js","libs/jquery-1.10.2.min.js", "libs/utils.js"],
     "persistent": false
   },
   "icons": {
