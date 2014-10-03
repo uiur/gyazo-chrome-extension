@@ -40,7 +40,7 @@ var UploadNotification = function(callback) {
     title: chrome.i18n.getMessage('uploadingTitle'),
     message: chrome.i18n.getMessage('uploadingMessage'),
     progress: this.progress,
-    iconUrl: 'icon128.png',
+    iconUrl: '/icons/gyazo-bg-256.png',
     priority: 2
   }, callback);
 };
@@ -122,7 +122,7 @@ function onClickHandler(info, tab) {
       type: 'basic',
       title: chrome.i18n.getMessage('captureTitle'),
       message: chrome.i18n.getMessage('captureMessage'),
-      iconUrl: 'icon128.png',
+      iconUrl: '/icons/gyazo-bg-256.png',
       priority: 2
     }, function(){});
     chrome.tabs.sendMessage(tab.id, {
@@ -145,17 +145,17 @@ chrome.contextMenus.onClicked.addListener(onClickHandler);
 
 chrome.runtime.onInstalled.addListener(function() {
   chrome.contextMenus.create({
-    title: 'Gyazo It',
+    title: chrome.i18n.getMessage("contextMenuImage"),
     id: 'gyazoIt',
     contexts: ['image']
   });
   chrome.contextMenus.create({
-    title: 'Capture',
+    title: chrome.i18n.getMessage("contextMenuSelect"),
     id: 'gyazoCapture',
     contexts: ['all']
   });
   chrome.contextMenus.create({
-    'title': 'Whole Page',
+    'title': chrome.i18n.getMessage("contextMenuWhole"),
     'id': 'gyazoWhole',
     contexts: ['all']
   });
@@ -163,6 +163,9 @@ chrome.runtime.onInstalled.addListener(function() {
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   var messageHandlers = {
+    gyazoWholeCaptureFromPopup: function() {
+      onClickHandler({menuItemId: 'gyazoWhole'}, request.tab);
+    },
     gyazoCaptureSize: function(){
       chrome.tabs.captureVisibleTab(null, {format: 'png'}, function(data) {
         var d = request.data;
@@ -172,14 +175,13 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         var ctx = canvas.getContext('2d');
         var img = new Image();
         img.addEventListener('load',function() {
-          ctx.drawImage(img, d.x * d.s , d.y * d.s , d.w * d.s , d.h * d.s, 0, 0, d.w, d.h);
+          ctx.drawImage(img, d.x * d.s , d.y * d.s , d.w, d.h, 0, 0, d.w, d.h);
           var data = {
             imageData: canvas.toDataURL('image/png'),
             width: d.w,
             height: d.h,
             title: d.t,
-            url: d.u,
-            scale: d.s
+            url: d.u
           };
           postToGyazo(data);
         });

@@ -42,7 +42,7 @@ var canvasUtils = {
     imageLoader(canvasData, function(img) {
       ctx.drawImage(img, 0, 0);
       imageLoader(imageSrc, function(img) {
-        ctx.drawImage(img, 0, 0, width * scale, imageHeight * scale, 0, top, width, imageHeight);
+        ctx.drawImage(img, 0, 0, width * scale, imageHeight * scale, 0, top, width * scale, imageHeight * scale);
         callback(canvas);
       })
     });

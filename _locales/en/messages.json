@@ -9,12 +9,21 @@
     "message": "Finish Uploading"
   },
   "uploadingFinishMessage": {
-    "message": "Gyazo URL has been copied to your clipboard"
+    "message": "Gyazo URL has been copied!"
   },
   "captureTitle": {
     "message": "Capturing..."
   },
   "captureMessage": {
-    "message": "please wait"
+    "message": "Please wait"
+  },
+  "contextMenuImage": {
+    "message": "Capture this image"
+  },
+  "contextMenuSelect": {
+    "message": "Capture selected area"
+  },
+  "contextMenuWhole": {
+    "message": "Capture whole page"
   }
 }

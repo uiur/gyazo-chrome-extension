@@ -64,17 +64,19 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
           cancelGyazo();
           event.preventDefault();
         });
+        var zoom = Math.round(window.outerWidth / window.innerWidth * 100) / 100;
+        var scale = window.devicePixelRatio / zoom;
         data.w = Math.abs(e.clientX - startX);
         data.h = Math.abs(e.clientY - startY);
         if(data.h < 1 || data.w < 1){
           document.body.removeChild(layer);
           return false;
         }
-        data.x = Math.min(e.clientX, startX);
-        data.y = Math.min(e.clientY, startY);
+        data.x = Math.min(e.clientX, startX) / scale;
+        data.y = Math.min(e.clientY, startY) / scale;
         data.t = document.title;
         data.u = location.href;
-        data.s = window.devicePixelRatio;
+        data.s = scale;
         document.body.removeChild(layer);
         //wait for rewrite by removeChild
         window.setTimeout(function() {
@@ -87,7 +89,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
       layer.addEventListener('mousedown', mousedownHandler);
       document.addEventListener('keydown', keydownHandler);
       window.addEventListener('contextmenu', cancelGyazo);
-      layer.addEventListener('mousedown',mousedownHandler);
     },
     wholeCaptureInit: function() {
       var context = request.context;

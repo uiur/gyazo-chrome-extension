@@ -1,0 +1,29 @@
+{
+  "uploadingTitle": {
+    "message": "Gyazoにアップロード"
+  },
+  "uploadingMessage": {
+    "message": "アップロード中..."
+  },
+  "uploadingFinishTitle": {
+    "message": "アップロード完了"
+  },
+  "uploadingFinishMessage": {
+    "message": "Gyazo URLがコピーされました!"
+  },
+  "captureTitle": {
+    "message": "キャプチャー中..."
+  },
+  "captureMessage": {
+    "message": "お待ちください"
+  },
+  "contextMenuImage": {
+    "message": "この画像をアップロード"
+  },
+  "contextMenuSelect": {
+    "message": "範囲を指定してキャプチャー"
+  },
+  "contextMenuWhole": {
+    "message": "ページ全体をキャプチャー"
+  }
+}
