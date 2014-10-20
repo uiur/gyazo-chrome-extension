@@ -169,24 +169,26 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     gyazoCaptureSize: function(){
       chrome.tabs.captureVisibleTab(null, {format: 'png'}, function(data) {
         var d = request.data;
-        var canvas = document.createElement('canvas');
-        canvas.width = d.w;
-        canvas.height = d.h;
-        var ctx = canvas.getContext('2d');
-        var img = new Image();
-        img.addEventListener('load',function() {
-          ctx.drawImage(img, d.x * d.s , d.y * d.s , d.w, d.h, 0, 0, d.w, d.h);
-          var data = {
-            imageData: canvas.toDataURL('image/png'),
-            width: d.w,
-            height: d.h,
-            title: d.t,
-            url: d.u
-          };
-          postToGyazo(data);
+        canvasUtils.trimImage({
+          imageData: data,
+          scale: d.s,
+          zoom: d.z,
+          startX: d.x,
+          startY: d.y,
+          width: d.w,
+          height: d.h,
+          callback: function(canvas) {
+            var data = {
+              imageData: canvas.toDataURL('image/png'),
+              width: d.w,
+              height: d.h,
+              title: d.t,
+              url: d.u
+            };
+            postToGyazo(data);
+          }
         });
-        img.src = data;
-      })
+      });
     },
     wholeCaptureManager: function() {
       if(request.data.captureButtom < request.data.height) {
