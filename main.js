@@ -178,14 +178,13 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
           width: d.w,
           height: d.h,
           callback: function(canvas) {
-            var data = {
+            postToGyazo({
               imageData: canvas.toDataURL('image/png'),
               width: d.w,
               height: d.h,
               title: d.t,
               url: d.u
-            };
-            postToGyazo(data);
+            });
           }
         });
       });
