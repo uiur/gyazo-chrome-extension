@@ -49,14 +49,6 @@ function postToGyazo(data) {
   var notification =  new UploadNotification();
   var timerId = window.setInterval(function() {
     notification.progressIncrement();
-    if(notification.newTabId) {
-      chrome.tabs.get(notification.newTabId,function(newTab) {
-        if(newTab.status === 'complete') {
-          notification.finish();
-          window.clearInterval(timerId);
-        }
-      });
-    }
   },500);
   $.ajax({
     type: 'POST',
@@ -78,6 +70,8 @@ function postToGyazo(data) {
         notification.newTabId = newTab.id;
         var handler = function (tabId, changeInfo) {
           if (newTab.id === tabId && changeInfo.url) {
+            notification.finish();
+            window.clearInterval(timerId);
             saveToClipboard(changeInfo.url);
             chrome.tabs.onUpdated.removeListener(handler);
             notification.newTabId = tabId;
