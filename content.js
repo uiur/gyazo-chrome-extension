@@ -65,18 +65,19 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
           event.preventDefault();
         });
         var zoom = Math.round(window.outerWidth / window.innerWidth * 100) / 100;
-        var scale = window.devicePixelRatio / zoom;
+        var scale = window.devicePixelRatio;
         data.w = Math.abs(e.clientX - startX);
         data.h = Math.abs(e.clientY - startY);
         if(data.h < 1 || data.w < 1){
           document.body.removeChild(layer);
           return false;
         }
-        data.x = Math.min(e.clientX, startX) / scale;
-        data.y = Math.min(e.clientY, startY) / scale;
+        data.x = Math.min(e.clientX, startX);
+        data.y = Math.min(e.clientY, startY);
         data.t = document.title;
         data.u = location.href;
         data.s = scale;
+        data.z = zoom;
         document.body.removeChild(layer);
         //wait for rewrite by removeChild
         window.setTimeout(function() {
