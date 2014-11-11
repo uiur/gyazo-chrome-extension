@@ -29,7 +29,7 @@ var canvasUtils = {
     var pageHeight = argObj.pageHeight * zoom;
     var imageHeight = argObj.imageHeight;
     var width = argObj.width;
-    var top = argObj.top * zoom;
+    var top = argObj.top;
     var callback = argObj.callback;
     // If 1st argument is Object (maybe <canvas>), convert to dataURL.
     if(typeof canvasData === 'object'){
@@ -51,21 +51,17 @@ var canvasUtils = {
     var scale = argObj.scale  || 1.0;
     var zoom = argObj.zoom || 1.0;
     var imageData = argObj.imageData;
-    var startX = argObj.startX;
+    var startX = argObj.startX * zoom;
     var startY = argObj.startY * zoom;
-    var width = argObj.width;
+    var width = argObj.width * zoom;
     var height = argObj.height * zoom;
     var callback = argObj.callback || function(){};
     if(typeof imageData === 'string' && imageData.substr(0,5) === 'data:'){
       imageLoader(imageData, function(img){
         var canvas = document.createElement('canvas');
-        canvas.width = width * scale;
-        canvas.height = height * scale;
+        canvas.width = width;
+        canvas.height = height;
         var ctx = canvas.getContext('2d');
-        startX *= scale;
-        startY *= scale;
-        height *= scale * zoom;
-        width *= scale * zoom;
         ctx.drawImage(img, startX, startY, width, height, 0, 0, width, height);
         callback(canvas);
       })

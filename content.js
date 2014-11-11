@@ -65,7 +65,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
           event.preventDefault();
         });
         var zoom = Math.round(window.outerWidth / window.innerWidth * 100) / 100;
-        var scale = window.devicePixelRatio;
+        var scale = window.devicePixelRatio / zoom;
         data.w = Math.abs(e.clientX - startX);
         data.h = Math.abs(e.clientY - startY);
         if(data.h < 1 || data.w < 1){
@@ -112,7 +112,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
         title: document.title,
         url: location.href,
         captureTop: 0,
-        captureButtom: window.innerHeight,
+        captureButtom: window.innerHeight * zoom,
+        scrollPositionY: 0,
         scale: window.devicePixelRatio / zoom,
         zoom: zoom
       };
@@ -128,10 +129,12 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
     scrollNextPage: function(){
       var data = request.data;
       var captureTop = data.captureButtom;
-      var captureButtom = captureTop + data.windowInnerHeight;
-      window.scroll(0, captureTop);
+      var captureButtom = captureTop + data.windowInnerHeight * data.zoom;
+      var scrollPositionY = data.scrollPositionY + data.windowInnerHeight;
+      window.scroll(0, scrollPositionY);
       data.captureTop = captureTop;
       data.captureButtom = captureButtom;
+      data.scrollPositionY = scrollPositionY;
       window.setTimeout(function(){
         chrome.runtime.sendMessage(chrome.runtime.id,{
           action: 'wholeCaptureManager',

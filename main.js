@@ -184,14 +184,14 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       });
     },
     wholeCaptureManager: function() {
-      if(request.data.captureButtom < request.data.height) {
+      if(request.data.scrollPositionY + request.data.windowInnerHeight < request.data.height) {
         chrome.tabs.captureVisibleTab(request.context.winId, {format: 'png'}, function(data) {
           var canvas = request.canvasData || document.createElement('canvas');
           canvasUtils.appendImageToCanvas({
             canvasData: canvas,
             imageSrc: data,
             pageHeight: request.data.height,
-            imageHeight: request.data.windowInnerHeight,
+            imageHeight: request.data.captureButtom - request.data.captureTop,
             width: request.data.width,
             top: request.data.captureTop,
             scale: request.data.scale,
@@ -208,7 +208,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         });
       }else{
         chrome.tabs.captureVisibleTab(request.context.winId, {format: 'png'}, function(data){
-          var sh = request.data.height - request.data.captureTop;
+          var sh = request.data.height - request.data.scrollPositionY;
           var sy = request.data.windowInnerHeight - sh;
           canvasUtils.trimImage({
             imageData: data,
