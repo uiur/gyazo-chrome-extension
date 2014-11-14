@@ -28,6 +28,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
       var cancelGyazo = function(){
         document.body.removeChild(layer);
         document.body.style.webkitUserSelect = tempUserSelect;
+        tempFixedElements.forEach(function(item){
+          item.position = 'fixed';
+        });
         document.removeEventListener('keydown', keydownHandler);
         window.removeEventListener('contextmenu', cancelGyazo);
       }
@@ -98,10 +101,12 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
       context.overflowY = document.documentElement.style.overflowY;
       document.documentElement.style.overflow = 'hidden';
       document.documentElement.style.overflowY = 'hidden';
-      //I want twitter bootstrap's navigation bar not to follow scrolling
-      var fixedTopNavs = document.getElementsByClassName('navbar-fixed-top');
-      Array.prototype.slice.apply(fixedTopNavs).forEach(function(element, index){
-        element.style.position = 'absolute';
+      //I want some fixed element not to follow scrolling
+      Array.prototype.slice.apply(document.querySelectorAll('*')).filter(function(item){
+        return (window.getComputedStyle(item).position === 'fixed')
+      }).forEach(function(item){
+          item.classList.add('gyazo-whole-capture-onetime-absolute');
+          item.style.position = 'absolute';
       });
       window.scroll(0, 0);
       var zoom = Math.round(window.outerWidth / window.innerWidth * 100) / 100;
@@ -132,25 +137,35 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
       var captureButtom = captureTop + data.windowInnerHeight * data.zoom;
       var scrollPositionY = data.scrollPositionY + data.windowInnerHeight;
       window.scroll(0, scrollPositionY);
+      //I want some fixed element not to follow scrolling
       data.captureTop = captureTop;
       data.captureButtom = captureButtom;
       data.scrollPositionY = scrollPositionY;
       window.setTimeout(function(){
-        chrome.runtime.sendMessage(chrome.runtime.id,{
-          action: 'wholeCaptureManager',
-          canvasData: request.canvasData,
-          data: data,
-          context: request.context
+        Array.prototype.slice.apply(document.querySelectorAll('*')).filter(function(item){
+          return (window.getComputedStyle(item).position === 'fixed')
+        }).forEach(function(item){
+          item.classList.add('gyazo-whole-capture-onetime-absolute');
+            item.style.position = 'absolute';
         });
+        window.setTimeout(function(){
+          chrome.runtime.sendMessage(chrome.runtime.id,{
+            action: 'wholeCaptureManager',
+            canvasData: request.canvasData,
+            data: data,
+            context: request.context
+          });
+        },0);
       }, 50);
     },
     wholeCaptureFinish: function(){
       document.documentElement.style.overflow = request.context.overflow;
       document.documentElement.style.overflowY = request.context.overflowY;
-      var fixedTop = document.getElementsByClassName('navbar-fixed-top');
-      Array.prototype.slice.apply(fixedTop).forEach(function(element, index){
-        element.style.position = 'fixed';
-      });
+      var fixedElms = document.getElementsByClassName('gyazo-whole-capture-onetime-absolute');
+      Array.prototype.slice.apply(fixedElms).forEach(function(item){
+        item.classList.remove('gyazo-whole-capture-onetime-absolute');
+        item.style.position = 'fixed';
+      })
       window.scroll(0, request.context.scrollY);
     }
   };
