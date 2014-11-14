@@ -6,8 +6,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
       var tempUserSelect = document.body.style.webkitUserSelect;
       var layer = document.createElement('div');
       layer.style.position = 'fixed';
-      layer.style.left = document.body.clientLeft;
-      layer.style.top = document.body.clientTop;
+      layer.style.left = document.body.clientLeft + 'px';
+      layer.style.top = document.body.clientTop + 'px';
       layer.style.width = document.body.clientWidth + 'px';
       layer.style.height = document.body.clientHeight + 'px';
       layer.style.zIndex = 2147483647; //Maximun number of 32bit Int
