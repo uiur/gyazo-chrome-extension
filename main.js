@@ -55,9 +55,9 @@ function postToGyazo(data) {
     url: host,
     data: {
       client_id: clientId,
-      url: data.imageData,
+      image_url: data.imageData,
       title: data.title,
-      referer: data.url,
+      referer_url: data.url,
       width: data.width || '',
       height: data.height || '',
       scale: data.scale || ''
