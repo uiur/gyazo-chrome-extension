@@ -1,4 +1,14 @@
 (function() {
+
+function changeFixedElementToAbsolute(){
+  Array.prototype.slice.apply(document.querySelectorAll('*')).filter(function(item){
+    return (window.getComputedStyle(item).position === 'fixed')
+  }).forEach(function(item){
+    item.classList.add('gyazo-whole-capture-onetime-absolute');
+      item.style.position = 'absolute';
+  });
+}
+
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
   var actions = {
     gyazoCapture: function() {
@@ -28,9 +38,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
       var cancelGyazo = function(){
         document.body.removeChild(layer);
         document.body.style.webkitUserSelect = tempUserSelect;
-        tempFixedElements.forEach(function(item){
-          item.position = 'fixed';
-        });
         document.removeEventListener('keydown', keydownHandler);
         window.removeEventListener('contextmenu', cancelGyazo);
       }
@@ -102,12 +109,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
       document.documentElement.style.overflow = 'hidden';
       document.documentElement.style.overflowY = 'hidden';
       //I want some fixed element not to follow scrolling
-      Array.prototype.slice.apply(document.querySelectorAll('*')).filter(function(item){
-        return (window.getComputedStyle(item).position === 'fixed')
-      }).forEach(function(item){
-          item.classList.add('gyazo-whole-capture-onetime-absolute');
-          item.style.position = 'absolute';
-      });
+      changeFixedElementToAbsolute();
       window.scroll(0, 0);
       var zoom = Math.round(window.outerWidth / window.innerWidth * 100) / 100;
       var data = {
@@ -137,17 +139,12 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
       var captureButtom = captureTop + data.windowInnerHeight * data.zoom;
       var scrollPositionY = data.scrollPositionY + data.windowInnerHeight;
       window.scroll(0, scrollPositionY);
-      //I want some fixed element not to follow scrolling
       data.captureTop = captureTop;
       data.captureButtom = captureButtom;
       data.scrollPositionY = scrollPositionY;
+      //I want some fixed element not to follow scrolling
       window.setTimeout(function(){
-        Array.prototype.slice.apply(document.querySelectorAll('*')).filter(function(item){
-          return (window.getComputedStyle(item).position === 'fixed')
-        }).forEach(function(item){
-          item.classList.add('gyazo-whole-capture-onetime-absolute');
-            item.style.position = 'absolute';
-        });
+        changeFixedElementToAbsolute();
         window.setTimeout(function(){
           chrome.runtime.sendMessage(chrome.runtime.id,{
             action: 'wholeCaptureManager',
