@@ -5,12 +5,33 @@
     <link href="popup.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
-    <div id='capture' class='button'>
-      <img src='/icons/crop.svg' class='icon'/>
+    <div id='mainView' class='view'>
+      <div id='capture' class='button'>
+        <img src='/icons/crop.svg' class='icon'/>
+      </div>
+      <div id='whole' class='button'>
+        <img src='/icons/browser.svg' class='icon'/>
+      </div>
+      <div id='tabs' class='button'>
+        Tabs
+      </div>
+      <div id='mode' class='button'>
+        <ul>
+          <li class='show' id='displayMode'></li>
+          <li class='selection' data-mode='url'>URL</li>
+          <li class='selection' data-mode='md'>Markdown</li>
+          <li class='selection' data-mode='html'>IMG tag</li>
+        </ul>
+      </div>
+      <br style='clear: left' />
+      <div id='imageView'>
+
+      </div>
     </div>
-    <div id='whole' class='button'>
-      <img src='/icons/browser.svg' class='icon'/>
+    <div id='accessGyazo' class='view'>
+      Please access <a href='https://gyazo.com/tabs/history'>Gyazo.com</a> once.
     </div>
+    <script src='/libs/jquery-1.10.2.min.js'></script>
     <script src='popup.js'></script>
   </body>
 </html>

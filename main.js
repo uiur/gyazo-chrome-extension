@@ -1,5 +1,7 @@
-var host = 'https://upload.gyazo.com/api/upload/easy_auth';
-var clientId = 'df9edab530e84b4c56f9fcfa209aff1131c7d358a91d85cc20b9229e515d67dd';
+//var host = 'https://upload.gyazo.com/api/upload/easy_auth';
+var host = 'http://localhost:8000/api/upload/easy_auth';
+var clientId = '7110c92b053bf7a9e6ce669240617da0094f55c75647d4ce9b7fb64b1ce4ce8f';
+//var clientId = 'df9edab530e84b4c56f9fcfa209aff1131c7d358a91d85cc20b9229e515d67dd';
 var UploadNotification = function(callback) {
   this.progress = 3;
   this.limitValues = [30, 80];
