@@ -1,5 +1,9 @@
 (function() {
 
+if(/gyazo\.com/.test(location.hostname)){
+  document.documentElement.setAttribute("data-extension-installed", true);
+}
+
 function changeFixedElementToAbsolute(){
   Array.prototype.slice.apply(document.querySelectorAll('*')).filter(function(item){
     return (window.getComputedStyle(item).position === 'fixed')
