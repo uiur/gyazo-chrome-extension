@@ -1,5 +1,46 @@
 (function() {
 
+if ((/github\.com/).test(location.hostname)) {
+  $(function() {
+    // githubに貼り付けるURLを置き換えるやつ
+    $(document).on('paste', '.comment-form-textarea', function(event){
+      var self = this
+      var element = $(this)
+
+      var input = event.originalEvent.clipboardData.getData('text/plain');
+
+      var url = null;
+
+      try {
+        url = new URL(input);
+      } catch(e) {
+        console.log(e);
+        return;
+      }
+
+      if (! (/gyazo\.com\/[a-f0-9]+\/?$/).test(url.href)) {
+        return
+      }
+
+      var id = url.pathname.slice(1)
+
+      var url = 'https://i.gyazo.com/' + id + '.png'
+      var permalinkUrl = 'http://gyazo.com/' + id
+
+      var markdown = '[![Gyazo](' + url + ')](' + permalinkUrl + ')'
+
+      event.preventDefault()
+
+      var replace = function (text) {
+        var val = element.val()
+        var text = val.substr(0, self.selectionStart) + text + val.substr(self.selectionEnd, val.length);
+        element.val(text)
+      }
+
+      replace(markdown)
+    });
+  })
+}
 if(/gyazo\.com/.test(location.hostname)){
   document.documentElement.setAttribute("data-extension-installed", true);
 }
