@@ -116,6 +116,13 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
       changeFixedElementToAbsolute();
       window.scroll(0, 0);
       var zoom = Math.round(window.outerWidth / window.innerWidth * 100) / 100;
+	  var windowInnerHeight = window.innerHeight;
+	  // XXX: on Windows, when window is not maximum, it should tweak zoom.(Chrome zoom level 1 is 1.10)
+	  var isWindows = navigator.platform.match(/^win/i);
+	  var isMaximum = (window.outerHeight === screen.availHeight);
+	  if( isWindows && !isMaximum && 1.00 < zoom && zoom < 1.05){
+	  	zoom = 1.00;
+	  };
       var data = {
         width: window.outerWidth,
         height: Math.max(document.body.clientHeight, document.body.offsetHeight, document.body.scrollHeight),
