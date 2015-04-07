@@ -177,7 +177,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
               width: d.w,
               height: d.h,
               title: d.t,
-              url: d.u
+              url: d.u,
+              scale: d.s
             });
           }
         });
