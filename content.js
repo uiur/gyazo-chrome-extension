@@ -19,11 +19,12 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
       var startX, startY, data = {};
       var tempUserSelect = document.body.style.webkitUserSelect;
       var layer = document.createElement('div');
+      var pageHeight = Math.max(document.body.clientHeight, document.body.offsetHeight, document.body.scrollHeight);
       layer.style.position = 'fixed';
       layer.style.left = document.body.clientLeft + 'px';
       layer.style.top = document.body.clientTop + 'px';
       layer.style.width = document.body.clientWidth + 'px';
-      layer.style.height = document.body.clientHeight + 'px';
+      layer.style.height = pageHeight + 'px';
       layer.style.zIndex = 2147483647; //Maximun number of 32bit Int
       layer.style.cursor = 'crosshair';
       document.body.style.webkitUserSelect = 'none';
