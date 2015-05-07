@@ -131,32 +131,37 @@ function onClickHandler(info, tab) {
   }
 };
 if(info.menuItemId in GyazoFuncs) {
-  GyazoFuncs[info.menuItemId]();
+  chrome.tabs.executeScript(null, {
+    file: './content.js'
+  }, function(){
+    GyazoFuncs[info.menuItemId]();
+  })
 }
 }
 
 chrome.contextMenus.onClicked.addListener(onClickHandler);
 
-chrome.runtime.onInstalled.addListener(function() {
-  chrome.contextMenus.create({
-    title: chrome.i18n.getMessage("contextMenuImage"),
-    id: 'gyazoIt',
-    contexts: ['image']
-  });
-  chrome.contextMenus.create({
-    title: chrome.i18n.getMessage("contextMenuSelect"),
-    id: 'gyazoCapture',
-    contexts: ['all']
-  });
-  chrome.contextMenus.create({
-    'title': chrome.i18n.getMessage("contextMenuWhole"),
-    'id': 'gyazoWhole',
-    contexts: ['all']
-  });
+chrome.contextMenus.create({
+  title: chrome.i18n.getMessage("contextMenuImage"),
+  id: 'gyazoIt',
+  contexts: ['image']
+});
+chrome.contextMenus.create({
+  title: chrome.i18n.getMessage("contextMenuSelect"),
+  id: 'gyazoCapture',
+  contexts: ['all']
+});
+chrome.contextMenus.create({
+  'title': chrome.i18n.getMessage("contextMenuWhole"),
+  'id': 'gyazoWhole',
+  contexts: ['all']
 });
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   var messageHandlers = {
+    gyazoCapture: function() {
+      onClickHandler({menuItemId: 'gyazoCapture'}, request.tab)
+    },
     gyazoWholeCaptureFromPopup: function() {
       onClickHandler({menuItemId: 'gyazoWhole'}, request.tab);
     },
