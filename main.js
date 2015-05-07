@@ -141,22 +141,20 @@ if(info.menuItemId in GyazoFuncs) {
 
 chrome.contextMenus.onClicked.addListener(onClickHandler);
 
-chrome.runtime.onInstalled.addListener(function() {
-  chrome.contextMenus.create({
-    title: chrome.i18n.getMessage("contextMenuImage"),
-    id: 'gyazoIt',
-    contexts: ['image']
-  });
-  chrome.contextMenus.create({
-    title: chrome.i18n.getMessage("contextMenuSelect"),
-    id: 'gyazoCapture',
-    contexts: ['all']
-  });
-  chrome.contextMenus.create({
-    'title': chrome.i18n.getMessage("contextMenuWhole"),
-    'id': 'gyazoWhole',
-    contexts: ['all']
-  });
+chrome.contextMenus.create({
+  title: chrome.i18n.getMessage("contextMenuImage"),
+  id: 'gyazoIt',
+  contexts: ['image']
+});
+chrome.contextMenus.create({
+  title: chrome.i18n.getMessage("contextMenuSelect"),
+  id: 'gyazoCapture',
+  contexts: ['all']
+});
+chrome.contextMenus.create({
+  'title': chrome.i18n.getMessage("contextMenuWhole"),
+  'id': 'gyazoWhole',
+  contexts: ['all']
 });
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
