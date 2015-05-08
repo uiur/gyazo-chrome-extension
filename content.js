@@ -60,6 +60,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
       if(document.getElementsByClassName('gyazo-crop-select-element').length > 0){
         return false;
       }
+      var jackup = document.createElement('div');
+      document.body.appendChild(jackup);
       var layer = document.createElement('div');
       layer.className='gyazo-crop-select-element';
       document.body.appendChild(layer);
@@ -101,6 +103,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
         }
       }
       var cancel = function(){
+        document.body.removeChild(jackup);
         document.body.removeChild(layer);
         window.removeEventListener('contextmenu', cancel);
         document.removeEventListener('keydown', keydownHandler);
@@ -131,6 +134,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
         data.defaultPositon = window.scrollY;
         data.innerHeight = window.innerHeight;
         document.body.removeChild(layer);
+        jackup.style.height = (window.innerHeight + 30) + 'px';
         window.removeEventListener('contextmenu', cancel);
         window.removeEventListener('keydown', keydownHandler);
         document.removeEventListener('keyup', keyUpHandler);
@@ -141,6 +145,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
             data: data
           }, function(){
             restorationFixedElement();
+            document.body.removeChild(jackup);
           });
         },100);
       }
@@ -150,6 +155,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
       });
     },
     gyazoCapture: function() {
+      var jackup = document.createElement('div');
+      document.body.appendChild(jackup);
       var startX, startY, data = {};
       var tempUserSelect = document.body.style.webkitUserSelect;
       var layer = document.createElement('div');
@@ -230,12 +237,15 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
         data.defaultPositon = window.scrollY;
         data.innerHeight = window.innerHeight;
         document.body.removeChild(layer);
+        jackup.style.height = (window.innerHeight + 30) + 'px';
         //wait for rewrite by removeChild
         window.setTimeout(function() {
           chrome.runtime.sendMessage(chrome.runtime.id,{
             action: 'gyazoCaptureSize',
             data: data
-          }, function(){});
+          }, function(){
+            document.body.removeChild(jackup);
+          });
         },100);
       };
       layer.addEventListener('mousedown', mousedownHandler);
