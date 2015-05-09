@@ -36,7 +36,12 @@ function restorationFixedElement(){
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
   var actions = {
-    gyazoCaptureVisibleArea: function() {
+    changeFixedElementToAbsolute: function(){
+      changeFixedElementToAbsolute();
+      sendResponse();
+    },
+    gyazoCaptureVisibleArea: function(_request) {
+      var request = request || _request;
       var data = {};
       var zoom = Math.round(window.outerWidth / window.innerWidth * 100) / 100;
       var scale = window.devicePixelRatio / zoom;
@@ -52,7 +57,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
       data.innerHeight = window.innerHeight;
       chrome.runtime.sendMessage(chrome.runtime.id,{
         action: 'gyazoCaptureSize',
-        data: data
+        data: data,
+        tab: request.tab
       }, function(){});
     },
     gyazoSelectElm: function() {
@@ -142,7 +148,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
         window.setTimeout(function() {
           chrome.runtime.sendMessage(chrome.runtime.id,{
             action: 'gyazoCaptureSize',
-            data: data
+            data: data,
+            tab: request.tab
           }, function(){
             restorationFixedElement();
             document.body.removeChild(jackup);
@@ -193,7 +200,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
           // If press Space bar, capture visible area
           event.preventDefault();
           cancelGyazo();
-          actions.gyazoCaptureVisibleArea();
+          actions.gyazoCaptureVisibleArea(request);
         }else if(e.keyCode === 27){
           // If press Esc Key, cancel it
           cancelGyazo();
@@ -248,7 +255,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
         window.setTimeout(function() {
           chrome.runtime.sendMessage(chrome.runtime.id,{
             action: 'gyazoCaptureSize',
-            data: data
+            data: data,
+            tab: request.tab
           }, function(){
             document.body.removeChild(jackup);
           });
