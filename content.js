@@ -1,10 +1,12 @@
 (function() {
 
+const ESC_KEY_CODE =  27
+
 if(/gyazo\.com/.test(location.hostname)){
   document.documentElement.setAttribute("data-extension-installed", true);
 }
 
-function pressCommandKey(event){
+function isPressCommandKey(event){
   // Return true when
   // Press CommandKey on MacOSX or CtrlKey on Windows or Linux
   if( !(event instanceof MouseEvent || event instanceof KeyboardEvent) ){
@@ -26,7 +28,7 @@ function changeFixedElementToAbsolute(){
   });
 }
 
-function restorationFixedElement(){
+function restoreFixedElement(){
   var fixedElms = document.getElementsByClassName('gyazo-whole-capture-onetime-absolute');
   Array.prototype.slice.apply(fixedElms).forEach(function(item){
     item.classList.remove('gyazo-whole-capture-onetime-absolute');
@@ -61,24 +63,25 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
         layer.style.top = rect.top + 'px';
       };
       var takeMargin = function(){
-        layer.style.width = parseInt(getComputedStyle(layer).width) + 6 + 'px';
-        layer.style.height = parseInt(getComputedStyle(layer).height) + 6 + 'px';
-        layer.style.left = parseInt(getComputedStyle(layer).left) -3 + 'px'; + 'px';
-        layer.style.top = parseInt(getComputedStyle(layer).top) -3 + 'px'; + 'px';
+        const MARGIN = 3
+        layer.style.width = parseInt(getComputedStyle(layer).width) + MARGIN * 2 + 'px';
+        layer.style.height = parseInt(getComputedStyle(layer).height) + MARGIN * 2 + 'px';
+        layer.style.left = parseInt(getComputedStyle(layer).left) - MARGIN + 'px';
+        layer.style.top = parseInt(getComputedStyle(layer).top) - MARGIN + 'px';
       }
       var keydownHandler = function(event){
-        if(event.keyCode === 27){
+        if(event.keyCode === ESC_KEY_CODE){
           cancel();
-        }else if(pressCommandKey(event)){
+        }else if(isPressCommandKey(event)){
           takeMargin();
         }
       }
       var keyUpHandler = function(event){
-        if(pressCommandKey(event)){
+        if(isPressCommandKey(event)){
           layer.style.width = parseInt(getComputedStyle(layer).width) - 6 + 'px';
           layer.style.height = parseInt(getComputedStyle(layer).height) - 6 + 'px';
-          layer.style.left = parseInt(getComputedStyle(layer).left) + 3 + 'px'; + 'px';
-          layer.style.top = parseInt(getComputedStyle(layer).top) + 3 + 'px'; + 'px';
+          layer.style.left = parseInt(getComputedStyle(layer).left) + 3 + 'px';
+          layer.style.top = parseInt(getComputedStyle(layer).top) + 3 + 'px';
         }
       }
       var cancel = function(){
@@ -86,7 +89,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
         window.removeEventListener('contextmenu', cancel);
         document.removeEventListener('keydown', keydownHandler);
         document.removeEventListener('keyup', keyUpHandler);
-        restorationFixedElement();
+        restoreFixedElement();
       }
       window.addEventListener('contextmenu', cancel);
       document.addEventListener('keydown', keydownHandler);
@@ -121,7 +124,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
             action: 'gyazoCaptureSize',
             data: data
           }, function(){
-            restorationFixedElement();
+            restoreFixedElement();
           });
         },100);
       }
@@ -163,7 +166,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
       }
       var keydownHandler = function(e){
         // If press Esc Key, cancel it
-        if(e.keyCode === 27){
+        if(e.keyCode === ESC_KEY_CODE){
           cancelGyazo();
         }
       };
@@ -287,7 +290,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
     wholeCaptureFinish: function(){
       document.documentElement.style.overflow = request.context.overflow;
       document.documentElement.style.overflowY = request.context.overflowY;
-      restorationFixedElement();
+      restoreFixedElement();
       window.scroll(0, request.context.scrollY);
     }
   };
