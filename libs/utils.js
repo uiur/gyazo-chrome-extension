@@ -6,7 +6,7 @@ function imageLoader (imgSrc, callback) {
   img.src = imgSrc
 }
 
-function saveToClipboard (str) {
+function saveToClipboard (str) { // eslint-disable-line
   var textArea = document.createElement('textarea')
   textArea.style.cssText = 'position:absoluteleft:-100%'
 
@@ -19,7 +19,7 @@ function saveToClipboard (str) {
   document.body.removeChild(textArea)
 }
 
-var canvasUtils = {
+var canvasUtils = { // eslint-disable-line
   appendImageToCanvas: function (argObj) {
     var scale = argObj.scale || 1.0
     var zoom = argObj.zoom || 1.0
