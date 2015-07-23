@@ -1,0 +1,10 @@
+dependencies:
+  pre:
+    - npm install standard
+
+## Customize test commands
+test:
+  override:
+    - phpunit test/unit-tests # use PHPunit for testing
+  post:
+    - npm test
