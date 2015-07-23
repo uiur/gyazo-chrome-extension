@@ -1,40 +1,40 @@
-var host = 'https://upload.gyazo.com/api/upload/easy_auth';
-var clientId = 'df9edab530e84b4c56f9fcfa209aff1131c7d358a91d85cc20b9229e515d67dd';
-var UploadNotification = function(callback) {
-  this.progress = 3;
-  this.limitValues = [30, 80];
-  this.limitLevel = 0;
-  this.limit = this.limitValues[this.limitLevel];
-  this.nextLimit = function() {
-    if(this.limitLevel + 1 < this.limitValues.length) {
-      this.limitLevel += 1;
+var host = 'https:// upload.gyazo.com/api/upload/easy_auth'
+var clientId = 'df9edab530e84b4c56f9fcfa209aff1131c7d358a91d85cc20b9229e515d67dd'
+var UploadNotification = function (callback) {
+  this.progress = 3
+  this.limitValues = [30, 80]
+  this.limitLevel = 0
+  this.limit = this.limitValues[this.limitLevel]
+  this.nextLimit = function () {
+    if (this.limitLevel + 1 < this.limitValues.length) {
+      this.limitLevel += 1
     }
     this.limit = this.limitValues[this.limitLevel]
-  };
-  this.id = 'gyazo_notification_' + Date.now();
-  this.newTabId = null;
-  this.progressIncrement = function(callback) {
-    const INCREMENT_SIZE = 5;
-    this.progress = Math.min(this.progress + INCREMENT_SIZE, this.limit);
-    this.update({progress: this.progress},callback);
-  };
-  this.update = function(opt, callback) {
-    callback = callback || function(){};
-    chrome.notifications.update(this.id, opt, callback);
-  };
-  this.finish = function(callback) {
-    var self = this;
+  }
+  this.id = 'gyazo_notification_' + Date.now()
+  this.newTabId = null
+  this.progressIncrement = function (callback) {
+    const INCREMENT_SIZE = 5
+    this.progress = Math.min(this.progress + INCREMENT_SIZE, this.limit)
+    this.update({progress: this.progress}, callback)
+  }
+  this.update = function (opt, callback) {
+    callback = callback || function () {}
+    chrome.notifications.update(this.id, opt, callback)
+  }
+  this.finish = function (callback) {
+    var self = this
     this.update({
       title: chrome.i18n.getMessage('uploadingFinishTitle'),
       message: chrome.i18n.getMessage('uploadingFinishMessage'),
       progress: 100
-    },function(){
-      window.setTimeout(function() {
-        chrome.notifications.clear(self.id, function(){});
-      },1200);
-    });
-  };
-  callback = callback || function(){};
+    }, function () {
+      window.setTimeout(function () {
+        chrome.notifications.clear(self.id, function () {})
+      }, 1200)
+    })
+  }
+  callback = callback || function () {}
   chrome.notifications.create(this.id, {
     type: 'progress',
     title: chrome.i18n.getMessage('uploadingTitle'),
@@ -42,14 +42,14 @@ var UploadNotification = function(callback) {
     progress: this.progress,
     iconUrl: '/icons/gyazo-bg-256.png',
     priority: 2
-  }, callback);
-};
+  }, callback)
+}
 
-function postToGyazo(data) {
-  var notification =  new UploadNotification();
-  var timerId = window.setInterval(function() {
-    notification.progressIncrement();
-  },500);
+function postToGyazo (data) {
+  var notification = new UploadNotification()
+  var timerId = window.setInterval(function () {
+    notification.progressIncrement()
+  }, 500)
   $.ajax({
     type: 'POST',
     url: host,
@@ -64,64 +64,64 @@ function postToGyazo(data) {
     },
     crossDomain: true
   })
-    .done(function(data) {
-      chrome.tabs.create({url:data.get_image_url, active:false}, function(newTab){
-        notification.nextLimit();
-        notification.newTabId = newTab.id;
+    .done(function (data) {
+      chrome.tabs.create({url: data.get_image_url, active: false}, function (newTab) {
+        notification.nextLimit()
+        notification.newTabId = newTab.id
         var handler = function (tabId, changeInfo) {
           if (newTab.id === tabId && changeInfo.url) {
-            notification.finish();
-            window.clearInterval(timerId);
-            saveToClipboard(changeInfo.url);
-            chrome.tabs.onUpdated.removeListener(handler);
-            notification.newTabId = tabId;
+            notification.finish()
+            window.clearInterval(timerId)
+            saveToClipboard(changeInfo.url)
+            chrome.tabs.onUpdated.removeListener(handler)
+            notification.newTabId = tabId
           }
-        };
-        chrome.tabs.onUpdated.addListener(handler);
-      });
+        }
+        chrome.tabs.onUpdated.addListener(handler)
+      })
     })
-    .fail(function(XMLHttpRequest, textStatus, errorThrown) {
-      window.alert('Status: ' + XMLHttpRequest.status + '\n Error: ' + textStatus + '\n Message: '+ errorThrown.message);
-    });
+    .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+      window.alert('Status: ' + XMLHttpRequest.status + '\n Error: ' + textStatus + '\n Message: ' + errorThrown.message)
+    })
 }
 
-function onClickHandler(info, tab) {
+function onClickHandler (info, tab) {
 
-  var GyazoFuncs = {gyazoIt: function() {
-    var xhr = jQuery.ajaxSettings.xhr();
-    xhr.open('GET', info.srcUrl, true);
-    xhr.responseType = 'blob';
-    xhr.onreadystatechange = function() {
-      if(xhr.readyState === 4){
-        var blob = xhr.response;
-        var fileReader = new FileReader();
-        fileReader.onload = function(e) {
+  var GyazoFuncs = {gyazoIt: function () {
+    var xhr = jQuery.ajaxSettings.xhr()
+    xhr.open('GET', info.srcUrl, true)
+    xhr.responseType = 'blob'
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4) {
+        var blob = xhr.response
+        var fileReader = new FileReader()
+        fileReader.onload = function (e) {
           postToGyazo({
             imageData: fileReader.result,
             title: tab.title,
             url: tab.url
-          });
-        };
-        fileReader.readAsDataURL(blob);
+          })
+        }
+        fileReader.readAsDataURL(blob)
       }
-    };
-    xhr.send();
+    }
+    xhr.send()
   },
-  gyazoSelectElm: function() {
-    chrome.tabs.sendMessage(tab.id, {action: 'gyazoSelectElm'}, function(){})
+  gyazoSelectElm: function () {
+    chrome.tabs.sendMessage(tab.id, {action: 'gyazoSelectElm'}, function () {})
   },
-  gyazoCapture: function() {
-    chrome.tabs.sendMessage(tab.id, {action: 'gyazoCapture'}, function(mes){});
+  gyazoCapture: function () {
+    chrome.tabs.sendMessage(tab.id, {action: 'gyazoCapture'}, function (mes) {})
   },
-  gyazoWhole: function(){
-    var notificationId = 'gyazoCapturing_' + Date.now();
+  gyazoWhole: function () {
+    var notificationId = 'gyazoCapturing_' + Date.now()
     chrome.notifications.create(notificationId, {
       type: 'basic',
       title: chrome.i18n.getMessage('captureTitle'),
       message: chrome.i18n.getMessage('captureMessage'),
       iconUrl: '/icons/gyazo-bg-256.png',
       priority: 2
-    }, function(){});
+    }, function () {})
     chrome.tabs.sendMessage(tab.id, {
       action: 'wholeCaptureInit',
       context: {
@@ -130,63 +130,62 @@ function onClickHandler(info, tab) {
         notificationId: notificationId
       },
       data: {}
-    },function(){})
+    }, function () {})
   }
-};
-if(info.menuItemId in GyazoFuncs) {
-  chrome.tabs.executeScript(null, {
-    file: './content.js'
-  }, function(){
-    GyazoFuncs[info.menuItemId]();
-  })
 }
+  if (info.menuItemId in GyazoFuncs) {
+    chrome.tabs.executeScript(null, {
+      file: './content.js'
+    }, function () {
+      GyazoFuncs[info.menuItemId]()
+    })
+  }
 }
 
-chrome.contextMenus.onClicked.addListener(onClickHandler);
+chrome.contextMenus.onClicked.addListener(onClickHandler)
 
 chrome.contextMenus.create({
-  title: chrome.i18n.getMessage("contextMenuImage"),
+  title: chrome.i18n.getMessage('contextMenuImage'),
   id: 'gyazoIt',
   contexts: ['image']
-});
+})
 chrome.contextMenus.create({
-  title: chrome.i18n.getMessage("contextMenuSelect"),
+  title: chrome.i18n.getMessage('contextMenuSelect'),
   id: 'gyazoCapture',
   contexts: ['all']
-});
+})
 chrome.contextMenus.create({
-  'title': chrome.i18n.getMessage("contextMenuWhole"),
+  'title': chrome.i18n.getMessage('contextMenuWhole'),
   'id': 'gyazoWhole',
   contexts: ['all']
-});
+})
 chrome.contextMenus.create({
-  'title': chrome.i18n.getMessage("contextMenuSelectElement"),
+  'title': chrome.i18n.getMessage('contextMenuSelectElement'),
   'id': 'gyazoSelectElm',
   contexts: ['all']
-});
+})
 
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   var messageHandlers = {
-    gyazoCapture: function() {
+    gyazoCapture: function () {
       onClickHandler({menuItemId: 'gyazoCapture'}, request.tab)
     },
-    gyazoSelectElmFromPopup: function() {
+    gyazoSelectElmFromPopup: function () {
       onClickHandler({menuItemId: 'gyazoSelectElm'}, request.tab)
     },
-    gyazoWholeCaptureFromPopup: function() {
-      onClickHandler({menuItemId: 'gyazoWhole'}, request.tab);
+    gyazoWholeCaptureFromPopup: function () {
+      onClickHandler({menuItemId: 'gyazoWhole'}, request.tab)
     },
-    gyazoCaptureSize: function(){
-      var c = document.createElement('canvas');
-      c.height = request.data.h;
-      c.width = request.data.w;
-      var ctx = c.getContext('2d');
-      var canvasData = c.toDataURL();
-      var capture = function(scrollHeight){
-        if(scrollHeight >= request.data.h){
+    gyazoCaptureSize: function () {
+      var c = document.createElement('canvas')
+      c.height = request.data.h
+      c.width = request.data.w
+      var canvasData = c.toDataURL()
+      var capture = function (scrollHeight) {
+        if (scrollHeight >= request.data.h) {
           chrome.tabs.executeScript(null, {
-            code: "window.scrollTo(0, "+ request.data.defaultPositon +" )"
-          });
+            code: 'window.scrollTo(0, ' + request.data.defaultPositon + ' )'
+          })
           postToGyazo({
             imageData: canvasData,
             title: request.data.t,
@@ -194,14 +193,14 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             width: request.data.w,
             height: request.data.h,
             scale: request.data.s
-          });
-          return sendResponse();
+          })
+          return sendResponse()
         }
         chrome.tabs.executeScript(null, {
-          code: "window.scrollTo(0, "+ (scrollHeight + request.data.y) +" )"
-        },function(){
-          setTimeout(function(){
-            chrome.tabs.captureVisibleTab(null, {format: 'png'}, function(data){
+          code: 'window.scrollTo(0, ' + (scrollHeight + request.data.y) + ' )'
+        }, function () {
+          setTimeout(function () {
+            chrome.tabs.captureVisibleTab(null, {format: 'png'}, function (data) {
               canvasUtils.trimImage({
                 imageData: data,
                 scale: request.data.s,
@@ -210,7 +209,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                 startY: 0,
                 width: request.data.w,
                 height: Math.min(request.data.innerHeight, request.data.h - scrollHeight),
-                callback: function(_canvas){
+                callback: function (_canvas) {
                   canvasUtils.appendImageToCanvas({
                     canvasData: canvasData,
                     imageSrc: _canvas.toDataURL(),
@@ -220,24 +219,24 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                     top: scrollHeight,
                     scale: request.data.s,
                     zoom: request.data.z,
-                    callback: function(_canvas){
-                      canvasData = _canvas.toDataURL();
-                      scrollHeight += request.data.innerHeight;
-                      capture(scrollHeight);
+                    callback: function (_canvas) {
+                      canvasData = _canvas.toDataURL()
+                      scrollHeight += request.data.innerHeight
+                      capture(scrollHeight)
                     }
                   })
                 }
               })
             })
-          },10)
+          }, 10)
         })
       }
       capture(0)
     },
-    wholeCaptureManager: function() {
-      if(request.data.scrollPositionY + request.data.windowInnerHeight < request.data.height) {
-        chrome.tabs.captureVisibleTab(request.context.winId, {format: 'png'}, function(data) {
-          var canvas = request.canvasData || document.createElement('canvas');
+    wholeCaptureManager: function () {
+      if (request.data.scrollPositionY + request.data.windowInnerHeight < request.data.height) {
+        chrome.tabs.captureVisibleTab(request.context.winId, {format: 'png'}, function (data) {
+          var canvas = request.canvasData || document.createElement('canvas')
           canvasUtils.appendImageToCanvas({
             canvasData: canvas,
             imageSrc: data,
@@ -247,20 +246,20 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             top: request.data.captureTop,
             scale: request.data.scale,
             zoom: request.data.zoom,
-            callback: function(canvas) {
+            callback: function (canvas) {
               chrome.tabs.sendMessage(request.context.tabId, {
                 action: 'scrollNextPage',
                 canvasData: canvas.toDataURL('image/png'),
                 data: request.data,
                 context: request.context
-              });
+              })
             }
-          });
-        });
-      }else{
-        chrome.tabs.captureVisibleTab(request.context.winId, {format: 'png'}, function(data){
-          var sh = request.data.height - request.data.scrollPositionY;
-          var sy = request.data.windowInnerHeight - sh;
+          })
+        })
+      } else {
+        chrome.tabs.captureVisibleTab(request.context.winId, {format: 'png'}, function (data) {
+          var sh = request.data.height - request.data.scrollPositionY
+          var sy = request.data.windowInnerHeight - sh
           canvasUtils.trimImage({
             imageData: data,
             startX: 0,
@@ -269,7 +268,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             height: sh,
             scale: request.data.scale,
             zoom: request.data.zoom,
-            callback: function(canvas) {
+            callback: function (canvas) {
             canvasUtils.appendImageToCanvas({
               canvasData: request.canvasData || document.createElement('canvas'),
               imageSrc: canvas.toDataURL('image/png'),
@@ -279,8 +278,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
               top: request.data.captureTop,
               scale: request.data.scale,
               zoom: request.data.zoom,
-              callback: function(canvas){
-                chrome.notifications.clear(request.context.notificationId,function(){});
+              callback: function (canvas) {
+                chrome.notifications.clear(request.context.notificationId, function () {})
                 postToGyazo({
                   imageData: canvas.toDataURL('image/png'),
                   title: request.data.title,
@@ -288,23 +287,19 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                   width: request.data.width,
                   height: request.data.height,
                   scale: request.data.scale
-                });
+                })
                 chrome.tabs.sendMessage(request.context.tabId, {
                   action: 'wholeCaptureFinish',
                   context: request.context
                 })
               }
-            });
-          }});
-        });
+            })
+          }})
+        })
       }
     }
   }
-  if(request.action in messageHandlers){
-    messageHandlers[request.action]();
+  if (request.action in messageHandlers) {
+    messageHandlers[request.action]()
   }
 })
-
-function tabUpdateListener(tabId, changeInfo, tab) {
-  saveToClipboard(changeInfo.url);
-}
