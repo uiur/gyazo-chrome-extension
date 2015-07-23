@@ -277,7 +277,6 @@
         data.scrollPositionY = scrollPositionY
         // I want some fixed element not to follow scrolling
         window.setTimeout(function () {
-          changeFixedElementToAbsolute()
           window.setTimeout(function () {
             chrome.runtime.sendMessage(chrome.runtime.id, {
               action: 'wholeCaptureManager',
