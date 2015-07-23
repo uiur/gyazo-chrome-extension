@@ -9,7 +9,7 @@
     "test": "standard \"./**/*js\""
   },
   "standard": {
-    "global": [ "chrome" ,"saveToClipboard", "canvasUtils", "location", "window", "document", "screen", "Image", "$", "jQuery", "FileReader"],
+    "global": [ "chrome" ,"saveToClipboard", "canvasUtils", "location", "window", "document", "screen", "Image", "$", "jQuery", "FileReader", "MouseEvent", "KeyboardEvent"],
     "ignore": [
       "libs/jquery-1.10.2.min.js"
     ]
