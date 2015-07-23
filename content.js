@@ -22,7 +22,7 @@
         var tempUserSelect = document.body.style.webkitUserSelect
         var layer = document.createElement('div')
         var pageHeight = Math.max(document.body.clientHeight, document.body.offsetHeight, document.body.scrollHeight)
-        layer.style.position = 'fixed'
+        layer.style.position = 'absolute'
         layer.style.left = document.body.clientLeft + 'px'
         layer.style.top = document.body.clientTop + 'px'
         layer.style.width = document.body.clientWidth + 'px'
@@ -40,7 +40,7 @@
         }
         selectionElm.styleUpdate({
           background: 'rgba(92, 92, 92, 0.3)',
-          position: 'fixed'
+          position: 'absolute'
         })
         var cancelGyazo = function () {
           document.body.removeChild(layer)
@@ -55,8 +55,8 @@
           }
         }
         var mousedownHandler = function (e) {
-          startX = e.clientX
-          startY = e.clientY
+          startX = e.pageX
+          startY = e.pageY
           selectionElm.styleUpdate({
             border: '1px solid rgba(255, 255, 255, 0.8)',
             left: startX + 'px',
@@ -68,10 +68,10 @@
         }
         var mousemoveHandler = function (e) {
           selectionElm.styleUpdate({
-            width: (Math.abs(e.clientX - startX) - 1) + 'px',
-            height: (Math.abs(e.clientY - startY) - 1) + 'px',
-            left: Math.min(e.clientX, startX) + 'px',
-            top: Math.min(e.clientY, startY) + 'px'
+            width: (Math.abs(e.pageX - startX) - 1) + 'px',
+            height: (Math.abs(e.pageY - startY) - 1) + 'px',
+            left: Math.min(e.pageX, startX) + 'px',
+            top: Math.min(e.pageY, startY) + 'px'
           })
         }
         var mouseupHandler = function (e) {
@@ -83,18 +83,20 @@
           })
           var zoom = Math.round(window.outerWidth / window.innerWidth * 100) / 100
           var scale = window.devicePixelRatio / zoom
-          data.w = Math.abs(e.clientX - startX)
-          data.h = Math.abs(e.clientY - startY)
+          data.w = Math.abs(e.pageX - startX)
+          data.h = Math.abs(e.pageY - startY)
           if (data.h < 1 || data.w < 1) {
             document.body.removeChild(layer)
             return false
           }
-          data.x = Math.min(e.clientX, startX)
-          data.y = Math.min(e.clientY, startY)
+          data.x = Math.min(e.pageX, startX)
+          data.y = Math.min(e.pageY, startY)
           data.t = document.title
           data.u = location.href
           data.s = scale
           data.z = zoom
+          data.defaultPositon = window.scrollY
+          data.innerHeight = window.innerHeight
           document.body.removeChild(layer)
           // wait for rewrite by removeChild
           window.setTimeout(function () {
@@ -157,11 +159,9 @@
         data.scrollPositionY = scrollPositionY
         // I want some fixed element not to follow scrolling
         window.setTimeout(function () {
-          changeFixedElementToAbsolute()
           window.setTimeout(function () {
             chrome.runtime.sendMessage(chrome.runtime.id, {
               action: 'wholeCaptureManager',
-              canvasData: request.canvasData,
               data: data,
               context: request.context
             })
