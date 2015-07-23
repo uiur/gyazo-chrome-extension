@@ -8,7 +8,7 @@ function imageLoader (imgSrc, callback) {
 
 function saveToClipboard (str) { // eslint-disable-line
   var textArea = document.createElement('textarea')
-  textArea.style.cssText = 'position:absoluteleft:-100%'
+  textArea.style.cssText = 'position:absolute;left:-100%'
 
   document.body.appendChild(textArea)
 
