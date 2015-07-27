@@ -1,4 +1,4 @@
-var host = 'https:// upload.gyazo.com/api/upload/easy_auth'
+var host = 'https://upload.gyazo.com/api/upload/easy_auth'
 var clientId = 'df9edab530e84b4c56f9fcfa209aff1131c7d358a91d85cc20b9229e515d67dd'
 var UploadNotification = function (callback) {
   this.progress = 3

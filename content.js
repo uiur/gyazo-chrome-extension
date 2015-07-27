@@ -1,6 +1,8 @@
 (function () {
 
   const ESC_KEY_CODE = 27
+  const SPACE_KEY_CODE = 32
+  const JACKUP_HEIGHT = 30
 
   if (/gyazo\.com/.test(location.hostname)) {
     document.documentElement.setAttribute('data-extension-installed', true)
@@ -38,12 +40,33 @@
 
   chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     var actions = {
+      gyazoCaptureVisibleArea: function () {
+        var data = {}
+        var zoom = Math.round(window.outerWidth / window.innerWidth * 100) / 100
+        var scale = window.devicePixelRatio / zoom
+        data.w = window.innerWidth
+        data.h = window.innerHeight
+        data.x = window.scrollX
+        data.y = window.scrollY
+        data.t = document.title
+        data.u = location.href
+        data.s = scale
+        data.z = zoom
+        data.defaultPositon = window.scrollY
+        data.innerHeight = window.innerHeight
+        chrome.runtime.sendMessage(chrome.runtime.id, {
+          action: 'gyazoCaptureSize',
+          data: data
+        }, function () {})
+      },
       gyazoSelectElm: function () {
         const MARGIN = 3
         // XXX: prevent loading twice.
         if (document.getElementsByClassName('gyazo-crop-select-element').length > 0) {
           return false
         }
+        var jackup = document.createElement('div')
+        document.body.appendChild(jackup)
         var layer = document.createElement('div')
         layer.className = 'gyazo-crop-select-element'
         document.body.appendChild(layer)
@@ -85,6 +108,7 @@
           }
         }
         var cancel = function () {
+          document.body.removeChild(jackup)
           document.body.removeChild(layer)
           window.removeEventListener('contextmenu', cancel)
           document.removeEventListener('keydown', keydownHandler)
@@ -115,6 +139,7 @@
           data.defaultPositon = window.scrollY
           data.innerHeight = window.innerHeight
           document.body.removeChild(layer)
+          jackup.style.height = (window.innerHeight + JACKUP_HEIGHT) + 'px'
           window.removeEventListener('contextmenu', cancel)
           window.removeEventListener('keydown', keydownHandler)
           document.removeEventListener('keyup', keyUpHandler)
@@ -125,6 +150,7 @@
               data: data
             }, function () {
               restoreFixedElement()
+              document.body.removeChild(jackup)
             })
           }, 100)
         }
@@ -139,6 +165,8 @@
         var data = {}
         var tempUserSelect = document.body.style.webkitUserSelect
         var layer = document.createElement('div')
+        var jackup = document.createElement('div')
+        document.body.appendChild(jackup)
         var pageHeight = Math.max(document.body.clientHeight, document.body.offsetHeight, document.body.scrollHeight)
         layer.style.position = 'absolute'
         layer.style.left = document.body.clientLeft + 'px'
@@ -162,14 +190,20 @@
         })
         var cancelGyazo = function () {
           document.body.removeChild(layer)
+          document.body.removeChild(jackup)
           document.body.style.webkitUserSelect = tempUserSelect
           document.removeEventListener('keydown', keydownHandler)
           window.removeEventListener('contextmenu', cancelGyazo)
         }
-        var keydownHandler = function (e) {
-          //  If press Esc Key, cancel it
-          if (e.keyCode === ESC_KEY_CODE) {
+        var keydownHandler = function (event) {
+          if (event.keyCode === ESC_KEY_CODE) {
+            //  If press Esc Key, cancel it
             cancelGyazo()
+          } else if (event.keyCode === SPACE_KEY_CODE) {
+            // If press Space bar, capture visible area
+            event.preventDefault()
+            cancelGyazo()
+            actions.gyazoCaptureVisibleArea()
           }
         }
         var mousedownHandler = function (e) {
@@ -216,12 +250,15 @@
           data.defaultPositon = window.scrollY
           data.innerHeight = window.innerHeight
           document.body.removeChild(layer)
+          jackup.style.height = (window.innerHeight + JACKUP_HEIGHT) + 'px'
           // wait for rewrite by removeChild
           window.setTimeout(function () {
             chrome.runtime.sendMessage(chrome.runtime.id, {
               action: 'gyazoCaptureSize',
               data: data
-            }, function () {})
+            }, function () {
+              document.body.removeChild(jackup)
+            })
           }, 100)
         }
         layer.addEventListener('mousedown', mousedownHandler)
