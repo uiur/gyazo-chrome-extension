@@ -2,6 +2,7 @@
 
   const ESC_KEY_CODE = 27
   const SPACE_KEY_CODE = 32
+  const JACKUP_HEIGHT = 30
 
   if (/gyazo\.com/.test(location.hostname)) {
     document.documentElement.setAttribute('data-extension-installed', true)
@@ -138,7 +139,7 @@
           data.defaultPositon = window.scrollY
           data.innerHeight = window.innerHeight
           document.body.removeChild(layer)
-          jackup.style.height = (window.innerHeight + 30) + 'px'
+          jackup.style.height = (window.innerHeight + JACKUP_HEIGHT) + 'px'
           window.removeEventListener('contextmenu', cancel)
           window.removeEventListener('keydown', keydownHandler)
           document.removeEventListener('keyup', keyUpHandler)
@@ -249,7 +250,7 @@
           data.defaultPositon = window.scrollY
           data.innerHeight = window.innerHeight
           document.body.removeChild(layer)
-          jackup.style.height = (window.innerHeight + 30) + 'px'
+          jackup.style.height = (window.innerHeight + JACKUP_HEIGHT) + 'px'
           // wait for rewrite by removeChild
           window.setTimeout(function () {
             chrome.runtime.sendMessage(chrome.runtime.id, {
