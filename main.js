@@ -181,7 +181,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     gyazoWholeCaptureFromPopup: function () {
       onClickHandler({menuItemId: 'gyazoWhole'}, request.tab)
     },
-    gyazoCaptureSize: function () {
+    gyazoCaptureWithSize: function () {
       var c = document.createElement('canvas')
       c.height = request.data.h
       c.width = request.data.w * request.data.z * request.data.s

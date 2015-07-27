@@ -100,7 +100,7 @@
         data.defaultPositon = window.scrollY
         data.innerHeight = window.innerHeight
         chrome.runtime.sendMessage(chrome.runtime.id, {
-          action: 'gyazoCaptureSize',
+          action: 'gyazoCaptureWithSize',
           data: data,
           tab: request.tab
         }, function () {})
@@ -201,7 +201,7 @@
               return window.requestAnimationFrame(finish)
             }
             chrome.runtime.sendMessage(chrome.runtime.id, {
-              action: 'gyazoCaptureSize',
+              action: 'gyazoCaptureWithSize',
               data: data,
               tab: request.tab
             }, function () {
@@ -322,7 +322,7 @@
           // wait for rewrite by removeChild
           window.requestAnimationFrame(function () {
             chrome.runtime.sendMessage(chrome.runtime.id, {
-              action: 'gyazoCaptureSize',
+              action: 'gyazoCaptureWithSize',
               data: data,
               tab: request.tab
             }, function () {
@@ -359,7 +359,7 @@
         document.body.appendChild(jackup)
         jackup.style.height = (data.h + 30) + 'px'
         chrome.runtime.sendMessage(chrome.runtime.id, {
-          action: 'gyazoCaptureSize',
+          action: 'gyazoCaptureWithSize',
           data: data,
           tab: request.tab,
           notificationId: request.notificationId
