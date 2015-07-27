@@ -27,7 +27,7 @@
     "message": "Capture whole page"
   },
   "contextMenuSelectElement": {
-    "message": "Capture selected HTML element"
+    "message": "Capture selected element"
   },
   "captureVisibleArea": {
     "message": "Capture visible area"
