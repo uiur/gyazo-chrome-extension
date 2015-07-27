@@ -8,6 +8,10 @@
     document.documentElement.setAttribute('data-extension-installed', true)
   }
 
+  function check_duplicate_capture () {
+    return document.getElementsByClassName('gyazo-jackup-element').length > 0
+  }
+
   function isPressCommandKey (event) {
     //  Return true when
     //  Press CommandKey on MacOSX or CtrlKey on Windows or Linux
@@ -103,8 +107,7 @@
       },
       gyazoSelectElm: function () {
         const MARGIN = 3
-        // XXX: prevent loading twice.
-        if (document.getElementsByClassName('gyazo-jackup-element').length > 0) {
+        if (check_duplicate_capture()) {
           return false
         }
         var jackup = document.createElement('div')
@@ -218,7 +221,7 @@
         })
       },
       gyazoCapture: function () {
-        if (document.getElementsByClassName('gyazo-jackup-element').length > 0) {
+        if (check_duplicate_capture()) {
           return false
         }
         var startX
@@ -334,7 +337,7 @@
         window.addEventListener('contextmenu', cancelGyazo)
       },
       gyazoWholeCapture: function () {
-        if (document.getElementsByClassName('gyazo-jackup-element').length > 0) {
+        if (check_duplicate_capture()) {
           return false
         }
         var overflow = lockScroll()
