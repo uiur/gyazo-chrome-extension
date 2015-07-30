@@ -2,55 +2,29 @@
 var host = 'https://upload.gyazo.com/api/upload/easy_auth'
 var clientId = 'df9edab530e84b4c56f9fcfa209aff1131c7d358a91d85cc20b9229e515d67dd'
 var UploadNotification = function (callback) {
-  this.progress = 3
-  this.limitValues = [30, 80]
-  this.limitLevel = 0
-  this.limit = this.limitValues[this.limitLevel]
-  this.nextLimit = function () {
-    if (this.limitLevel + 1 < this.limitValues.length) {
-      this.limitLevel += 1
-    }
-    this.limit = this.limitValues[this.limitLevel]
-  }
-  this.id = 'gyazo_notification_' + Date.now()
-  this.newTabId = null
-  this.progressIncrement = function (callback) {
-    const INCREMENT_SIZE = 5
-    this.progress = Math.min(this.progress + INCREMENT_SIZE, this.limit)
-    this.update({progress: this.progress}, callback)
-  }
-  this.update = function (opt, callback) {
+  this.update = function (option, callback) {
     callback = callback || function () {}
-    chrome.notifications.update(this.id, opt, callback)
+    chrome.tabs.query({currentWindow: true, active: true}, function (tab) {
+      option.action = 'notification'
+      chrome.tabs.sendMessage(tab[0].id, option, callback)
+    })
   }
-  this.finish = function (callback) {
-    var self = this
+  this.finish = function (imageUrl, callback) {
     this.update({
       title: chrome.i18n.getMessage('uploadingFinishTitle'),
       message: chrome.i18n.getMessage('uploadingFinishMessage'),
-      progress: 100
-    }, function () {
-      window.setTimeout(function () {
-        chrome.notifications.clear(self.id, function () {})
-      }, 1200)
-    })
-  }
-  callback = callback || function () {}
-  chrome.notifications.create(this.id, {
-    type: 'progress',
+      imageUrl: imageUrl,
+      isFinish: true
+    }, callback)
+  }.bind(this)
+  this.update({
     title: chrome.i18n.getMessage('uploadingTitle'),
-    message: chrome.i18n.getMessage('uploadingMessage'),
-    progress: this.progress,
-    iconUrl: '/icons/gyazo-bg-256.png',
-    priority: 2
+    message: chrome.i18n.getMessage('uploadingMessage')
   }, callback)
 }
 
 function postToGyazo (data) {
   var notification = new UploadNotification()
-  var timerId = window.setInterval(function () {
-    notification.progressIncrement()
-  }, 500)
   $.ajax({
     type: 'POST',
     url: host,
@@ -67,15 +41,11 @@ function postToGyazo (data) {
   })
     .done(function (data) {
       chrome.tabs.create({url: data.get_image_url, active: false}, function (newTab) {
-        notification.nextLimit()
-        notification.newTabId = newTab.id
         var handler = function (tabId, changeInfo) {
           if (newTab.id === tabId && changeInfo.url) {
-            notification.finish()
-            window.clearInterval(timerId)
+            notification.finish(changeInfo.url+'/raw')
             saveToClipboard(changeInfo.url)
             chrome.tabs.onUpdated.removeListener(handler)
-            notification.newTabId = tabId
           }
         }
         chrome.tabs.onUpdated.addListener(handler)
@@ -115,18 +85,14 @@ function onClickHandler (info, tab) {
     chrome.tabs.sendMessage(tab.id, {action: 'gyazoCapture', tab: tab}, function (mes) {})
   },
   gyazoWhole: function () {
-    var notificationId = 'gyazoCapturing_' + Date.now()
-    chrome.notifications.create(notificationId, {
-      type: 'basic',
+    let notification = new UploadNotification()
+    notification.create({
       title: chrome.i18n.getMessage('captureTitle'),
-      message: chrome.i18n.getMessage('captureMessage'),
-      iconUrl: '/icons/gyazo-bg-256.png',
-      priority: 2
-    }, function () {})
+      message: chrome.i18n.getMessage('captureMessage')
+    })
     chrome.tabs.sendMessage(tab.id, {
       action: 'gyazoWholeCapture',
-      tab: tab,
-      notificationId: notificationId
+      tab: tab
     }, function () {})
   }
 }
@@ -218,9 +184,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
           chrome.tabs.executeScript(null, {
             code: 'window.scrollTo(' + request.data.positionX + ', ' + request.data.positionY + ' )'
           })
-          if (request.notificationId) {
-            chrome.notifications.clear(request.notificationId, function () {})
-          }
           postToGyazo({
             imageData: canvasData,
             title: request.data.t,

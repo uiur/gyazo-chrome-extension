@@ -11,6 +11,20 @@
   z-index: 100000000000;
   border-radius: 5px;
 }
+.gyazo-menu.gyazo-notification {
+  text-align: center;
+  width: 350px;
+  padding: 10px;
+}
+.gyazo-notification > .gyazo-notification-title {
+  font-size: 25px;
+}
+.gyazo-notification > .gyazo-notification-message {
+  font-size: 12px;
+}
+.gyazo-notification > .image {
+  max-width: 200px;
+}
 .gyazo-menu > .gyazo-logo {
   margin: auto;
   width: 60px;

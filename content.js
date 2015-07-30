@@ -74,6 +74,28 @@
 
   chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     var actions = {
+      notification: function () {
+        let notificationContainer = document.querySelector('.gyazo-menu.gyazo-notification')
+        if (!notificationContainer) {
+          notificationContainer = document.createElement('div')
+          document.body.appendChild(notificationContainer)
+        }
+        notificationContainer.className = 'gyazo-menu gyazo-notification'
+        let title = request.title || ''
+        let message = request.message || ''
+        let imageUrl = request.imageUrl || chrome.extension.getURL('/icons/loading.gif')
+        notificationContainer.innerHTML = `
+        <span class='gyazo-notification-title'>${title}</span><br />
+        <span class='gyazo-notification-message'>${message}</span><br />
+        <img class='image' src='${imageUrl}' />
+        `
+        if (request.isFinish) {
+          window.setTimeout(function () {
+            document.body.removeChild(notificationContainer)
+          }, 5000)
+        }
+        sendResponse()
+      },
       insertMenu: function () {
         if (document.getElementsByClassName('gyazo-menu').length > 0) {
           return true
@@ -419,7 +441,6 @@
           action: 'gyazoCaptureWithSize',
           data: data,
           tab: request.tab,
-          notificationId: request.notificationId
         }, function () {
           document.body.removeChild(jackup)
           unlockScroll(overflow)
