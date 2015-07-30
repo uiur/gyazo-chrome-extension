@@ -1,8 +1,9 @@
 (function () {
-
+  'use strict'
   const ESC_KEY_CODE = 27
   const SPACE_KEY_CODE = 32
   const JACKUP_HEIGHT = 30
+  let cancelCurrentFunction = function(){}
 
   if (/gyazo\.com/.test(location.hostname)) {
     document.documentElement.setAttribute('data-extension-installed', true)
@@ -73,6 +74,64 @@
 
   chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     var actions = {
+      insertMenu: function () {
+        if (document.getElementsByClassName('gyazo-menu').length > 0) {
+          return true
+        }
+        let hideMenu = function () {
+          cancelCurrentFunction()
+          document.body.removeChild(gyazoMenu)
+        }
+        let gyazoMenu = document.createElement('div')
+        gyazoMenu.className = 'gyazo-menu gyazo-menu-element'
+
+        let closeBtn = document.createElement('img')
+        closeBtn.src = chrome.extension.getURL('/icons/close.png')
+        closeBtn.className = 'gyazo-close-button gyazo-menu-element'
+        closeBtn.addEventListener('click', hideMenu)
+
+        let logo = document.createElement('img')
+        logo.src = chrome.extension.getURL('/icons/logo.png')
+        logo.className = 'gyazo-logo gyazo-menu-element'
+
+        let selectAreaBtn = document.createElement('div')
+        selectAreaBtn.className = 'gyazo-big-button gyazo-button gyazo-menu-element'
+        selectAreaBtn.textContent = 'Select area'
+
+        let windowCaptureBtn = document.createElement('div')
+        windowCaptureBtn.className = 'gyazo-big-button gyazo-button gyazo-menu-element'
+        windowCaptureBtn.textContent = 'Gyazo this window'
+
+        let wholeCaptureBtn = document.createElement('div')
+        wholeCaptureBtn.className = 'gyazo-small-button gyazo-button gyazo-menu-element'
+        wholeCaptureBtn.textContent = chrome.i18n.getMessage('contextMenuWhole')
+
+        gyazoMenu.appendChild(closeBtn)
+        gyazoMenu.appendChild(logo)
+        gyazoMenu.appendChild(windowCaptureBtn)
+        gyazoMenu.appendChild(selectAreaBtn)
+        gyazoMenu.appendChild(wholeCaptureBtn)
+        document.body.appendChild(gyazoMenu)
+        selectAreaBtn.addEventListener('click', function () {
+          hideMenu()
+          window.requestAnimationFrame(function () {
+            actions.gyazoCapture()
+          })
+        })
+        windowCaptureBtn.addEventListener('click', function () {
+          hideMenu()
+          window.requestAnimationFrame(function () {
+            actions.gyazoCaptureVisibleArea()
+          })
+        })
+        wholeCaptureBtn.addEventListener('click', function () {
+          hideMenu()
+          window.requestAnimationFrame(function () {
+            actions.gyazoWhole()
+          })
+        })
+        actions.gyazoSelectElm()
+      },
       changeFixedElementToAbsolute: function () {
         changeFixedElementToAbsolute()
         var waitScroll = function () {
@@ -121,7 +180,8 @@
         layer.style.pointerEvents = 'none'
         layer.style.zIndex = 2147483647 // Maximun number of 32bit Int
         var allElms = Array.prototype.slice.apply(document.body.querySelectorAll('*')).filter(function (item) {
-          return !item.classList.contains('gyazo-crop-select-element')
+          return !item.classList.contains('gyazo-crop-select-element') &&
+                 !item.classList.contains('gyazo-menu-element')
         })
         var moveLayer = function (event) {
           var item = event.target
@@ -161,6 +221,7 @@
           document.removeEventListener('keyup', keyUpHandler)
           restoreFixedElement()
         }
+        cancelCurrentFunction = cancel
         window.addEventListener('contextmenu', cancel)
         document.addEventListener('keydown', keydownHandler)
         document.addEventListener('keyup', keyUpHandler)
@@ -187,6 +248,7 @@
           data.positionY = window.scrollY
           data.innerHeight = window.innerHeight
           document.body.removeChild(layer)
+
           jackup.style.height = (window.innerHeight + JACKUP_HEIGHT) + 'px'
           window.removeEventListener('contextmenu', cancel)
           window.removeEventListener('keydown', keydownHandler)
@@ -265,11 +327,6 @@
           if (event.keyCode === ESC_KEY_CODE) {
             //  If press Esc Key, cancel it
             cancelGyazo()
-          } else if (event.keyCode === SPACE_KEY_CODE) {
-            // If press Space bar, capture visible area
-            event.preventDefault()
-            cancelGyazo()
-            actions.gyazoCaptureVisibleArea(request)
           }
         }
         var mousedownHandler = function (e) {

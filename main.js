@@ -1,3 +1,4 @@
+'use strict'
 var host = 'https://upload.gyazo.com/api/upload/easy_auth'
 var clientId = 'df9edab530e84b4c56f9fcfa209aff1131c7d358a91d85cc20b9229e515d67dd'
 var UploadNotification = function (callback) {
@@ -132,13 +133,6 @@ function onClickHandler (info, tab) {
   if (info.menuItemId in GyazoFuncs) {
     GyazoFuncs[info.menuItemId]()
   }
-  if (info.menuItemId in GyazoFuncs) {
-    chrome.tabs.executeScript(null, {
-      file: './content.js'
-    }, function () {
-      GyazoFuncs[info.menuItemId]()
-    })
-  }
 }
 
 chrome.tabs.onUpdated.addListener(function (tabId) {
@@ -170,17 +164,16 @@ chrome.contextMenus.create({
   contexts: ['all']
 })
 
+chrome.browserAction.onClicked.addListener(function (tab) {
+  chrome.tabs.insertCSS(tab.id, {
+    file: './libs/menu.css'
+  }, function () {
+    chrome.tabs.sendMessage(tab.id, {action: 'insertMenu', tab: tab}, function () {})
+  })
+})
+
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   var messageHandlers = {
-    gyazoCapture: function () {
-      onClickHandler({menuItemId: 'gyazoCapture'}, request.tab)
-    },
-    gyazoSelectElmFromPopup: function () {
-      onClickHandler({menuItemId: 'gyazoSelectElm'}, request.tab)
-    },
-    gyazoWholeCaptureFromPopup: function () {
-      onClickHandler({menuItemId: 'gyazoWhole'}, request.tab)
-    },
     gyazoCaptureWithSize: function () {
       var c = document.createElement('canvas')
       c.height = request.data.h
