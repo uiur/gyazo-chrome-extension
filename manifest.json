@@ -11,7 +11,8 @@
     "contextMenus",
     "tabs",
     "clipboardWrite",
-    "clipboardRead"
+    "clipboardRead",
+    "storage"
   ],
   "background": {
     "scripts": ["main.js", "libs/jquery-1.10.2.min.js", "libs/utils.js"],
@@ -25,7 +26,8 @@
   },
   "web_accessible_resources": [
     "icons/logo.png",
-    "icons/close.png"
+    "icons/close.png",
+    "icons/loading.gif"
   ],
   "icons": {
     "16": "/icons/gyazo-16.png",
@@ -35,7 +37,10 @@
     "128": "/icons/gyazo-128.png",
     "256": "/icons/gyazo-256.png"
   },
-  "web_accessible_resources": ["jquery-1.10.2.min.map"],
+  "options_ui": {
+    "page": "option/options.html",
+    "chrome_style": false
+  },
   "manifest_version": 2,
   "default_locale": "en"
 }

@@ -30,6 +30,6 @@
     "message": "Capture selected element"
   },
   "captureVisibleArea": {
-    "message": "Capture visible area"
+    "message": "Capture this window"
   }
 }

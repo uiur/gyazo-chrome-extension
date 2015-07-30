@@ -101,8 +101,8 @@
           return true
         }
         let hideMenu = function () {
-          cancelCurrentFunction()
           document.body.removeChild(gyazoMenu)
+          cancelCurrentFunction()
         }
         let gyazoMenu = document.createElement('div')
         gyazoMenu.className = 'gyazo-menu gyazo-menu-element'
@@ -116,13 +116,17 @@
         logo.src = chrome.extension.getURL('/icons/logo.png')
         logo.className = 'gyazo-logo gyazo-menu-element'
 
+        let selectElementBtn = document.createElement('div')
+        selectElementBtn.className = 'gyazo-big-button gyazo-button gyazo-menu-element'
+        selectElementBtn.textContent = chrome.i18n.getMessage('contextMenuSelectElement')
+
         let selectAreaBtn = document.createElement('div')
         selectAreaBtn.className = 'gyazo-big-button gyazo-button gyazo-menu-element'
-        selectAreaBtn.textContent = 'Select area'
+        selectAreaBtn.textContent = chrome.i18n.getMessage('contextMenuSelect')
 
         let windowCaptureBtn = document.createElement('div')
         windowCaptureBtn.className = 'gyazo-big-button gyazo-button gyazo-menu-element'
-        windowCaptureBtn.textContent = 'Gyazo this window'
+        windowCaptureBtn.textContent = chrome.i18n.getMessage('captureVisibleArea')
 
         let wholeCaptureBtn = document.createElement('div')
         wholeCaptureBtn.className = 'gyazo-small-button gyazo-button gyazo-menu-element'
@@ -131,14 +135,30 @@
         gyazoMenu.appendChild(closeBtn)
         gyazoMenu.appendChild(logo)
         gyazoMenu.appendChild(windowCaptureBtn)
-        gyazoMenu.appendChild(selectAreaBtn)
-        gyazoMenu.appendChild(wholeCaptureBtn)
+
+        chrome.storage.sync.get({behavor: 'element'}, function (item) {
+          console.log(item.behavor)
+          if (item.behavor === 'element') {
+            // Default behavor is select element
+            gyazoMenu.appendChild(selectAreaBtn)
+            actions.gyazoSelectElm()
+          } else if (item.behavor === 'area') {
+            // Default behavor is select area
+            gyazoMenu.appendChild(selectElementBtn)
+            actions.gyazoCapture()
+          }
+          gyazoMenu.appendChild(wholeCaptureBtn)
+        })
+
         document.body.appendChild(gyazoMenu)
         selectAreaBtn.addEventListener('click', function () {
           hideMenu()
           window.requestAnimationFrame(function () {
             actions.gyazoCapture()
           })
+        })
+        selectElementBtn.addEventListener('click', function () {
+          actions.gyazoSelectElm()
         })
         windowCaptureBtn.addEventListener('click', function () {
           hideMenu()
@@ -152,7 +172,6 @@
             actions.gyazoWhole()
           })
         })
-        actions.gyazoSelectElm()
       },
       changeFixedElementToAbsolute: function () {
         changeFixedElementToAbsolute()
@@ -200,7 +219,7 @@
         layer.style.background = 'rgba(92, 92, 92, 0.3)'
         layer.style.position = 'fixed'
         layer.style.pointerEvents = 'none'
-        layer.style.zIndex = 2147483647 // Maximun number of 32bit Int
+        layer.style.zIndex = 2147483646 // Maximun number of 32bit Int - 1
         var allElms = Array.prototype.slice.apply(document.body.querySelectorAll('*')).filter(function (item) {
           return !item.classList.contains('gyazo-crop-select-element') &&
                  !item.classList.contains('gyazo-menu-element')
@@ -322,7 +341,7 @@
         layer.style.top = document.body.clientTop + 'px'
         layer.style.width = Math.max(document.body.clientWidth, document.body.offsetWidth, document.body.scrollWidth) + 'px'
         layer.style.height = pageHeight + 'px'
-        layer.style.zIndex = 2147483647 // Maximun number of 32bit Int
+        layer.style.zIndex = 2147483646 // Maximun number of 32bit Int - 1
         layer.style.cursor = 'crosshair'
         document.body.style.webkitUserSelect = 'none'
         var selectionElm = document.createElement('div')
@@ -345,6 +364,7 @@
           window.removeEventListener('contextmenu', cancelGyazo)
           restoreFixedElement()
         }
+        cancelCurrentFunction = cancelGyazo
         var keydownHandler = function (event) {
           if (event.keyCode === ESC_KEY_CODE) {
             //  If press Esc Key, cancel it
@@ -352,6 +372,7 @@
           }
         }
         var mousedownHandler = function (e) {
+          document.body.removeChild(document.querySelector('.gyazo-menu'))
           startX = e.pageX
           startY = e.pageY
           selectionElm.styleUpdate({
