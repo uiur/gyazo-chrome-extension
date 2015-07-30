@@ -1,9 +1,8 @@
 (function () {
   'use strict'
   const ESC_KEY_CODE = 27
-  const SPACE_KEY_CODE = 32
   const JACKUP_HEIGHT = 30
-  let cancelCurrentFunction = function(){}
+  let cancelCurrentFunction = function () {}
 
   if (/gyazo\.com/.test(location.hostname)) {
     document.documentElement.setAttribute('data-extension-installed', true)
@@ -461,7 +460,7 @@
         chrome.runtime.sendMessage(chrome.runtime.id, {
           action: 'gyazoCaptureWithSize',
           data: data,
-          tab: request.tab,
+          tab: request.tab
         }, function () {
           document.body.removeChild(jackup)
           unlockScroll(overflow)

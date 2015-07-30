@@ -43,7 +43,7 @@ function postToGyazo (data) {
       chrome.tabs.create({url: data.get_image_url, active: false}, function (newTab) {
         var handler = function (tabId, changeInfo) {
           if (newTab.id === tabId && changeInfo.url) {
-            notification.finish(changeInfo.url+'/raw')
+            notification.finish(changeInfo.url + '/raw')
             saveToClipboard(changeInfo.url)
             chrome.tabs.onUpdated.removeListener(handler)
           }

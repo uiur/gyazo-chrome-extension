@@ -7,10 +7,10 @@
   document.getElementById('element').textContent = chrome.i18n.getMessage('contextMenuSelectElement')
   document.getElementById('area').textContent = chrome.i18n.getMessage('contextMenuSelect')
 
-  selector.addEventListener('change', function(event) {
+  selector.addEventListener('change', function (event) {
     chrome.storage.sync.set({
       behavior: event.target.value
-    }, function() {
+    }, function () {
       document.querySelector('.alert-message').textContent = 'Saved'
       window.setTimeout(function () {
         document.querySelector('.alert-message').textContent = ''
