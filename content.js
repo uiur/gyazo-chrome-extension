@@ -117,33 +117,56 @@
 
         let selectElementBtn = document.createElement('div')
         selectElementBtn.className = 'gyazo-big-button gyazo-button gyazo-menu-element'
-        selectElementBtn.textContent = chrome.i18n.getMessage('contextMenuSelectElement')
+        selectElementBtn.textContent = chrome.i18n.getMessage('contextMenuSelectElement') + ' [S]'
 
         let selectAreaBtn = document.createElement('div')
         selectAreaBtn.className = 'gyazo-big-button gyazo-button gyazo-menu-element'
-        selectAreaBtn.textContent = chrome.i18n.getMessage('contextMenuSelect')
+        selectAreaBtn.textContent = chrome.i18n.getMessage('contextMenuSelect') + ' [S]'
 
         let windowCaptureBtn = document.createElement('div')
         windowCaptureBtn.className = 'gyazo-big-button gyazo-button gyazo-menu-element'
-        windowCaptureBtn.textContent = chrome.i18n.getMessage('captureVisibleArea')
+        windowCaptureBtn.textContent = chrome.i18n.getMessage('captureVisibleArea') + ' [W]'
 
         let wholeCaptureBtn = document.createElement('div')
         wholeCaptureBtn.className = 'gyazo-small-button gyazo-button gyazo-menu-element'
-        wholeCaptureBtn.textContent = chrome.i18n.getMessage('contextMenuWhole')
+        wholeCaptureBtn.textContent = chrome.i18n.getMessage('contextMenuWhole') + ' [D]'
 
         gyazoMenu.appendChild(closeBtn)
         gyazoMenu.appendChild(logo)
         gyazoMenu.appendChild(windowCaptureBtn)
 
+        let hotKeySettings = function (sKeyElm) {
+          console.log(sKeyElm)
+          let hotKey = function (event) {
+            window.removeEventListener('keydown', hotKey)
+            if (event.keyCode === ESC_KEY_CODE) {
+              hideMenu()
+            }
+            switch (String.fromCharCode(event.keyCode)) {
+              case 'W':
+                windowCaptureBtn.click()
+                break
+              case 'D':
+                wholeCaptureBtn.click()
+                break
+              case 'S':
+                sKeyElm.click()
+                break
+            }
+          }
+          window.addEventListener('keydown', hotKey)
+        }
+
         chrome.storage.sync.get({behavior: 'element'}, function (item) {
-          console.log(item.behavior)
           if (item.behavior === 'element') {
             // Default behavior is select element
             gyazoMenu.appendChild(selectAreaBtn)
+            hotKeySettings(selectAreaBtn)
             actions.gyazoSelectElm()
           } else if (item.behavior === 'area') {
             // Default behavior is select area
             gyazoMenu.appendChild(selectElementBtn)
+            hotKeySettings(selectElementBtn)
             actions.gyazoCapture()
           }
           gyazoMenu.appendChild(wholeCaptureBtn)
@@ -157,7 +180,10 @@
           })
         })
         selectElementBtn.addEventListener('click', function () {
-          actions.gyazoSelectElm()
+          hideMenu()
+          window.requestAnimationFrame(function () {
+            actions.gyazoSelectElm()
+          })
         })
         windowCaptureBtn.addEventListener('click', function () {
           hideMenu()
@@ -371,7 +397,10 @@
           }
         }
         var mousedownHandler = function (e) {
-          document.body.removeChild(document.querySelector('.gyazo-menu'))
+          let gyazoMenu = document.querySelector('.gyazo-menu')
+          if (gyazoMenu) {
+            document.body.removeChild(gyazoMenu)
+          }
           startX = e.pageX
           startY = e.pageY
           selectionElm.styleUpdate({
