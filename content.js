@@ -136,14 +136,14 @@
         gyazoMenu.appendChild(logo)
         gyazoMenu.appendChild(windowCaptureBtn)
 
-        chrome.storage.sync.get({behavor: 'element'}, function (item) {
-          console.log(item.behavor)
-          if (item.behavor === 'element') {
-            // Default behavor is select element
+        chrome.storage.sync.get({behavior: 'element'}, function (item) {
+          console.log(item.behavior)
+          if (item.behavior === 'element') {
+            // Default behavior is select element
             gyazoMenu.appendChild(selectAreaBtn)
             actions.gyazoSelectElm()
-          } else if (item.behavor === 'area') {
-            // Default behavor is select area
+          } else if (item.behavior === 'area') {
+            // Default behavior is select area
             gyazoMenu.appendChild(selectElementBtn)
             actions.gyazoCapture()
           }
