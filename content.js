@@ -332,7 +332,9 @@
           data.positionY = window.scrollY
           data.innerHeight = window.innerHeight
           document.body.removeChild(layer)
-
+          if (document.querySelector('.gyazo-menu')) {
+            document.body.removeChild(document.querySelector('.gyazo-menu'))
+          }
           jackup.style.height = (window.innerHeight + JACKUP_HEIGHT) + 'px'
           window.removeEventListener('contextmenu', cancel)
           window.removeEventListener('keydown', keydownHandler)
@@ -346,14 +348,16 @@
             if (document.getElementsByClassName('gyazo-crop-select-element').length > 0) {
               return window.requestAnimationFrame(finish)
             }
-            chrome.runtime.sendMessage(chrome.runtime.id, {
-              action: 'gyazoCaptureWithSize',
-              data: data,
-              tab: request.tab
-            }, function () {
-              restoreFixedElement()
-              document.body.removeChild(jackup)
-              unlockScroll(overflow)
+            window.requestAnimationFrame(function () {
+              chrome.runtime.sendMessage(chrome.runtime.id, {
+                action: 'gyazoCaptureWithSize',
+                data: data,
+                tab: request.tab
+              }, function () {
+                restoreFixedElement()
+                document.body.removeChild(jackup)
+                unlockScroll(overflow)
+              })
             })
           }
           window.requestAnimationFrame(finish)
@@ -388,6 +392,7 @@
         layer.style.height = pageHeight + 'px'
         layer.style.zIndex = 2147483646 // Maximun number of 32bit Int - 1
         layer.style.cursor = 'crosshair'
+        layer.className = 'gyazo-select-layer'
         document.body.style.webkitUserSelect = 'none'
         var selectionElm = document.createElement('div')
         layer.appendChild(selectionElm)
@@ -465,20 +470,29 @@
           data.positionY = window.scrollY
           data.innerHeight = window.innerHeight
           document.body.removeChild(layer)
+          if (document.querySelector('.gyazo-menu')) {
+            document.body.removeChild(document.querySelector('.gyazo-menu'))
+          }
           var overflow = lockScroll()
           jackup.style.height = (window.innerHeight + JACKUP_HEIGHT) + 'px'
           // wait for rewrite by removeChild
-          window.requestAnimationFrame(function () {
-            chrome.runtime.sendMessage(chrome.runtime.id, {
-              action: 'gyazoCaptureWithSize',
-              data: data,
-              tab: request.tab
-            }, function () {
-              document.body.removeChild(jackup)
-              unlockScroll(overflow)
-              restoreFixedElement()
+          let finish = function () {
+            if (document.getElementsByClassName('gyazo-select-layer').length > 0) {
+              return window.requestAnimationFrame(finish)
+            }
+            window.requestAnimationFrame(function () {
+              chrome.runtime.sendMessage(chrome.runtime.id, {
+                action: 'gyazoCaptureWithSize',
+                data: data,
+                tab: request.tab
+              }, function () {
+                document.body.removeChild(jackup)
+                unlockScroll(overflow)
+                restoreFixedElement()
+              })
             })
-          })
+          }
+          window.requestAnimationFrame(finish)
         }
         layer.addEventListener('mousedown', mousedownHandler)
         document.addEventListener('keydown', keydownHandler)
