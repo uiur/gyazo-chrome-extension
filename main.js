@@ -80,23 +80,6 @@ function onClickHandler (info, tab) {
       }
     }
     xhr.send()
-  },
-  gyazoSelectElm: function () {
-    chrome.tabs.sendMessage(tab.id, {action: 'gyazoSelectElm', tab: tab}, function () {})
-  },
-  gyazoCapture: function () {
-    chrome.tabs.sendMessage(tab.id, {action: 'gyazoCapture', tab: tab}, function (mes) {})
-  },
-  gyazoWhole: function () {
-    let notification = new UploadNotification()
-    notification.create({
-      title: chrome.i18n.getMessage('captureTitle'),
-      message: chrome.i18n.getMessage('captureMessage')
-    })
-    chrome.tabs.sendMessage(tab.id, {
-      action: 'gyazoWholeCapture',
-      tab: tab
-    }, function () {})
   }
 }
   if (info.menuItemId in GyazoFuncs) {
@@ -116,21 +99,6 @@ chrome.contextMenus.create({
   title: chrome.i18n.getMessage('contextMenuImage'),
   id: 'gyazoIt',
   contexts: ['image']
-})
-chrome.contextMenus.create({
-  title: chrome.i18n.getMessage('contextMenuSelect'),
-  id: 'gyazoCapture',
-  contexts: ['all']
-})
-chrome.contextMenus.create({
-  'title': chrome.i18n.getMessage('contextMenuWhole'),
-  'id': 'gyazoWhole',
-  contexts: ['all']
-})
-chrome.contextMenus.create({
-  'title': chrome.i18n.getMessage('contextMenuSelectElement'),
-  'id': 'gyazoSelectElm',
-  contexts: ['all']
 })
 
 chrome.browserAction.onClicked.addListener(function (tab) {
