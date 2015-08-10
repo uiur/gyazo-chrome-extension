@@ -74,19 +74,30 @@
   chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     var actions = {
       notification: function () {
-        let notificationContainer = document.querySelector('.gyazo-menu.gyazo-notification')
-        if (!notificationContainer) {
+        let notificationContainer = document.querySelector('.gyazo-menu.gyazo-menu-element') || document.querySelector('.gyazo-menu.gyazo-notification')
+        if (notificationContainer) {
+          notificationContainer.classList.add('gyazo-notification')
+        } else {
           notificationContainer = document.createElement('div')
+          notificationContainer.className = 'gyazo-menu gyazo-notification'
           document.body.appendChild(notificationContainer)
+          console.log(notificationContainer)
         }
-        notificationContainer.className = 'gyazo-menu gyazo-notification'
         let title = request.title || ''
         let message = request.message || ''
-        let imageUrl = request.imageUrl || chrome.extension.getURL('/icons/loading.gif')
+        let showImage = ''
+        if (request.imagePageUrl) {
+            showImage = `
+            <a href='${request.imagePageUrl}' target='_blank'>
+              <img class='image' src='${request.imageUrl}' />
+            </a>`
+        } else {
+          showImage = `<img class='image' src='${chrome.extension.getURL('/icons/loading.gif')}' />`
+        }
         notificationContainer.innerHTML = `
         <span class='gyazo-notification-title'>${title}</span><br />
         <span class='gyazo-notification-message'>${message}</span><br />
-        <img class='image' src='${imageUrl}' />
+        ${showImage}
         `
         if (request.isFinish) {
           window.setTimeout(function () {

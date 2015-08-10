@@ -9,11 +9,12 @@ var UploadNotification = function (callback) {
       chrome.tabs.sendMessage(tab[0].id, option, callback)
     })
   }
-  this.finish = function (imageUrl, callback) {
+  this.finish = function (imagePageUrl, callback) {
     this.update({
       title: chrome.i18n.getMessage('uploadingFinishTitle'),
       message: chrome.i18n.getMessage('uploadingFinishMessage'),
-      imageUrl: imageUrl,
+      imagePageUrl: imagePageUrl,
+      imageUrl: imagePageUrl + '/raw',
       isFinish: true
     }, callback)
   }.bind(this)
@@ -40,16 +41,16 @@ function postToGyazo (data) {
     crossDomain: true
   })
     .done(function (data) {
-      chrome.tabs.create({url: data.get_image_url, active: false}, function (newTab) {
-        var handler = function (tabId, changeInfo) {
-          if (newTab.id === tabId && changeInfo.url) {
-            notification.finish(changeInfo.url + '/raw')
-            saveToClipboard(changeInfo.url)
-            chrome.tabs.onUpdated.removeListener(handler)
-          }
+      // Use pure XHR for get XHR.responseURL
+      let xhr = new XMLHttpRequest()
+      xhr.open('GET', data.get_image_url)
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+          saveToClipboard(xhr.responseURL)
+          notification.finish(xhr.responseURL)
         }
-        chrome.tabs.onUpdated.addListener(handler)
-      })
+      }
+      xhr.send()
     })
     .fail(function (XMLHttpRequest, textStatus, errorThrown) {
       window.alert('Status: ' + XMLHttpRequest.status + '\n Error: ' + textStatus + '\n Message: ' + errorThrown.message)
@@ -57,7 +58,9 @@ function postToGyazo (data) {
 }
 
 function onClickHandler (info, tab) {
-
+  chrome.tabs.insertCSS(tab.id, {
+    file: './libs/menu.css'
+  })
   var GyazoFuncs = {gyazoIt: function () {
     var xhr = jQuery.ajaxSettings.xhr()
     xhr.open('GET', info.srcUrl, true)

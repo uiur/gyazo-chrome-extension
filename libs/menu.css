@@ -13,7 +13,7 @@ body.gyazo-select-element-mode *:not(.gyazo-crop-select-element):not(.gyazo-menu
   border: 2px solid rgb(255, 255, 255);
   box-shadow: 10px 10px 10px rgba(0,0,0,0.4);
   color: #000;
-  width: 250px;
+  width: 350px;
   padding: 0;
   z-index: 2147483647;
   border-radius: 5px;
@@ -29,7 +29,7 @@ body.gyazo-select-element-mode *:not(.gyazo-crop-select-element):not(.gyazo-menu
 .gyazo-notification > .gyazo-notification-message {
   font-size: 12px;
 }
-.gyazo-notification > .image {
+.gyazo-notification .image {
   max-width: 200px;
 }
 .gyazo-menu > .gyazo-logo {
