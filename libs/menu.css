@@ -1,3 +1,10 @@
+body.gyazo-select-element-mode *:not(.gyazo-crop-select-element):not(.gyazo-menu-element) {
+  cursor: url('chrome-extension://__MSG_@@extension_id__/icons/camera.png') 10 4.5, auto !important;
+}
+.gyazo-select-element-cursor-overwrite.gyazo-select-element-cursor-overwrite {
+  cursor: url('chrome-extension://__MSG_@@extension_id__/icons/camera.png') 10 4.5, auto !important;
+}
+
 .gyazo-menu {
   position: fixed;
   right: 10px;

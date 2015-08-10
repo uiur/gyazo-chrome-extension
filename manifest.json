@@ -26,6 +26,7 @@
   },
   "web_accessible_resources": [
     "icons/logo.png",
+    "icons/camera.png",
     "icons/close.png",
     "icons/loading.gif"
   ],
