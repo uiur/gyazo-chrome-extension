@@ -241,7 +241,9 @@
         var layer = document.createElement('div')
         layer.className = 'gyazo-crop-select-element'
         document.body.appendChild(layer)
-        layer.style.background = 'rgba(92, 92, 92, 0.3)'
+        layer.style.background = 'rgba(9, 132, 222, 0.55)'
+        layer.style.margin = '-0.5px'
+        layer.style.border = '0.5px solid rgb(9, 132, 222)'
         layer.style.position = 'fixed'
         layer.style.pointerEvents = 'none'
         layer.style.zIndex = 2147483646 // Maximun number of 32bit Int - 1
