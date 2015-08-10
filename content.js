@@ -81,7 +81,6 @@
           notificationContainer = document.createElement('div')
           notificationContainer.className = 'gyazo-menu gyazo-notification'
           document.body.appendChild(notificationContainer)
-          console.log(notificationContainer)
         }
         let title = request.title || ''
         let message = request.message || ''
