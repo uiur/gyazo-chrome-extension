@@ -86,7 +86,7 @@
         let message = request.message || ''
         let showImage = ''
         if (request.imagePageUrl) {
-            showImage = `
+          showImage = `
             <a href='${request.imagePageUrl}' target='_blank'>
               <img class='image' src='${request.imageUrl}' />
             </a>`

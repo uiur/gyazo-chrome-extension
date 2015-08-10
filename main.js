@@ -42,7 +42,7 @@ function postToGyazo (data) {
   })
     .done(function (data) {
       // Use pure XHR for get XHR.responseURL
-      let xhr = new XMLHttpRequest()
+      let xhr = new window.XMLHttpRequest()
       xhr.open('GET', data.get_image_url)
       xhr.onreadystatechange = function () {
         if (xhr.readyState === 4) {
