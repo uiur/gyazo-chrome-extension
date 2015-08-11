@@ -294,7 +294,11 @@
           })
           restoreFixedElement()
         }
-        window.addEventListener('removeGyazoMenu', cancel)
+        let removedGyazoMenu = function () {
+          cancel()
+          window.removeEventListener('removeGyazoMenu', removedGyazoMenu)
+        }
+        window.addEventListener('removeGyazoMenu', removedGyazoMenu)
         window.addEventListener('contextmenu', cancel)
         document.addEventListener('keydown', keydownHandler)
         document.addEventListener('keyup', keyUpHandler)
@@ -405,7 +409,11 @@
             document.body.removeChild(document.querySelector('.gyazo-menu'))
           }
         }
-        window.addEventListener('removeGyazoMenu', cancelGyazo)
+        let removedGyazoMenu = function () {
+          cancelGyazo()
+          window.removeEventListener('removeGyazoMenu', removedGyazoMenu)
+        }
+        window.addEventListener('removeGyazoMenu', removedGyazoMenu)
         var keydownHandler = function (event) {
           if (event.keyCode === ESC_KEY_CODE) {
             //  If press Esc Key, cancel it
