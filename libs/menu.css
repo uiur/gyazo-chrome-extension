@@ -1,27 +1,21 @@
 body.gyazo-select-element-mode *:not(.gyazo-crop-select-element):not(.gyazo-menu-element) {
   cursor: url('chrome-extension://__MSG_@@extension_id__/icons/camera.png') 10 4.5, auto !important;
 }
-.gyazo-select-element-cursor-overwrite.gyazo-select-element-cursor-overwrite {
-  cursor: url('chrome-extension://__MSG_@@extension_id__/icons/camera.png') 10 4.5, auto !important;
-}
-
 .gyazo-menu {
   position: fixed;
-  right: 10px;
-  top: 10px;
-  background-color: rgb(240, 240, 240);
-  border: 2px solid rgb(255, 255, 255);
+  right: 20px;
+  top: 20px;
+  background-color: rgba(12, 31, 43, .9);
   box-shadow: 10px 10px 10px rgba(0,0,0,0.4);
-  color: #000;
-  width: 350px;
-  padding: 0;
+  color: #fff;
+  border: #4e5865   solid 1px;
+  width: 245px;
+  padding: 5px 10px;
   z-index: 2147483647;
   border-radius: 5px;
 }
 .gyazo-menu.gyazo-notification {
   text-align: center;
-  width: 350px;
-  padding: 10px;
 }
 .gyazo-notification > .gyazo-notification-title {
   font-size: 25px;
@@ -32,25 +26,27 @@ body.gyazo-select-element-mode *:not(.gyazo-crop-select-element):not(.gyazo-menu
 .gyazo-notification .image {
   max-width: 200px;
 }
-.gyazo-menu > .gyazo-logo {
-  margin: auto;
-  width: 60px;
-}
 .gyazo-menu > .gyazo-close-button {
   width: 20px;
-  position: absolute;
-  top: -10px;
-  right: -10px;
-  background-color: #1D1D1D;
-  border-radius: 10px;
+  float: right;
 }
 .gyazo-menu > .gyazo-button {
+  text-align: center;
   margin: 0;
   padding: 0;
   width: 100%;
-  font-size: 14px;
+  line-height: 18px;
+  padding: 5px;
+  font-size: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+  padding: 12px 0;
+}
+.gyazo-menu > .gyazo-button:last-child {
+  border-bottom: none !important;
+}
+.gyazo-menu > .gyazo-button.gyazo-button-active {
+  background: #21409a;
 }
 .gyazo-menu > .gyazo-button:hover {
   cursor: pointer;
-  background: #80a7ff;
 }

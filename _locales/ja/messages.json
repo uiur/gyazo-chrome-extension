@@ -20,16 +20,16 @@
   "contextMenuImage": {
     "message": "この画像をアップロード"
   },
-  "contextMenuSelect": {
-    "message": "範囲を指定してキャプチャー"
+  "selectArea": {
+    "message": "ドラッグ"
   },
-  "contextMenuWhole": {
-    "message": "ページ全体をキャプチャー"
+  "topToBottom": {
+    "message": "上から下まで"
   },
-  "contextMenuSelectElement": {
-    "message": "要素を選択してキャプチャー"
+  "selectElement": {
+    "message": "選択"
   },
-  "captureVisibleArea": {
-    "message": "今表示している領域をキャプチャー"
+  "captureWindow": {
+    "message": "見えている範囲"
   }
 }

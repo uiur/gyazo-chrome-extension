@@ -20,16 +20,16 @@
   "contextMenuImage": {
     "message": "Capture this image"
   },
-  "contextMenuSelect": {
-    "message": "Capture selected area"
+  "selectArea": {
+    "message": "Drag"
   },
-  "contextMenuWhole": {
-    "message": "Capture whole page"
+  "topToBottom": {
+    "message": "Top to bottom"
   },
-  "contextMenuSelectElement": {
-    "message": "Capture selected element"
+  "selectElement": {
+    "message": "Select"
   },
-  "captureVisibleArea": {
-    "message": "Capture this window"
+  "captureWindow": {
+    "message": "Window"
   }
 }

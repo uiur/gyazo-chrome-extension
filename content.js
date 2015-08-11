@@ -116,35 +116,21 @@
         let gyazoMenu = document.createElement('div')
         gyazoMenu.className = 'gyazo-menu gyazo-menu-element'
 
-        let closeBtn = document.createElement('img')
-        closeBtn.src = chrome.extension.getURL('/icons/close.png')
-        closeBtn.className = 'gyazo-close-button gyazo-menu-element'
-        closeBtn.addEventListener('click', hideMenu)
-
-        let logo = document.createElement('img')
-        logo.src = chrome.extension.getURL('/icons/logo.png')
-        logo.className = 'gyazo-logo gyazo-menu-element'
-
         let selectElementBtn = document.createElement('div')
         selectElementBtn.className = 'gyazo-big-button gyazo-button gyazo-menu-element'
-        selectElementBtn.textContent = chrome.i18n.getMessage('contextMenuSelectElement') + ' [S]'
+        selectElementBtn.textContent = chrome.i18n.getMessage('selectElement')
 
         let selectAreaBtn = document.createElement('div')
         selectAreaBtn.className = 'gyazo-big-button gyazo-button gyazo-menu-element'
-        selectAreaBtn.textContent = chrome.i18n.getMessage('contextMenuSelect') + ' [S]'
+        selectAreaBtn.textContent = chrome.i18n.getMessage('selectArea')
 
         let windowCaptureBtn = document.createElement('div')
         windowCaptureBtn.className = 'gyazo-big-button gyazo-button gyazo-menu-element'
-        windowCaptureBtn.textContent = chrome.i18n.getMessage('captureVisibleArea') + ' [W]'
+        windowCaptureBtn.textContent = chrome.i18n.getMessage('captureWindow') + ' [W]'
 
         let wholeCaptureBtn = document.createElement('div')
         wholeCaptureBtn.className = 'gyazo-small-button gyazo-button gyazo-menu-element'
-        wholeCaptureBtn.textContent = chrome.i18n.getMessage('contextMenuWhole') + ' [D]'
-
-        gyazoMenu.appendChild(closeBtn)
-        gyazoMenu.appendChild(logo)
-        gyazoMenu.appendChild(windowCaptureBtn)
-
+        wholeCaptureBtn.textContent = chrome.i18n.getMessage('topToBottom') + ' [D]'
         let hotKeySettings = function (sKeyElm) {
           let hotKey = function (event) {
             window.removeEventListener('keydown', hotKey)
@@ -165,23 +151,25 @@
           }
           window.addEventListener('keydown', hotKey)
         }
-        let defaultFunction = null
         document.body.appendChild(gyazoMenu)
-        chrome.storage.sync.get({behavior: 'element'}, function (item) {
-          if (item.behavior === 'element') {
-            // Default behavior is select element
-            gyazoMenu.appendChild(selectAreaBtn)
-            hotKeySettings(selectAreaBtn)
-            defaultFunction = actions.gyazoSelectElm
-          } else if (item.behavior === 'area') {
-            // Default behavior is select area
-            gyazoMenu.appendChild(selectElementBtn)
-            hotKeySettings(selectElementBtn)
-            defaultFunction = actions.gyazoCapture
-          }
-          gyazoMenu.appendChild(wholeCaptureBtn)
-          window.setTimeout(defaultFunction, 10)
-        })
+        gyazoMenu.appendChild(selectElementBtn)
+        gyazoMenu.appendChild(windowCaptureBtn)
+        gyazoMenu.appendChild(selectAreaBtn)
+        gyazoMenu.appendChild(wholeCaptureBtn)
+        let behavior = window.localStorage.getItem('behavior') || 'element'
+        if (behavior === 'element') {
+          // Default behavior is select element
+          selectAreaBtn.textContent += ' [S]'
+          selectElementBtn.classList.add('gyazo-button-active')
+          hotKeySettings(selectAreaBtn)
+          window.requestAnimationFrame(actions.gyazoSelectElm)
+        } else if (behavior === 'area') {
+          // Default behavior is select area
+          selectElementBtn.textContent += ' [S]'
+          selectAreaBtn.classList.add('gyazo-button-active')
+          hotKeySettings(selectElementBtn)
+          actions.gyazoCapture()
+        }
         selectAreaBtn.addEventListener('click', function () {
           hideMenu()
           window.requestAnimationFrame(function () {
@@ -197,7 +185,7 @@
         windowCaptureBtn.addEventListener('click', function () {
           hideMenu()
           window.requestAnimationFrame(function () {
-            actions.gyazoCaptureVisibleArea()
+            actions.gyazocaptureWindow()
           })
         })
         wholeCaptureBtn.addEventListener('click', function () {
@@ -218,7 +206,7 @@
         }
         window.requestAnimationFrame(waitScroll)
       },
-      gyazoCaptureVisibleArea: function () {
+      gyazocaptureWindow: function () {
         var data = {}
         var scaleObj = getZoomAndScale()
         data.w = window.innerWidth
@@ -362,14 +350,11 @@
           }
           window.requestAnimationFrame(finish)
         }
-        allElms.forEach(function (item) {
-          let _cursor = window.getComputedStyle(item).cursor
-          item.addEventListener('mouseover', moveLayer)
-          item.addEventListener('click', selectElement)
-          if (_cursor.match(chrome.extension.getURL('/icons/camera.png'))) {
-            return true
-          }
-          item.classList.add('gyazo-select-element-cursor-overwrite')
+        window.requestAnimationFrame(function () {
+          allElms.forEach(function (item) {
+            item.addEventListener('mouseover', moveLayer)
+            item.addEventListener('click', selectElement)
+          })
         })
       },
       gyazoCapture: function () {
