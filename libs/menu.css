@@ -18,7 +18,7 @@ body.gyazo-select-element-mode *:not(.gyazo-crop-select-element):not(.gyazo-menu
   text-align: center;
 }
 .gyazo-notification > .gyazo-notification-title {
-  font-size: 25px;
+  font-size: 20px;
 }
 .gyazo-notification > .gyazo-notification-message {
   font-size: 12px;
