@@ -2,7 +2,7 @@
   'use strict'
   const ESC_KEY_CODE = 27
   const JACKUP_HEIGHT = 30
-  const REMOVE_GYAZOMENU_EVENT = new Event('removeGyazoMenu')
+  const REMOVE_GYAZOMENU_EVENT = new window.Event('removeGyazoMenu')
 
   if (/gyazo\.com/.test(location.hostname)) {
     document.documentElement.setAttribute('data-extension-installed', true)
