@@ -87,10 +87,12 @@ function onClickHandler (info, tab) {
   }
 }
 
-chrome.tabs.onUpdated.addListener(function (tabId) {
-  chrome.tabs.executeScript(tabId, {
-    file: './content.js'
-  }, function () {})
+chrome.tabs.onUpdated.addListener(function (tabId, changeInfo) {
+  if (changeInfo.status === 'complete') {
+    chrome.tabs.executeScript(tabId, {
+      file: './content.js'
+    }, function () {})
+  }
 })
 
 chrome.contextMenus.onClicked.addListener(onClickHandler)
