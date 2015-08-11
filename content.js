@@ -156,20 +156,21 @@
         gyazoMenu.appendChild(windowCaptureBtn)
         gyazoMenu.appendChild(selectAreaBtn)
         gyazoMenu.appendChild(wholeCaptureBtn)
-        let behavior = window.localStorage.getItem('behavior') || 'element'
-        if (behavior === 'element') {
-          // Default behavior is select element
-          selectAreaBtn.textContent += ' [S]'
-          selectElementBtn.classList.add('gyazo-button-active')
-          hotKeySettings(selectAreaBtn)
-          window.requestAnimationFrame(actions.gyazoSelectElm)
-        } else if (behavior === 'area') {
-          // Default behavior is select area
-          selectElementBtn.textContent += ' [S]'
-          selectAreaBtn.classList.add('gyazo-button-active')
-          hotKeySettings(selectElementBtn)
-          actions.gyazoCapture()
-        }
+        chrome.storage.sync.get({behavior: 'element'}, function (item) {
+          if (item.behavior === 'element') {
+            // Default behavior is select element
+            selectAreaBtn.textContent += ' [S]'
+            selectElementBtn.classList.add('gyazo-button-active')
+            hotKeySettings(selectAreaBtn)
+            window.requestAnimationFrame(actions.gyazoSelectElm)
+          } else if (item.behavior === 'area') {
+            // Default behavior is select area
+            selectElementBtn.textContent += ' [S]'
+            selectAreaBtn.classList.add('gyazo-button-active')
+            hotKeySettings(selectElementBtn)
+            actions.gyazoCapture()
+          }
+        })
         selectAreaBtn.addEventListener('click', function () {
           hideMenu()
           window.requestAnimationFrame(function () {
