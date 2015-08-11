@@ -108,6 +108,7 @@
       insertMenu: function () {
         let gyazoMenu = document.querySelector('.gyazo-menu')
         if (gyazoMenu) {
+          document.body.removeChild(gyazoMenu)
           window.dispatchEvent(REMOVE_GYAZOMENU_EVENT)
           return true
         }
@@ -295,8 +296,8 @@
           restoreFixedElement()
         }
         let removedGyazoMenu = function () {
-          cancel()
           window.removeEventListener('removeGyazoMenu', removedGyazoMenu)
+          cancel()
         }
         window.addEventListener('removeGyazoMenu', removedGyazoMenu)
         window.addEventListener('contextmenu', cancel)
