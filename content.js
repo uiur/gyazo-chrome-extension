@@ -399,6 +399,9 @@
           document.removeEventListener('keydown', keydownHandler)
           window.removeEventListener('contextmenu', cancelGyazo)
           restoreFixedElement()
+          if (document.querySelector('.gyazo-menu')) {
+            document.body.removeChild(document.querySelector('.gyazo-menu'))
+          }
         }
         cancelCurrentFunction = cancelGyazo
         var keydownHandler = function (event) {
