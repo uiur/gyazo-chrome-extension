@@ -295,7 +295,7 @@
         window.addEventListener('contextmenu', cancel)
         document.addEventListener('keydown', keydownHandler)
         document.addEventListener('keyup', keyUpHandler)
-        var selectElement = function (event) {
+        var clickElement = function (event) {
           event.stopPropagation()
           event.preventDefault()
           document.body.classList.remove('gyazo-select-element-mode')
@@ -304,7 +304,7 @@
               item.classList.remove('gyazo-select-element-cursor-overwrite')
             }
             item.removeEventListener('mouseover', moveLayer)
-            item.removeEventListener('click', selectElement)
+            item.removeEventListener('click', clickElement)
           })
           var data = {}
           var scaleObj = getZoomAndScale()
@@ -353,7 +353,7 @@
         window.requestAnimationFrame(function () {
           allElms.forEach(function (item) {
             item.addEventListener('mouseover', moveLayer)
-            item.addEventListener('click', selectElement)
+            item.addEventListener('click', clickElement)
           })
         })
       },
