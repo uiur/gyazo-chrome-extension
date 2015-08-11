@@ -2,7 +2,7 @@
   'use strict'
   const ESC_KEY_CODE = 27
   const JACKUP_HEIGHT = 30
-  let cancelCurrentFunction = function () {}
+  const REMOVE_GYAZOMENU_EVENT = new Event('removeGyazoMenu')
 
   if (/gyazo\.com/.test(location.hostname)) {
     document.documentElement.setAttribute('data-extension-installed', true)
@@ -106,14 +106,16 @@
         sendResponse()
       },
       insertMenu: function () {
-        if (document.getElementsByClassName('gyazo-menu').length > 0) {
+        let gyazoMenu = document.querySelector('.gyazo-menu')
+        if (gyazoMenu) {
+          window.dispatchEvent(REMOVE_GYAZOMENU_EVENT)
           return true
         }
         let hideMenu = function () {
           document.body.removeChild(gyazoMenu)
-          cancelCurrentFunction()
+          window.dispatchEvent(REMOVE_GYAZOMENU_EVENT)
         }
-        let gyazoMenu = document.createElement('div')
+        gyazoMenu = document.createElement('div')
         gyazoMenu.className = 'gyazo-menu gyazo-menu-element'
 
         let selectElementBtn = document.createElement('div')
@@ -292,7 +294,7 @@
           })
           restoreFixedElement()
         }
-        cancelCurrentFunction = cancel
+        window.addEventListener('removeGyazoMenu', cancel)
         window.addEventListener('contextmenu', cancel)
         document.addEventListener('keydown', keydownHandler)
         document.addEventListener('keyup', keyUpHandler)
@@ -403,7 +405,7 @@
             document.body.removeChild(document.querySelector('.gyazo-menu'))
           }
         }
-        cancelCurrentFunction = cancelGyazo
+        window.addEventListener('removeGyazoMenu', cancelGyazo)
         var keydownHandler = function (event) {
           if (event.keyCode === ESC_KEY_CODE) {
             //  If press Esc Key, cancel it
