@@ -192,7 +192,7 @@
         wholeCaptureBtn.addEventListener('click', function () {
           hideMenu()
           window.requestAnimationFrame(function () {
-            actions.gyazoWhole()
+            actions.gyazoWholeCapture()
           })
         })
       },
