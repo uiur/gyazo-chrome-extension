@@ -35,14 +35,15 @@ var canvasUtils = { // eslint-disable-line
       canvasData = canvasData.toDataURL()
     }
     var canvas = document.createElement('canvas')
-    canvas.width = width
-    canvas.height = pageHeight
+    canvas.width = width * zoom * scale
+    canvas.height = pageHeight * scale
     var ctx = canvas.getContext('2d')
     imageLoader(canvasData, function (img) {
       ctx.drawImage(img, 0, 0)
       imageLoader(imageSrc, function (img) {
-        ctx.drawImage(img, 0, 0, width * scale, imageHeight * scale, 0, top, width, imageHeight)
-        callback(canvas)
+        ctx.drawImage(img, 0, 0, width * scale * zoom, imageHeight * scale * zoom, 0, top, img.width, img.height)
+        var lastImageBottom = top + img.height
+        callback(canvas, lastImageBottom)
       })
     })
   },
