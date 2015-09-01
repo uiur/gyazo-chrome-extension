@@ -132,19 +132,14 @@ function onClickHandler (info, tab) {
   if (info.menuItemId in GyazoFuncs) {
     GyazoFuncs[info.menuItemId]()
   }
-  if (info.menuItemId in GyazoFuncs) {
-    chrome.tabs.executeScript(null, {
-      file: './content.js'
-    }, function () {
-      GyazoFuncs[info.menuItemId]()
-    })
-  }
 }
 
-chrome.tabs.onUpdated.addListener(function (tabId) {
-  chrome.tabs.executeScript(tabId, {
-    file: './content.js'
-  }, function () {})
+chrome.tabs.onUpdated.addListener(function (tabId, changeInfo) {
+  if (changeInfo.status === 'complete') {
+    chrome.tabs.executeScript(tabId, {
+      file: './content.js'
+    }, function () {})
+  }
 })
 
 chrome.contextMenus.onClicked.addListener(onClickHandler)
