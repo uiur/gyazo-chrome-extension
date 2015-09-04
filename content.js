@@ -156,8 +156,8 @@
         }
         document.body.appendChild(gyazoMenu)
         gyazoMenu.appendChild(selectElementBtn)
-        gyazoMenu.appendChild(windowCaptureBtn)
         gyazoMenu.appendChild(selectAreaBtn)
+        gyazoMenu.appendChild(windowCaptureBtn)
         gyazoMenu.appendChild(wholeCaptureBtn)
         chrome.storage.sync.get({behavior: 'element'}, function (item) {
           if (item.behavior === 'element') {
@@ -243,9 +243,9 @@
         var layer = document.createElement('div')
         layer.className = 'gyazo-crop-select-element'
         document.body.appendChild(layer)
-        layer.style.background = 'rgba(9, 132, 222, 0.55)'
-        layer.style.margin = '-0.5px'
-        layer.style.border = '0.5px solid rgb(9, 132, 222)'
+        layer.style.background = 'rgba(9, 132, 222, 0.35)'
+        layer.style.margin = '0px'
+        layer.style.border = '1px solid rgb(9, 132, 222)'
         layer.style.position = 'fixed'
         layer.style.pointerEvents = 'none'
         layer.style.zIndex = 2147483646 // Maximun number of 32bit Int - 1

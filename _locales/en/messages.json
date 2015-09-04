@@ -1,15 +1,15 @@
 {
   "uploadingTitle": {
-    "message": "Uploading to Gyazo"
-  },
-  "uploadingMessage": {
     "message": "Uploading..."
   },
+  "uploadingMessage": {
+    "message": ""
+  },
   "uploadingFinishTitle": {
-    "message": "Finish Uploading"
+    "message": "Complete!"
   },
   "uploadingFinishMessage": {
-    "message": "Gyazo URL has been copied!"
+    "message": "Gyazo link has been copied"
   },
   "captureTitle": {
     "message": "Capturing..."
@@ -21,15 +21,15 @@
     "message": "Capture this image"
   },
   "selectArea": {
-    "message": "Drag"
+    "message": "Selected Area"
   },
   "topToBottom": {
-    "message": "Top to bottom"
+    "message": "Whole Page"
   },
   "selectElement": {
-    "message": "Select"
+    "message": "Element"
   },
   "captureWindow": {
-    "message": "Window"
+    "message": "Page"
   }
 }

@@ -1,15 +1,15 @@
 {
   "uploadingTitle": {
-    "message": "Gyazoにアップロード"
-  },
-  "uploadingMessage": {
     "message": "アップロード中..."
   },
+  "uploadingMessage": {
+    "message": ""
+  },
   "uploadingFinishTitle": {
-    "message": "アップロード完了"
+    "message": "完了!"
   },
   "uploadingFinishMessage": {
-    "message": "Gyazo URLがコピーされました!"
+    "message": "Gyazoのリンクがコピーされました"
   },
   "captureTitle": {
     "message": "キャプチャー中..."
@@ -21,15 +21,15 @@
     "message": "この画像をアップロード"
   },
   "selectArea": {
-    "message": "ドラッグ"
+    "message": "範囲選択"
   },
   "topToBottom": {
-    "message": "上から下まで"
+    "message": "ページ全体"
   },
   "selectElement": {
-    "message": "選択"
+    "message": "部品"
   },
   "captureWindow": {
-    "message": "見えている範囲"
+    "message": "ページ"
   }
 }
