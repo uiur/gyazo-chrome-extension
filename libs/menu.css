@@ -1,18 +1,20 @@
 body.gyazo-select-element-mode *:not(.gyazo-crop-select-element):not(.gyazo-menu-element) {
-  cursor: url('chrome-extension://__MSG_@@extension_id__/icons/camera.png') 10 4.5, auto !important;
+  cursor: default !important;
 }
 .gyazo-menu {
   position: fixed;
-  right: 20px;
-  top: 20px;
-  background-color: rgba(12, 31, 43, .9);
-  box-shadow: 10px 10px 10px rgba(0,0,0,0.4);
-  color: #fff;
-  border: #4e5865   solid 1px;
-  width: 245px;
-  padding: 5px 10px;
+  right: 0px;
+  top: 0px;
+  padding: 0;
+  width: 342px;
   z-index: 2147483647;
-  border-radius: 5px;
+  background-color: #e8e6ea;
+  color: #595959;
+  border: 1px solid #ccc;
+  border-top: none;
+  border-radius: 0;
+  font-family: Helvetica, Arial, sans-serif;
+  letter-spacing: 0;
 }
 .gyazo-menu.gyazo-notification {
   text-align: center;
@@ -34,19 +36,23 @@ body.gyazo-select-element-mode *:not(.gyazo-crop-select-element):not(.gyazo-menu
   text-align: center;
   margin: 0;
   padding: 0;
-  width: 100%;
+  width: 85px;
+  height: 53px;
+  float: left;
   line-height: 18px;
-  padding: 5px;
   font-size: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.6);
-  padding: 12px 0;
 }
 .gyazo-menu > .gyazo-button:last-child {
   border-bottom: none !important;
 }
 .gyazo-menu > .gyazo-button.gyazo-button-active {
-  background: #21409a;
+  color: rgb(9, 132, 222);
+}
+.gyazo-menu > .gyazo-button.gyazo-button-active:hover {
+  color: rgb(9, 132, 222);
 }
 .gyazo-menu > .gyazo-button:hover {
+  border-bottom: 5px solid #cccccc;
+  color: #000;
   cursor: pointer;
 }
