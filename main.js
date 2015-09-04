@@ -19,7 +19,6 @@ var UploadNotification = function (callback) {
     }, callback)
   }.bind(this)
   this.update({
-    title: chrome.i18n.getMessage('uploadingTitle'),
     message: chrome.i18n.getMessage('uploadingMessage')
   }, callback)
 }
