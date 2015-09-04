@@ -134,6 +134,9 @@
         let wholeCaptureBtn = document.createElement('div')
         wholeCaptureBtn.className = 'gyazo-small-button gyazo-button gyazo-menu-element'
         wholeCaptureBtn.textContent = chrome.i18n.getMessage('topToBottom') + ' [D]'
+        window.addEventListener('contextmenu', function (event) {
+          hideMenu()
+        })
         let hotKeySettings = function (sKeyElm) {
           let hotKey = function (event) {
             window.removeEventListener('keydown', hotKey)
