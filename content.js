@@ -132,12 +132,12 @@
           return btn
         }
 
-        let selectElementBtn = createButton('icon-selection', chrome.i18n.getMessage('selectElement'))
-        let selectAreaBtn = createButton('icon-crop', chrome.i18n.getMessage('selectArea'))
-        let windowCaptureBtn = createButton('icon-window', chrome.i18n.getMessage('captureWindow'))
-        let wholeCaptureBtn = createButton('icon-window-scroll', chrome.i18n.getMessage('topToBottom'))
+        let selectElementBtn = createButton('gyazo-icon-selection', chrome.i18n.getMessage('selectElement'))
+        let selectAreaBtn = createButton('gyazo-icon-crop', chrome.i18n.getMessage('selectArea'))
+        let windowCaptureBtn = createButton('gyazo-icon-window', chrome.i18n.getMessage('captureWindow'))
+        let wholeCaptureBtn = createButton('gyazo-icon-window-scroll', chrome.i18n.getMessage('topToBottom'))
         let closeBtn = document.createElement('div')
-        closeBtn.className = 'gyazo-close-button gyazo-menu-element icon-cross'
+        closeBtn.className = 'gyazo-close-button gyazo-menu-element gyazo-icon-cross'
 
         window.addEventListener('contextmenu', function (event) {
           hideMenu()

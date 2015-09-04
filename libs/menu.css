@@ -2,19 +2,21 @@ body.gyazo-select-element-mode *:not(.gyazo-crop-select-element):not(.gyazo-menu
   cursor: default !important;
 }
 .gyazo-menu {
+  box-sizing: border-box;
   position: fixed;
   right: 0px;
   top: 0px;
   padding: 0;
   width: 364px;
   z-index: 2147483647;
-  background-color: #e8e6ea;
+  background-color: #e8e8e8;
   color: #595959;
   border: 1px solid #ccc;
   border-top: none;
   border-radius: 0;
   font-family: Helvetica, Arial, sans-serif;
   letter-spacing: 0;
+
 }
 .gyazo-menu.gyazo-notification {
   text-align: center;
@@ -33,6 +35,7 @@ body.gyazo-select-element-mode *:not(.gyazo-crop-select-element):not(.gyazo-menu
   float: right;
 }
 .gyazo-menu > .gyazo-button {
+  box-sizing: border-box;
   text-align: center;
   margin: 0;
   padding: 0;
@@ -53,16 +56,22 @@ body.gyazo-select-element-mode *:not(.gyazo-crop-select-element):not(.gyazo-menu
   color: #000;
 }
 .gyazo-menu > .gyazo-button > .gyazo-button-icon {
+  box-sizing: border-box;
   font-size: 20px;
   margin: 8px 0 3px;
   pointer-events: none;
 }
 .gyazo-menu > .gyazo-button > .gyazo-button-text {
+  box-sizing: border-box;
   font-size: 12px;
   line-height: 18px;
   pointer-events: none;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 .gyazo-menu > .gyazo-close-button {
+  box-sizing: border-box;
   text-align: left;
   margin: 0;
   padding: 0;
@@ -80,7 +89,7 @@ body.gyazo-select-element-mode *:not(.gyazo-crop-select-element):not(.gyazo-menu
 
 /* Icons */
 @font-face {
-  font-family: 'icomoon';
+  font-family: 'gyazo-icomoon';
   src:url('chrome-extension://__MSG_@@extension_id__/fonts/icomoon.eot?-jmg6j');
   src:url('chrome-extension://__MSG_@@extension_id__/fonts/icomoon.eot?#iefix-jmg6j') format('embedded-opentype'),
     url('chrome-extension://__MSG_@@extension_id__/fonts/icomoon.woff2?-jmg6j') format('woff2'),
@@ -91,8 +100,8 @@ body.gyazo-select-element-mode *:not(.gyazo-crop-select-element):not(.gyazo-menu
   font-style: normal;
 }
 
-[class^="icon-"], [class*=" icon-"] {
-  font-family: 'icomoon';
+[class^="gyazo-icon-"], [class*=" gyazo-icon-"] {
+  font-family: 'gyazo-icomoon';
   speak: none;
   font-style: normal;
   font-weight: normal;
@@ -105,21 +114,21 @@ body.gyazo-select-element-mode *:not(.gyazo-crop-select-element):not(.gyazo-menu
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-cross:before {
+.gyazo-icon-cross:before {
   content: "\e117";
 }
-.icon-spinner3:before {
+.gyazo-icon-spinner3:before {
   content: "\e604";
 }
-.icon-window-scroll:before {
+.gyazo-icon-window-scroll:before {
   content: "\e600";
 }
-.icon-crop:before {
+.gyazo-icon-crop:before {
   content: "\e601";
 }
-.icon-window:before {
+.gyazo-icon-window:before {
   content: "\e602";
 }
-.icon-selection:before {
+.gyazo-icon-selection:before {
   content: "\e603";
 }
