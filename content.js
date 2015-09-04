@@ -255,6 +255,11 @@
         var moveLayer = function (event) {
           var item = event.target
           event.stopPropagation()
+          if (item.tagName === 'IMG') {
+            layer.setAttribute('data-img-url', item.src)
+          } else {
+            layer.setAttribute('data-img-url', '')
+          }
           var rect = item.getBoundingClientRect()
           layer.style.width = rect.width + 'px'
           layer.style.height = rect.height + 'px'
@@ -337,6 +342,14 @@
           if (layer.offsetTop >= 0 && layer.offsetTop + layer.offsetHeight <= window.innerHeight) {
             // Only when required scroll
             changeFixedElementToAbsolute()
+          }
+          if (layer.getAttribute('data-img-url')) {
+            restoreFixedElement()
+            return chrome.runtime.sendMessage(chrome.runtime.id, {
+              action: 'gyazoSendRawImage',
+              data: {srcUrl: layer.getAttribute('data-img-url')},
+              tab: request.tab
+            }, function () {})
           }
           var overflow = lockScroll()
           var finish = function () {
