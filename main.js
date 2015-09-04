@@ -112,6 +112,13 @@ chrome.browserAction.onClicked.addListener(function (tab) {
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   var messageHandlers = {
+    gyazoSendRawImage: function () {
+      let data = request.data
+      onClickHandler({
+        menuItemId: 'gyazoIt',
+        srcUrl: data.srcUrl
+      }, request.tab)
+    },
     gyazoCaptureWithSize: function () {
       var c = document.createElement('canvas')
       c.height = request.data.h
