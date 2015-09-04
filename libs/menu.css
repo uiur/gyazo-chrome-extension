@@ -35,14 +35,16 @@ body.gyazo-select-element-mode *:not(.gyazo-crop-select-element):not(.gyazo-menu
   text-align: center;
 }
 .gyazo-notification > .gyazo-notification-title {
-  margin: 7px 0 2px;
+  margin: 15px 0 0px;
   font-size: 20px;
 }
 .gyazo-notification > .gyazo-notification-message {
   font-size: 12px;
+  margin: 0 0 15px;
 }
 .gyazo-notification .image {
   max-width: 200px;
+  margin-bottom: 20px;
 }
 .gyazo-menu > .gyazo-close-button {
   width: 20px;
@@ -101,10 +103,19 @@ body.gyazo-select-element-mode *:not(.gyazo-crop-select-element):not(.gyazo-menu
   color: #000;
 }
 
-.gyazo-menu > .gyazo-loading-icon {
-  margin: 11px 0 10px;
-  width: 32px;
-  height: 32px;
+.gyazo-menu > .gyazo-spin {
+  animation: gyazo-spin 2s infinite linear;
+  font-size: 24px;
+  line-height: 53px;
+}
+
+@keyframes gyazo-spin {
+  0% {
+    transform:rotate(0deg);
+  }
+  100% {
+    transform:rotate(359deg);
+  }
 }
 
 /* Icons */

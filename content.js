@@ -91,7 +91,7 @@
               <img class='image' src='${request.imageUrl}' />
             </a>`
         } else {
-          showImage = `<img class='image gyazo-loading-icon' src='${chrome.extension.getURL('/icons/loading.gif')}' />`
+          showImage = `<span class='gyazo-icon-spinner3 gyazo-spin'></span>`
         }
         notificationContainer.innerHTML = `${title}${message}${showImage}`
         if (request.isFinish) {
