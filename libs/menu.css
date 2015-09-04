@@ -6,7 +6,7 @@ body.gyazo-select-element-mode *:not(.gyazo-crop-select-element):not(.gyazo-menu
   right: 0px;
   top: 0px;
   padding: 0;
-  width: 342px;
+  width: 364px;
   z-index: 2147483647;
   background-color: #e8e6ea;
   color: #595959;
@@ -39,11 +39,8 @@ body.gyazo-select-element-mode *:not(.gyazo-crop-select-element):not(.gyazo-menu
   width: 85px;
   height: 53px;
   float: left;
-  line-height: 18px;
   font-size: 12px;
-}
-.gyazo-menu > .gyazo-button:last-child {
-  border-bottom: none !important;
+  cursor: pointer;
 }
 .gyazo-menu > .gyazo-button.gyazo-button-active {
   color: rgb(9, 132, 222);
@@ -54,5 +51,75 @@ body.gyazo-select-element-mode *:not(.gyazo-crop-select-element):not(.gyazo-menu
 .gyazo-menu > .gyazo-button:hover {
   border-bottom: 5px solid #cccccc;
   color: #000;
+}
+.gyazo-menu > .gyazo-button > .gyazo-button-icon {
+  font-size: 20px;
+  margin: 8px 0 3px;
+  pointer-events: none;
+}
+.gyazo-menu > .gyazo-button > .gyazo-button-text {
+  font-size: 12px;
+  line-height: 18px;
+  pointer-events: none;
+}
+.gyazo-menu > .gyazo-close-button {
+  text-align: left;
+  margin: 0;
+  padding: 0;
+  width: 22px;
+  height: 53px;
+  float: left;
+  color: #aaa;
+  font-size: 15px;
   cursor: pointer;
+  padding-top: 6px;
+}
+.gyazo-menu > .gyazo-close-button:hover {
+  color: #000;
+}
+
+/* Icons */
+@font-face {
+  font-family: 'icomoon';
+  src:url('chrome-extension://__MSG_@@extension_id__/fonts/icomoon.eot?-jmg6j');
+  src:url('chrome-extension://__MSG_@@extension_id__/fonts/icomoon.eot?#iefix-jmg6j') format('embedded-opentype'),
+    url('chrome-extension://__MSG_@@extension_id__/fonts/icomoon.woff2?-jmg6j') format('woff2'),
+    url('chrome-extension://__MSG_@@extension_id__/fonts/icomoon.ttf?-jmg6j') format('truetype'),
+    url('chrome-extension://__MSG_@@extension_id__/fonts/icomoon.woff?-jmg6j') format('woff'),
+    url('chrome-extension://__MSG_@@extension_id__/fonts/icomoon.svg?-jmg6j#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  font-family: 'icomoon';
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-cross:before {
+  content: "\e117";
+}
+.icon-spinner3:before {
+  content: "\e604";
+}
+.icon-window-scroll:before {
+  content: "\e600";
+}
+.icon-crop:before {
+  content: "\e601";
+}
+.icon-window:before {
+  content: "\e602";
+}
+.icon-selection:before {
+  content: "\e603";
 }

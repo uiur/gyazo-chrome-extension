@@ -28,7 +28,12 @@
     "icons/logo.png",
     "icons/camera.png",
     "icons/close.png",
-    "icons/loading.gif"
+    "icons/loading.gif",
+    "fonts/icomoon.eot",
+    "fonts/icomoon.svg",
+    "fonts/icomoon.ttf",
+    "fonts/icomoon.woff",
+    "fonts/icomoon.woff2"
   ],
   "icons": {
     "16": "/icons/gyazo-16.png",

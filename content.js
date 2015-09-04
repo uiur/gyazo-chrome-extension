@@ -119,21 +119,33 @@
         gyazoMenu = document.createElement('div')
         gyazoMenu.className = 'gyazo-menu gyazo-menu-element'
 
-        let selectElementBtn = document.createElement('div')
-        selectElementBtn.className = 'gyazo-big-button gyazo-button gyazo-menu-element'
-        selectElementBtn.textContent = chrome.i18n.getMessage('selectElement')
+        let createButton = function (iconClass, text) {
+          let btn = document.createElement('div')
+          btn.className = 'gyazo-big-button gyazo-button gyazo-menu-element'
 
-        let selectAreaBtn = document.createElement('div')
-        selectAreaBtn.className = 'gyazo-big-button gyazo-button gyazo-menu-element'
-        selectAreaBtn.textContent = chrome.i18n.getMessage('selectArea')
+          let iconElm = document.createElement('div')
+          iconElm.className = 'gyazo-button-icon ' + iconClass
 
-        let windowCaptureBtn = document.createElement('div')
-        windowCaptureBtn.className = 'gyazo-big-button gyazo-button gyazo-menu-element'
-        windowCaptureBtn.textContent = chrome.i18n.getMessage('captureWindow') + ' [W]'
+          let textElm = document.createElement('div')
+          textElm.className = 'gyazo-button-text'
+          textElm.textContent = text
 
-        let wholeCaptureBtn = document.createElement('div')
-        wholeCaptureBtn.className = 'gyazo-small-button gyazo-button gyazo-menu-element'
-        wholeCaptureBtn.textContent = chrome.i18n.getMessage('topToBottom') + ' [D]'
+          btn.appendChild(iconElm)
+          btn.appendChild(textElm)
+
+          return btn
+        }
+
+        let selectElementBtn = createButton('icon-selection', chrome.i18n.getMessage('selectElement'))
+        let selectAreaBtn = createButton('icon-crop', chrome.i18n.getMessage('selectArea'))
+        let windowCaptureBtn = createButton('icon-window', chrome.i18n.getMessage('captureWindow'))
+        let wholeCaptureBtn = createButton('icon-window-scroll', chrome.i18n.getMessage('topToBottom'))
+        let closeBtn = document.createElement('div')
+        closeBtn.className = 'gyazo-close-button gyazo-menu-element'
+        let closeIcon = document.createElement('span')
+        closeIcon.className = 'icon-cross'
+        closeBtn.appendChild(closeIcon)
+
         let hotKeySettings = function (sKeyElm) {
           let hotKey = function (event) {
             window.removeEventListener('keydown', hotKey)
@@ -159,16 +171,17 @@
         gyazoMenu.appendChild(selectAreaBtn)
         gyazoMenu.appendChild(windowCaptureBtn)
         gyazoMenu.appendChild(wholeCaptureBtn)
+        gyazoMenu.appendChild(closeBtn)
         chrome.storage.sync.get({behavior: 'element'}, function (item) {
           if (item.behavior === 'element') {
             // Default behavior is select element
-            selectAreaBtn.textContent += ' [S]'
+            //selectAreaBtn.textContent += ' [S]'
             selectElementBtn.classList.add('gyazo-button-active')
             hotKeySettings(selectAreaBtn)
             window.requestAnimationFrame(actions.gyazoSelectElm)
           } else if (item.behavior === 'area') {
             // Default behavior is select area
-            selectElementBtn.textContent += ' [S]'
+            //selectElementBtn.textContent += ' [S]'
             selectAreaBtn.classList.add('gyazo-button-active')
             hotKeySettings(selectElementBtn)
             actions.gyazoCapture()
@@ -197,6 +210,9 @@
           window.requestAnimationFrame(function () {
             actions.gyazoWholeCapture()
           })
+        })
+        closeBtn.addEventListener('click', function () {
+          hideMenu()
         })
       },
       changeFixedElementToAbsolute: function () {
