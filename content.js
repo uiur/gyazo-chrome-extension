@@ -82,8 +82,8 @@
           notificationContainer.className = 'gyazo-menu gyazo-notification'
           document.body.appendChild(notificationContainer)
         }
-        let title = request.title || ''
-        let message = request.message || ''
+        let title = request.title ? `<span class='gyazo-notification-title'>${request.title}</span><br />` : ''
+        let message = request.message ? `<span class='gyazo-notification-message'>${request.message}</span><br />` : ''
         let showImage = ''
         if (request.imagePageUrl) {
           showImage = `
@@ -93,11 +93,7 @@
         } else {
           showImage = `<img class='image' src='${chrome.extension.getURL('/icons/loading.gif')}' />`
         }
-        notificationContainer.innerHTML = `
-        <span class='gyazo-notification-title'>${title}</span><br />
-        <span class='gyazo-notification-message'>${message}</span><br />
-        ${showImage}
-        `
+        notificationContainer.innerHTML = `${title}${message}${showImage}`
         if (request.isFinish) {
           window.setTimeout(function () {
             document.body.removeChild(notificationContainer)
@@ -146,6 +142,9 @@
         closeIcon.className = 'icon-cross'
         closeBtn.appendChild(closeIcon)
 
+        window.addEventListener('contextmenu', function (event) {
+          hideMenu()
+        })
         let hotKeySettings = function (sKeyElm) {
           let hotKey = function (event) {
             window.removeEventListener('keydown', hotKey)
