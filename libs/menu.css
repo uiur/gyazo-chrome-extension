@@ -42,9 +42,6 @@ body.gyazo-select-element-mode *:not(.gyazo-crop-select-element):not(.gyazo-menu
   line-height: 18px;
   font-size: 12px;
 }
-.gyazo-menu > .gyazo-button:last-child {
-  border-bottom: none !important;
-}
 .gyazo-menu > .gyazo-button.gyazo-button-active {
   color: rgb(9, 132, 222);
 }
