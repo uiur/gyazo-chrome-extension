@@ -4,8 +4,8 @@ body.gyazo-select-element-mode *:not(.gyazo-crop-select-element):not(.gyazo-menu
 .gyazo-menu {
   box-sizing: border-box;
   position: fixed;
-  right: 0px;
-  top: 0px;
+  right: 0;
+  top: 0;
   padding: 0;
   width: 364px;
   z-index: 2147483647;
@@ -16,12 +16,26 @@ body.gyazo-select-element-mode *:not(.gyazo-crop-select-element):not(.gyazo-menu
   border-radius: 0;
   font-family: Helvetica, Arial, sans-serif;
   letter-spacing: 0;
-
+  animation-duration: 0.3s;
+  animation-name: slidein;
+  animation-timing-function: ease-out;
 }
+
+@keyframes slidein {
+  from {
+    top: -60px;
+  }
+
+  to {
+    top: 0;
+  }
+}
+
 .gyazo-menu.gyazo-notification {
   text-align: center;
 }
 .gyazo-notification > .gyazo-notification-title {
+  margin: 7px 0 2px;
   font-size: 20px;
 }
 .gyazo-notification > .gyazo-notification-message {
@@ -85,6 +99,12 @@ body.gyazo-select-element-mode *:not(.gyazo-crop-select-element):not(.gyazo-menu
 }
 .gyazo-menu > .gyazo-close-button:hover {
   color: #000;
+}
+
+.gyazo-menu > .gyazo-loading-icon {
+  margin: 11px 0 10px;
+  width: 32px;
+  height: 32px;
 }
 
 /* Icons */

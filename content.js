@@ -82,8 +82,8 @@
           notificationContainer.className = 'gyazo-menu gyazo-notification'
           document.body.appendChild(notificationContainer)
         }
-        let title = request.title ? `<span class='gyazo-notification-title'>${request.title}</span><br />` : ''
-        let message = request.message ? `<span class='gyazo-notification-message'>${request.message}</span><br />` : ''
+        let title = request.title ? `<div class='gyazo-notification-title'>${request.title}</div>` : ''
+        let message = request.message ? `<div class='gyazo-notification-message'>${request.message}</div>` : ''
         let showImage = ''
         if (request.imagePageUrl) {
           showImage = `
@@ -91,7 +91,7 @@
               <img class='image' src='${request.imageUrl}' />
             </a>`
         } else {
-          showImage = `<img class='image' src='${chrome.extension.getURL('/icons/loading.gif')}' />`
+          showImage = `<img class='image gyazo-loading-icon' src='${chrome.extension.getURL('/icons/loading.gif')}' />`
         }
         notificationContainer.innerHTML = `${title}${message}${showImage}`
         if (request.isFinish) {
