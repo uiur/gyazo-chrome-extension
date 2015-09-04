@@ -2,7 +2,7 @@
   "name": "Gyazo",
   "description": "Grab any image on the web and share it instantly.",
   "short_name": "Gyazo",
-  "version": "1.2.7",
+  "version": "1.2.8",
   "author": "Nota inc.",
   "permissions": [
     "<all_urls>",
@@ -28,7 +28,11 @@
     "icons/logo.png",
     "icons/camera.png",
     "icons/close.png",
-    "icons/loading.gif"
+    "fonts/icomoon.eot",
+    "fonts/icomoon.svg",
+    "fonts/icomoon.ttf",
+    "fonts/icomoon.woff",
+    "fonts/icomoon.woff2"
   ],
   "icons": {
     "16": "/icons/gyazo-16.png",
