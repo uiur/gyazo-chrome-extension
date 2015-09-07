@@ -214,8 +214,9 @@
       changeFixedElementToAbsolute: function () {
         changeFixedElementToAbsolute()
         var waitScroll = function () {
-          if (Math.abs(window.scrollX - request.scrollTo.x) < 1 && Math.abs(window.scrollY - request.scrollTo.y) < 1) {
-            sendResponse()
+          if (Math.abs(window.scrollX - request.scrollTo.x) < 1 &&
+              Math.abs(window.scrollY - request.scrollTo.y) < 1) {
+            window.requestAnimationFrame(sendResponse())
           } else {
             window.requestAnimationFrame(waitScroll)
           }
