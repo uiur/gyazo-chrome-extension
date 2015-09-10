@@ -3,6 +3,11 @@ Gyazo Extension
 
 Chrome Extension for Gyazo.
 
+## Install
+
+- You can install from Chrome Web Store
+  - https://chrome.google.com/webstore/detail/gyazo/ffdaeeijbbijklfcpahbghahojgfgebo
+
 
 ## About
 
