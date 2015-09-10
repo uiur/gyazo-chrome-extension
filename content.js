@@ -482,7 +482,7 @@
           var rect = selectionElm.getBoundingClientRect()
           data.w = rect.width
           data.h = rect.height
-          if (data.h < 1 || data.w < 1) {
+          if (data.h <= 3 || data.w <= 3) {
             document.body.removeChild(layer)
             return false
           }
