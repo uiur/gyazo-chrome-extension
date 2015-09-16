@@ -485,7 +485,7 @@
           data.w = rect.width
           data.h = rect.height
           if (data.h <= 3 || data.w <= 3) {
-            document.body.removeChild(layer)
+            cancelGyazo()
             return false
           }
           data.x = rect.left + window.scrollX
