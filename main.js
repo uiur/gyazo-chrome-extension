@@ -124,12 +124,16 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       c.height = request.data.h
       c.width = request.data.w * request.data.z * request.data.s
       var canvasData = c.toDataURL()
-      var capture = function (scrollHeight, lastImageBottom) {
+      var capture = function (scrollHeight, lastImageBottom, lastImageData) {
         var imagePositionTop = lastImageBottom || scrollHeight * request.data.z * request.data.s
         var offsetTop = request.data.y - request.data.positionY
         if (scrollHeight === 0 && offsetTop >= 0 && offsetTop + request.data.h <= request.data.innerHeight) {
           // Capture in window (not require scroll)
           chrome.tabs.captureVisibleTab(null, {format: 'png'}, function (data) {
+            if (lastImageData === data) {
+              // retry
+              capture(scrollHeight, lastImageBottom, data)
+            }
             canvasUtils.trimImage({
               imageData: data,
               scale: request.data.s,
@@ -181,6 +185,10 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             scrollTo: {x: request.data.positionX, y: scrollHeight + request.data.y}
           }, function (message) {
             chrome.tabs.captureVisibleTab(null, {format: 'png'}, function (data) {
+              if (lastImageData === data) {
+                // retry
+                capture(scrollHeight, lastImageBottom, data)
+              }
               canvasUtils.trimImage({
                 imageData: data,
                 scale: request.data.s,
@@ -202,7 +210,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
                     callback: function (_canvas, lastImageBottom) {
                       canvasData = _canvas.toDataURL()
                       scrollHeight += request.data.innerHeight
-                      capture(scrollHeight, lastImageBottom)
+                      capture(scrollHeight, lastImageBottom, data)
                     }
                   })
                 }
