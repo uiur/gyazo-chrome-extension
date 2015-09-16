@@ -95,9 +95,11 @@
         }
         notificationContainer.innerHTML = `${title}${message}${showImage}`
         if (request.isFinish) {
-          window.setTimeout(function () {
-            document.body.removeChild(notificationContainer)
-          }, 5000)
+          notificationContainer.querySelector('.image').addEventListener('load', function () {
+            window.setTimeout(function () {
+              document.body.removeChild(notificationContainer)
+            }, 5000)
+          })
         }
         sendResponse()
       },
