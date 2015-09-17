@@ -1,10 +1,4 @@
 {
-  "uploadingTitle": {
-    "message": "Uploading..."
-  },
-  "uploadingMessage": {
-    "message": ""
-  },
   "uploadingFinishTitle": {
     "message": "Complete!"
   },
