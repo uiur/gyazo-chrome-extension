@@ -4,7 +4,7 @@
   let delaySelector = document.getElementById('delay')
   chrome.storage.sync.get({behavior: 'element', delay: 1}, function (item) {
     selector.value = item.behavior
-    delay.value = item.delay
+    delaySelector.value = item.delay
   })
   document.getElementById('element').textContent = chrome.i18n.getMessage('selectElement')
   document.getElementById('area').textContent = chrome.i18n.getMessage('selectArea')
@@ -18,7 +18,7 @@
     })
   })
 
-  delaySelector.addEventListener('change', function(event) {
+  delaySelector.addEventListener('change', function (event) {
     chrome.storage.sync.set({delay: event.target.value}, function () {
       document.querySelector('.scroll-delay-save').textContent = 'Saved'
       window.setTimeout(function () {
