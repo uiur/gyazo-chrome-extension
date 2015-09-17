@@ -182,13 +182,13 @@
           } else if (item.behavior === 'area') {
             // Default behavior is select area
             selectAreaBtn.classList.add('gyazo-button-active')
-            actions.gyazoCapture()
+            actions.gyazoCaptureSelectedArea()
           }
         })
         selectAreaBtn.addEventListener('click', function () {
           hideMenu()
           window.requestAnimationFrame(function () {
-            actions.gyazoCapture()
+            actions.gyazoCaptureSelectedArea()
           })
         })
         selectElementBtn.addEventListener('click', function () {
@@ -393,7 +393,7 @@
           })
         })
       },
-      gyazoCapture: function () {
+      gyazoCaptureSelectedArea: function () {
         if (check_duplicate_capture()) {
           return false
         }
