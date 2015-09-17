@@ -1,6 +1,16 @@
 'use strict'
 var host = 'https://upload.gyazo.com/api/upload/easy_auth'
 var clientId = 'df9edab530e84b4c56f9fcfa209aff1131c7d358a91d85cc20b9229e515d67dd'
+const DELAY_TIMES = [0, 200, 400, 700, 1000]
+let waitForDelay = function (callback) {
+  chrome.storage.sync.get({delay: 1}, function (item) {
+    let delay = DELAY_TIMES[item.delay]
+    if (delay === 0) {
+      window.requestAnimationFrame(callback)
+    }
+    window.setTimeout(callback, delay)
+  })
+}
 var UploadNotification = function (callback) {
   this.update = function (option, callback) {
     callback = callback || function () {}
@@ -210,9 +220,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
                     callback: function (_canvas, lastImageBottom) {
                       canvasData = _canvas.toDataURL()
                       scrollHeight += request.data.innerHeight
-                      window.setTimeout(function() {
+                      waitForDelay(function() {
                         capture(scrollHeight, lastImageBottom, data)
-                      }, 200)
+                      })
                     }
                   })
                 }
