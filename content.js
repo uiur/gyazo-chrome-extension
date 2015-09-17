@@ -508,7 +508,7 @@
             if (document.getElementsByClassName('gyazo-select-layer').length > 0) {
               return window.requestAnimationFrame(finish)
             }
-            window.requestAnimationFrame(function () {
+            window.setTimeout(function () {
               chrome.runtime.sendMessage(chrome.runtime.id, {
                 action: 'gyazoCaptureWithSize',
                 data: data,
@@ -518,7 +518,7 @@
                 unlockScroll(overflow)
                 restoreFixedElement()
               })
-            })
+            }, 100)
           }
           window.requestAnimationFrame(finish)
         }
