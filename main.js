@@ -142,7 +142,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
           chrome.tabs.captureVisibleTab(null, {format: 'png'}, function (data) {
             if (lastImageData === data) {
               // retry
-              capture(scrollHeight, lastImageBottom, data)
+              return capture(scrollHeight, lastImageBottom, data)
             }
             canvasUtils.trimImage({
               imageData: data,
@@ -197,7 +197,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             chrome.tabs.captureVisibleTab(null, {format: 'png'}, function (data) {
               if (lastImageData === data) {
                 // retry
-                capture(scrollHeight, lastImageBottom, data)
+                return capture(scrollHeight, lastImageBottom, data)
               }
               canvasUtils.trimImage({
                 imageData: data,
