@@ -210,7 +210,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
                     callback: function (_canvas, lastImageBottom) {
                       canvasData = _canvas.toDataURL()
                       scrollHeight += request.data.innerHeight
-                      capture(scrollHeight, lastImageBottom, data)
+                      window.setTimeout(function() {
+                        capture(scrollHeight, lastImageBottom, data)
+                      }, 200)
                     }
                   })
                 }
