@@ -301,10 +301,10 @@
           }
         }
         var cancel = function () {
-          if(document.body.contains(jackup)) {
+          if (document.body.contains(jackup)) {
             document.body.removeChild(jackup)
           }
-          if(document.body.contains(layer)) {
+          if (document.body.contains(layer)) {
             document.body.removeChild(layer)
           }
           document.body.classList.remove('gyazo-select-element-mode')
@@ -348,7 +348,7 @@
           data.positionX = window.scrollX
           data.positionY = window.scrollY
           data.innerHeight = window.innerHeight
-          if (document.body.contains(layer)){
+          if (document.body.contains(layer)) {
             document.body.removeChild(layer)
           }
           if (document.querySelector('.gyazo-menu')) {
