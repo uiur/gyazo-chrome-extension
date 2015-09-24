@@ -8,10 +8,6 @@
     document.documentElement.setAttribute('data-extension-installed', true)
   }
 
-  function check_duplicate_capture () {
-    return document.getElementsByClassName('gyazo-jackup-element').length > 0
-  }
-
   function isPressCommandKey (event) {
     //  Return true when
     //  Press CommandKey on MacOSX or CtrlKey on Windows or Linux
@@ -74,7 +70,7 @@
   chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     var actions = {
       notification: function () {
-        let notificationContainer = document.querySelector('.gyazo-menu.gyazo-menu-element') || document.querySelector('.gyazo-menu.gyazo-notification')
+        let notificationContainer = document.querySelector('.gyazo-menu.gyazo-menu-element.gyazo-notification') || document.querySelector('.gyazo-menu.gyazo-notification')
         if (notificationContainer) {
           notificationContainer.classList.add('gyazo-notification')
         } else {
@@ -97,21 +93,25 @@
         if (request.isFinish) {
           notificationContainer.querySelector('.image').addEventListener('load', function () {
             window.setTimeout(function () {
-              document.body.removeChild(notificationContainer)
+              if (document.body.contains(notificationContainer)) {
+                document.body.removeChild(notificationContainer)
+              }
             }, 5000)
           })
         }
         sendResponse()
       },
       insertMenu: function () {
-        let gyazoMenu = document.querySelector('.gyazo-menu')
+        let gyazoMenu = document.querySelector('.gyazo-menu:not(.gyazo-notification)')
         if (gyazoMenu) {
           document.body.removeChild(gyazoMenu)
           window.dispatchEvent(REMOVE_GYAZOMENU_EVENT)
           return true
         }
         let hideMenu = function () {
-          document.body.removeChild(gyazoMenu)
+          if (document.body.contains(gyazoMenu)) {
+            document.body.removeChild(gyazoMenu)
+          }
           window.dispatchEvent(REMOVE_GYAZOMENU_EVENT)
         }
         gyazoMenu = document.createElement('div')
@@ -248,9 +248,6 @@
       },
       gyazoSelectElm: function () {
         const MARGIN = 3
-        if (check_duplicate_capture()) {
-          return false
-        }
         document.body.classList.add('gyazo-select-element-mode')
         var jackup = document.createElement('div')
         jackup.classList.add('gyazo-jackup-element')
@@ -304,8 +301,12 @@
           }
         }
         var cancel = function () {
-          document.body.removeChild(jackup)
-          document.body.removeChild(layer)
+          if(document.body.contains(jackup)) {
+            document.body.removeChild(jackup)
+          }
+          if(document.body.contains(layer)) {
+            document.body.removeChild(layer)
+          }
           document.body.classList.remove('gyazo-select-element-mode')
           window.removeEventListener('contextmenu', cancel)
           document.removeEventListener('keydown', keydownHandler)
@@ -347,7 +348,9 @@
           data.positionX = window.scrollX
           data.positionY = window.scrollY
           data.innerHeight = window.innerHeight
-          document.body.removeChild(layer)
+          if (document.body.contains(layer)){
+            document.body.removeChild(layer)
+          }
           if (document.querySelector('.gyazo-menu')) {
             document.body.removeChild(document.querySelector('.gyazo-menu'))
           }
@@ -394,9 +397,6 @@
         })
       },
       gyazoCaptureSelectedArea: function () {
-        if (check_duplicate_capture()) {
-          return false
-        }
         var startX
         var startY
         var data = {}
@@ -527,9 +527,6 @@
         window.addEventListener('contextmenu', cancelGyazo)
       },
       gyazoWholeCapture: function () {
-        if (check_duplicate_capture()) {
-          return false
-        }
         var overflow = lockScroll()
         var data = {}
         var scaleObj = getZoomAndScale()
