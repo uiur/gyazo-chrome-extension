@@ -1,3 +1,10 @@
 dependencies:
   pre:
     - npm install standard
+    - npm install -g chrome-webstore-manager
+deployment:
+  production:
+    branch: production
+    commands:
+      - git archive production -o release.zip
+      - chrome-webstore-manager update ffdaeeijbbijklfcpahbghahojgfgebo release.zip
