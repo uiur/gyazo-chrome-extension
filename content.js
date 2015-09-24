@@ -247,6 +247,9 @@
         }, function () {})
       },
       gyazoSelectElm: function () {
+        if (document.querySelector('.gyazo-crop-select-element')) {
+          return false
+        }
         const MARGIN = 3
         document.body.classList.add('gyazo-select-element-mode')
         var jackup = document.createElement('div')
@@ -397,6 +400,9 @@
         })
       },
       gyazoCaptureSelectedArea: function () {
+        if (document.querySelector('.gyazo-jackup-element')) {
+          return false
+        }
         var startX
         var startY
         var data = {}
