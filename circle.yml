@@ -8,3 +8,4 @@ deployment:
     commands:
       - git archive production -o release.zip
       - chrome-webstore-manager update ffdaeeijbbijklfcpahbghahojgfgebo release.zip
+      - chrome-webstore-manager publish ffdaeeijbbijklfcpahbghahojgfgebo
