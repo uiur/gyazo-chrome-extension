@@ -14,7 +14,7 @@
     if (!(event instanceof MouseEvent || event instanceof KeyboardEvent)) {
       return false
     }
-    if (navigator.platform.match(/mac/i).length > 0) {
+    if (navigator.platform.match(/mac/i)) {
       return event.metaKey || event.keyIdentifier === 'Meta'
     } else {
       return event.ctrlKey || event.keyIdentifier === 'Ctrl'
