@@ -1,55 +1,40 @@
+'use strict'
 var host = 'https://upload.gyazo.com/api/upload/easy_auth'
 var clientId = 'df9edab530e84b4c56f9fcfa209aff1131c7d358a91d85cc20b9229e515d67dd'
-var UploadNotification = function (callback) {
-  this.progress = 3
-  this.limitValues = [30, 80]
-  this.limitLevel = 0
-  this.limit = this.limitValues[this.limitLevel]
-  this.nextLimit = function () {
-    if (this.limitLevel + 1 < this.limitValues.length) {
-      this.limitLevel += 1
+const DELAY_TIMES = [0, 200, 400, 700, 1000]
+let waitForDelay = function (callback) {
+  chrome.storage.sync.get({delay: 1}, function (item) {
+    let delay = DELAY_TIMES[item.delay]
+    if (delay === 0) {
+      window.requestAnimationFrame(callback)
     }
-    this.limit = this.limitValues[this.limitLevel]
-  }
-  this.id = 'gyazo_notification_' + Date.now()
-  this.newTabId = null
-  this.progressIncrement = function (callback) {
-    const INCREMENT_SIZE = 5
-    this.progress = Math.min(this.progress + INCREMENT_SIZE, this.limit)
-    this.update({progress: this.progress}, callback)
-  }
-  this.update = function (opt, callback) {
+    window.setTimeout(callback, delay)
+  })
+}
+var UploadNotification = function (callback) {
+  this.update = function (option, callback) {
     callback = callback || function () {}
-    chrome.notifications.update(this.id, opt, callback)
+    chrome.tabs.query({currentWindow: true, active: true}, function (tab) {
+      option.action = 'notification'
+      chrome.tabs.sendMessage(tab[0].id, option, callback)
+    })
   }
-  this.finish = function (callback) {
-    var self = this
+  this.finish = function (imagePageUrl, callback) {
     this.update({
       title: chrome.i18n.getMessage('uploadingFinishTitle'),
       message: chrome.i18n.getMessage('uploadingFinishMessage'),
-      progress: 100
-    }, function () {
-      window.setTimeout(function () {
-        chrome.notifications.clear(self.id, function () {})
-      }, 1200)
-    })
-  }
-  callback = callback || function () {}
-  chrome.notifications.create(this.id, {
-    type: 'progress',
-    title: chrome.i18n.getMessage('uploadingTitle'),
-    message: chrome.i18n.getMessage('uploadingMessage'),
-    progress: this.progress,
-    iconUrl: '/icons/gyazo-bg-256.png',
-    priority: 2
+      imagePageUrl: imagePageUrl,
+      imageUrl: imagePageUrl + '/raw',
+      isFinish: true
+    }, callback)
+  }.bind(this)
+  this.update({
+    message: chrome.i18n.getMessage('uploadingMessage')
   }, callback)
 }
 
 function postToGyazo (data) {
   var notification = new UploadNotification()
-  var timerId = window.setInterval(function () {
-    notification.progressIncrement()
-  }, 500)
   $.ajax({
     type: 'POST',
     url: host,
@@ -65,20 +50,16 @@ function postToGyazo (data) {
     crossDomain: true
   })
     .done(function (data) {
-      chrome.tabs.create({url: data.get_image_url, active: false}, function (newTab) {
-        notification.nextLimit()
-        notification.newTabId = newTab.id
-        var handler = function (tabId, changeInfo) {
-          if (newTab.id === tabId && changeInfo.url) {
-            notification.finish()
-            window.clearInterval(timerId)
-            saveToClipboard(changeInfo.url)
-            chrome.tabs.onUpdated.removeListener(handler)
-            notification.newTabId = tabId
-          }
+      // Use pure XHR for get XHR.responseURL
+      let xhr = new window.XMLHttpRequest()
+      xhr.open('GET', data.get_image_url)
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+          saveToClipboard(xhr.responseURL)
+          notification.finish(xhr.responseURL)
         }
-        chrome.tabs.onUpdated.addListener(handler)
-      })
+      }
+      xhr.send()
     })
     .fail(function (XMLHttpRequest, textStatus, errorThrown) {
       window.alert('Status: ' + XMLHttpRequest.status + '\n Error: ' + textStatus + '\n Message: ' + errorThrown.message)
@@ -86,7 +67,9 @@ function postToGyazo (data) {
 }
 
 function onClickHandler (info, tab) {
-
+  chrome.tabs.insertCSS(tab.id, {
+    file: './libs/menu.css'
+  })
   var GyazoFuncs = {gyazoIt: function () {
     var xhr = jQuery.ajaxSettings.xhr()
     xhr.open('GET', info.srcUrl, true)
@@ -106,27 +89,6 @@ function onClickHandler (info, tab) {
       }
     }
     xhr.send()
-  },
-  gyazoSelectElm: function () {
-    chrome.tabs.sendMessage(tab.id, {action: 'gyazoSelectElm', tab: tab}, function () {})
-  },
-  gyazoCapture: function () {
-    chrome.tabs.sendMessage(tab.id, {action: 'gyazoCapture', tab: tab}, function (mes) {})
-  },
-  gyazoWhole: function () {
-    var notificationId = 'gyazoCapturing_' + Date.now()
-    chrome.notifications.create(notificationId, {
-      type: 'basic',
-      title: chrome.i18n.getMessage('captureTitle'),
-      message: chrome.i18n.getMessage('captureMessage'),
-      iconUrl: '/icons/gyazo-bg-256.png',
-      priority: 2
-    }, function () {})
-    chrome.tabs.sendMessage(tab.id, {
-      action: 'gyazoWholeCapture',
-      tab: tab,
-      notificationId: notificationId
-    }, function () {})
   }
 }
   if (info.menuItemId in GyazoFuncs) {
@@ -149,44 +111,39 @@ chrome.contextMenus.create({
   id: 'gyazoIt',
   contexts: ['image']
 })
-chrome.contextMenus.create({
-  title: chrome.i18n.getMessage('contextMenuSelect'),
-  id: 'gyazoCapture',
-  contexts: ['all']
-})
-chrome.contextMenus.create({
-  'title': chrome.i18n.getMessage('contextMenuWhole'),
-  'id': 'gyazoWhole',
-  contexts: ['all']
-})
-chrome.contextMenus.create({
-  'title': chrome.i18n.getMessage('contextMenuSelectElement'),
-  'id': 'gyazoSelectElm',
-  contexts: ['all']
+
+chrome.browserAction.onClicked.addListener(function (tab) {
+  chrome.tabs.insertCSS(tab.id, {
+    file: './libs/menu.css'
+  }, function () {
+    chrome.tabs.sendMessage(tab.id, {action: 'insertMenu', tab: tab}, function () {})
+  })
 })
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   var messageHandlers = {
-    gyazoCapture: function () {
-      onClickHandler({menuItemId: 'gyazoCapture'}, request.tab)
-    },
-    gyazoSelectElmFromPopup: function () {
-      onClickHandler({menuItemId: 'gyazoSelectElm'}, request.tab)
-    },
-    gyazoWholeCaptureFromPopup: function () {
-      onClickHandler({menuItemId: 'gyazoWhole'}, request.tab)
+    gyazoSendRawImage: function () {
+      let data = request.data
+      onClickHandler({
+        menuItemId: 'gyazoIt',
+        srcUrl: data.srcUrl
+      }, request.tab)
     },
     gyazoCaptureWithSize: function () {
       var c = document.createElement('canvas')
       c.height = request.data.h
       c.width = request.data.w * request.data.z * request.data.s
       var canvasData = c.toDataURL()
-      var capture = function (scrollHeight, lastImageBottom) {
+      var capture = function (scrollHeight, lastImageBottom, lastImageData) {
         var imagePositionTop = lastImageBottom || scrollHeight * request.data.z * request.data.s
         var offsetTop = request.data.y - request.data.positionY
         if (scrollHeight === 0 && offsetTop >= 0 && offsetTop + request.data.h <= request.data.innerHeight) {
           // Capture in window (not require scroll)
           chrome.tabs.captureVisibleTab(null, {format: 'png'}, function (data) {
+            if (lastImageData === data) {
+              // retry
+              return capture(scrollHeight, lastImageBottom, data)
+            }
             canvasUtils.trimImage({
               imageData: data,
               scale: request.data.s,
@@ -220,9 +177,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
           chrome.tabs.executeScript(null, {
             code: 'window.scrollTo(' + request.data.positionX + ', ' + request.data.positionY + ' )'
           })
-          if (request.notificationId) {
-            chrome.notifications.clear(request.notificationId, function () {})
-          }
           postToGyazo({
             imageData: canvasData,
             title: request.data.t,
@@ -241,6 +195,10 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             scrollTo: {x: request.data.positionX, y: scrollHeight + request.data.y}
           }, function (message) {
             chrome.tabs.captureVisibleTab(null, {format: 'png'}, function (data) {
+              if (lastImageData === data) {
+                // retry
+                return capture(scrollHeight, lastImageBottom, data)
+              }
               canvasUtils.trimImage({
                 imageData: data,
                 scale: request.data.s,
@@ -262,7 +220,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
                     callback: function (_canvas, lastImageBottom) {
                       canvasData = _canvas.toDataURL()
                       scrollHeight += request.data.innerHeight
-                      capture(scrollHeight, lastImageBottom)
+                      waitForDelay(function () {
+                        capture(scrollHeight, lastImageBottom, data)
+                      })
                     }
                   })
                 }

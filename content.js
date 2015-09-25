@@ -1,15 +1,11 @@
 (function () {
-
+  'use strict'
   const ESC_KEY_CODE = 27
-  const SPACE_KEY_CODE = 32
   const JACKUP_HEIGHT = 30
+  const REMOVE_GYAZOMENU_EVENT = new window.Event('removeGyazoMenu')
 
   if (/gyazo\.com/.test(location.hostname)) {
     document.documentElement.setAttribute('data-extension-installed', true)
-  }
-
-  function check_duplicate_capture () {
-    return document.getElementsByClassName('gyazo-jackup-element').length > 0
   }
 
   function isPressCommandKey (event) {
@@ -73,18 +69,163 @@
 
   chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     var actions = {
+      notification: function () {
+        let notificationContainer = document.querySelector('.gyazo-menu.gyazo-menu-element.gyazo-notification') || document.querySelector('.gyazo-menu.gyazo-notification')
+        if (notificationContainer) {
+          notificationContainer.classList.add('gyazo-notification')
+        } else {
+          notificationContainer = document.createElement('div')
+          notificationContainer.className = 'gyazo-menu gyazo-notification'
+          document.body.appendChild(notificationContainer)
+        }
+        let title = request.title ? `<div class='gyazo-notification-title'>${request.title}</div>` : ''
+        let message = request.message ? `<div class='gyazo-notification-message'>${request.message}</div>` : ''
+        let showImage = ''
+        if (request.imagePageUrl) {
+          showImage = `
+            <a href='${request.imagePageUrl}' target='_blank'>
+              <img class='image' src='${request.imageUrl}' />
+            </a>`
+        } else {
+          showImage = `<span class='gyazo-icon-spinner3 gyazo-spin'></span>`
+        }
+        notificationContainer.innerHTML = `${title}${message}${showImage}`
+        if (request.isFinish) {
+          notificationContainer.querySelector('.image').addEventListener('load', function () {
+            window.setTimeout(function () {
+              if (document.body.contains(notificationContainer)) {
+                document.body.removeChild(notificationContainer)
+              }
+            }, 5000)
+          })
+        }
+        sendResponse()
+      },
+      insertMenu: function () {
+        let gyazoMenu = document.querySelector('.gyazo-menu:not(.gyazo-notification)')
+        if (gyazoMenu) {
+          document.body.removeChild(gyazoMenu)
+          window.dispatchEvent(REMOVE_GYAZOMENU_EVENT)
+          return true
+        }
+        let hideMenu = function () {
+          if (document.body.contains(gyazoMenu)) {
+            document.body.removeChild(gyazoMenu)
+          }
+          window.dispatchEvent(REMOVE_GYAZOMENU_EVENT)
+        }
+        gyazoMenu = document.createElement('div')
+        gyazoMenu.className = 'gyazo-menu gyazo-menu-element'
+
+        let createButton = function (iconClass, text, shortcutKey) {
+          let btn = document.createElement('div')
+          btn.className = 'gyazo-big-button gyazo-button gyazo-menu-element'
+          btn.setAttribute('title', 'Press: ' + shortcutKey)
+
+          let iconElm = document.createElement('div')
+          iconElm.className = 'gyazo-button-icon ' + iconClass
+
+          let textElm = document.createElement('div')
+          textElm.className = 'gyazo-button-text'
+          textElm.textContent = text
+
+          btn.appendChild(iconElm)
+          btn.appendChild(textElm)
+
+          return btn
+        }
+
+        let selectElementBtn = createButton('gyazo-icon-selection', chrome.i18n.getMessage('selectElement'), 'E')
+        let selectAreaBtn = createButton('gyazo-icon-crop', chrome.i18n.getMessage('selectArea'), 'S')
+        let windowCaptureBtn = createButton('gyazo-icon-window', chrome.i18n.getMessage('captureWindow'), 'P')
+        let wholeCaptureBtn = createButton('gyazo-icon-window-scroll', chrome.i18n.getMessage('topToBottom'), 'W')
+        let closeBtn = document.createElement('div')
+        closeBtn.className = 'gyazo-close-button gyazo-menu-element gyazo-icon-cross'
+        closeBtn.setAttribute('title', 'Press: Escape')
+
+        window.addEventListener('contextmenu', function (event) {
+          hideMenu()
+        })
+        document.body.appendChild(gyazoMenu)
+        gyazoMenu.appendChild(selectElementBtn)
+        gyazoMenu.appendChild(selectAreaBtn)
+        gyazoMenu.appendChild(windowCaptureBtn)
+        gyazoMenu.appendChild(wholeCaptureBtn)
+        gyazoMenu.appendChild(closeBtn)
+
+        let hotKey = function (event) {
+          window.removeEventListener('keydown', hotKey)
+          if (event.keyCode === ESC_KEY_CODE) {
+            hideMenu()
+          }
+          switch (String.fromCharCode(event.keyCode)) {
+            case 'E':
+              selectElementBtn.click()
+              break
+            case 'S':
+              selectAreaBtn.click()
+              break
+            case 'P':
+              windowCaptureBtn.click()
+              break
+            case 'W':
+              wholeCaptureBtn.click()
+              break
+          }
+        }
+        window.addEventListener('keydown', hotKey)
+        chrome.storage.sync.get({behavior: 'element'}, function (item) {
+          if (item.behavior === 'element') {
+            // Default behavior is select element
+            selectElementBtn.classList.add('gyazo-button-active')
+            window.requestAnimationFrame(actions.gyazoSelectElm)
+          } else if (item.behavior === 'area') {
+            // Default behavior is select area
+            selectAreaBtn.classList.add('gyazo-button-active')
+            actions.gyazoCaptureSelectedArea()
+          }
+        })
+        selectAreaBtn.addEventListener('click', function () {
+          hideMenu()
+          window.requestAnimationFrame(function () {
+            actions.gyazoCaptureSelectedArea()
+          })
+        })
+        selectElementBtn.addEventListener('click', function () {
+          hideMenu()
+          window.requestAnimationFrame(function () {
+            actions.gyazoSelectElm()
+          })
+        })
+        windowCaptureBtn.addEventListener('click', function () {
+          hideMenu()
+          window.requestAnimationFrame(function () {
+            actions.gyazocaptureWindow()
+          })
+        })
+        wholeCaptureBtn.addEventListener('click', function () {
+          hideMenu()
+          window.requestAnimationFrame(function () {
+            actions.gyazoWholeCapture()
+          })
+        })
+        closeBtn.addEventListener('click', function () {
+          hideMenu()
+        })
+      },
       changeFixedElementToAbsolute: function () {
         changeFixedElementToAbsolute()
         var waitScroll = function () {
-          if (Math.abs(window.scrollX - request.scrollTo.x) < 1 && Math.abs(window.scrollY - request.scrollTo.y) < 1) {
-            sendResponse()
+          if (Math.abs(window.scrollX - request.scrollTo.x) < 1 &&
+              Math.abs(window.scrollY - request.scrollTo.y) < 1) {
+            window.requestAnimationFrame(sendResponse)
           } else {
             window.requestAnimationFrame(waitScroll)
           }
         }
         window.requestAnimationFrame(waitScroll)
       },
-      gyazoCaptureVisibleArea: function () {
+      gyazocaptureWindow: function () {
         var data = {}
         var scaleObj = getZoomAndScale()
         data.w = window.innerWidth
@@ -106,26 +247,35 @@
         }, function () {})
       },
       gyazoSelectElm: function () {
-        const MARGIN = 3
-        if (check_duplicate_capture()) {
+        if (document.querySelector('.gyazo-crop-select-element')) {
           return false
         }
+        const MARGIN = 3
+        document.body.classList.add('gyazo-select-element-mode')
         var jackup = document.createElement('div')
         jackup.classList.add('gyazo-jackup-element')
         document.body.appendChild(jackup)
         var layer = document.createElement('div')
         layer.className = 'gyazo-crop-select-element'
         document.body.appendChild(layer)
-        layer.style.background = 'rgba(92, 92, 92, 0.3)'
+        layer.style.background = 'rgba(9, 132, 222, 0.35)'
+        layer.style.margin = '0px'
+        layer.style.border = '1px solid rgb(9, 132, 222)'
         layer.style.position = 'fixed'
         layer.style.pointerEvents = 'none'
-        layer.style.zIndex = 2147483647 // Maximun number of 32bit Int
+        layer.style.zIndex = 2147483646 // Maximun number of 32bit Int - 1
         var allElms = Array.prototype.slice.apply(document.body.querySelectorAll('*')).filter(function (item) {
-          return !item.classList.contains('gyazo-crop-select-element')
+          return !item.classList.contains('gyazo-crop-select-element') &&
+                 !item.classList.contains('gyazo-menu-element')
         })
         var moveLayer = function (event) {
           var item = event.target
           event.stopPropagation()
+          if (item.tagName === 'IMG') {
+            layer.setAttribute('data-img-url', item.src)
+          } else {
+            layer.setAttribute('data-img-url', '')
+          }
           var rect = item.getBoundingClientRect()
           layer.style.width = rect.width + 'px'
           layer.style.height = rect.height + 'px'
@@ -154,24 +304,39 @@
           }
         }
         var cancel = function () {
-          document.body.removeChild(jackup)
-          document.body.removeChild(layer)
+          if (document.body.contains(jackup)) {
+            document.body.removeChild(jackup)
+          }
+          if (document.body.contains(layer)) {
+            document.body.removeChild(layer)
+          }
+          document.body.classList.remove('gyazo-select-element-mode')
           window.removeEventListener('contextmenu', cancel)
           document.removeEventListener('keydown', keydownHandler)
           document.removeEventListener('keyup', keyUpHandler)
+          Array.prototype.slice.apply(document.querySelectorAll('.gyazo-select-element-cursor-overwrite')).forEach(function (item) {
+            item.classList.remove('gyazo-select-element-cursor-overwrite')
+          })
           restoreFixedElement()
         }
+        let removedGyazoMenu = function () {
+          window.removeEventListener('removeGyazoMenu', removedGyazoMenu)
+          cancel()
+        }
+        window.addEventListener('removeGyazoMenu', removedGyazoMenu)
         window.addEventListener('contextmenu', cancel)
         document.addEventListener('keydown', keydownHandler)
         document.addEventListener('keyup', keyUpHandler)
-        var selectElement = function (event) {
+        var clickElement = function (event) {
           event.stopPropagation()
           event.preventDefault()
+          document.body.classList.remove('gyazo-select-element-mode')
           allElms.forEach(function (item) {
-            item.style.cursor = item.getAttribute('data-gyazo-memory-cursor')
-            item.removeAttribute('data-gyazo-memory-cursor')
+            if (item.classList.contains('gyazo-select-element-cursor-overwrite')) {
+              item.classList.remove('gyazo-select-element-cursor-overwrite')
+            }
             item.removeEventListener('mouseover', moveLayer)
-            item.removeEventListener('click', selectElement)
+            item.removeEventListener('click', clickElement)
           })
           var data = {}
           var scaleObj = getZoomAndScale()
@@ -186,7 +351,12 @@
           data.positionX = window.scrollX
           data.positionY = window.scrollY
           data.innerHeight = window.innerHeight
-          document.body.removeChild(layer)
+          if (document.body.contains(layer)) {
+            document.body.removeChild(layer)
+          }
+          if (document.querySelector('.gyazo-menu')) {
+            document.body.removeChild(document.querySelector('.gyazo-menu'))
+          }
           jackup.style.height = (window.innerHeight + JACKUP_HEIGHT) + 'px'
           window.removeEventListener('contextmenu', cancel)
           window.removeEventListener('keydown', keydownHandler)
@@ -195,33 +365,42 @@
             // Only when required scroll
             changeFixedElementToAbsolute()
           }
+          if (layer.getAttribute('data-img-url')) {
+            restoreFixedElement()
+            return chrome.runtime.sendMessage(chrome.runtime.id, {
+              action: 'gyazoSendRawImage',
+              data: {srcUrl: layer.getAttribute('data-img-url')},
+              tab: request.tab
+            }, function () {})
+          }
           var overflow = lockScroll()
           var finish = function () {
             if (document.getElementsByClassName('gyazo-crop-select-element').length > 0) {
               return window.requestAnimationFrame(finish)
             }
-            chrome.runtime.sendMessage(chrome.runtime.id, {
-              action: 'gyazoCaptureWithSize',
-              data: data,
-              tab: request.tab
-            }, function () {
-              restoreFixedElement()
-              document.body.removeChild(jackup)
-              unlockScroll(overflow)
+            window.requestAnimationFrame(function () {
+              chrome.runtime.sendMessage(chrome.runtime.id, {
+                action: 'gyazoCaptureWithSize',
+                data: data,
+                tab: request.tab
+              }, function () {
+                restoreFixedElement()
+                document.body.removeChild(jackup)
+                unlockScroll(overflow)
+              })
             })
           }
           window.requestAnimationFrame(finish)
         }
-        allElms.forEach(function (item) {
-          var _cursor = window.getComputedStyle(item).cursor
-          item.style.cursor = 'default'
-          item.setAttribute('data-gyazo-memory-cursor', _cursor)
-          item.addEventListener('mouseover', moveLayer)
-          item.addEventListener('click', selectElement)
+        window.requestAnimationFrame(function () {
+          allElms.forEach(function (item) {
+            item.addEventListener('mouseover', moveLayer)
+            item.addEventListener('click', clickElement)
+          })
         })
       },
-      gyazoCapture: function () {
-        if (check_duplicate_capture()) {
+      gyazoCaptureSelectedArea: function () {
+        if (document.querySelector('.gyazo-jackup-element')) {
           return false
         }
         var startX
@@ -238,8 +417,9 @@
         layer.style.top = document.body.clientTop + 'px'
         layer.style.width = Math.max(document.body.clientWidth, document.body.offsetWidth, document.body.scrollWidth) + 'px'
         layer.style.height = pageHeight + 'px'
-        layer.style.zIndex = 2147483647 // Maximun number of 32bit Int
+        layer.style.zIndex = 2147483646 // Maximun number of 32bit Int - 1
         layer.style.cursor = 'crosshair'
+        layer.className = 'gyazo-select-layer'
         document.body.style.webkitUserSelect = 'none'
         var selectionElm = document.createElement('div')
         layer.appendChild(selectionElm)
@@ -260,19 +440,26 @@
           document.removeEventListener('keydown', keydownHandler)
           window.removeEventListener('contextmenu', cancelGyazo)
           restoreFixedElement()
+          if (document.querySelector('.gyazo-menu')) {
+            document.body.removeChild(document.querySelector('.gyazo-menu'))
+          }
         }
+        let removedGyazoMenu = function () {
+          cancelGyazo()
+          window.removeEventListener('removeGyazoMenu', removedGyazoMenu)
+        }
+        window.addEventListener('removeGyazoMenu', removedGyazoMenu)
         var keydownHandler = function (event) {
           if (event.keyCode === ESC_KEY_CODE) {
             //  If press Esc Key, cancel it
             cancelGyazo()
-          } else if (event.keyCode === SPACE_KEY_CODE) {
-            // If press Space bar, capture visible area
-            event.preventDefault()
-            cancelGyazo()
-            actions.gyazoCaptureVisibleArea(request)
           }
         }
         var mousedownHandler = function (e) {
+          let gyazoMenu = document.querySelector('.gyazo-menu')
+          if (gyazoMenu) {
+            document.body.removeChild(gyazoMenu)
+          }
           startX = e.pageX
           startY = e.pageY
           selectionElm.styleUpdate({
@@ -303,8 +490,8 @@
           var rect = selectionElm.getBoundingClientRect()
           data.w = rect.width
           data.h = rect.height
-          if (data.h < 1 || data.w < 1) {
-            document.body.removeChild(layer)
+          if (data.h <= 3 || data.w <= 3) {
+            cancelGyazo()
             return false
           }
           data.x = rect.left + window.scrollX
@@ -317,29 +504,35 @@
           data.positionY = window.scrollY
           data.innerHeight = window.innerHeight
           document.body.removeChild(layer)
+          if (document.querySelector('.gyazo-menu')) {
+            document.body.removeChild(document.querySelector('.gyazo-menu'))
+          }
           var overflow = lockScroll()
           jackup.style.height = (window.innerHeight + JACKUP_HEIGHT) + 'px'
           // wait for rewrite by removeChild
-          window.requestAnimationFrame(function () {
-            chrome.runtime.sendMessage(chrome.runtime.id, {
-              action: 'gyazoCaptureWithSize',
-              data: data,
-              tab: request.tab
-            }, function () {
-              document.body.removeChild(jackup)
-              unlockScroll(overflow)
-              restoreFixedElement()
-            })
-          })
+          let finish = function () {
+            if (document.getElementsByClassName('gyazo-select-layer').length > 0) {
+              return window.requestAnimationFrame(finish)
+            }
+            window.setTimeout(function () {
+              chrome.runtime.sendMessage(chrome.runtime.id, {
+                action: 'gyazoCaptureWithSize',
+                data: data,
+                tab: request.tab
+              }, function () {
+                document.body.removeChild(jackup)
+                unlockScroll(overflow)
+                restoreFixedElement()
+              })
+            }, 100)
+          }
+          window.requestAnimationFrame(finish)
         }
         layer.addEventListener('mousedown', mousedownHandler)
         document.addEventListener('keydown', keydownHandler)
         window.addEventListener('contextmenu', cancelGyazo)
       },
       gyazoWholeCapture: function () {
-        if (check_duplicate_capture()) {
-          return false
-        }
         var overflow = lockScroll()
         var data = {}
         var scaleObj = getZoomAndScale()
@@ -361,8 +554,7 @@
         chrome.runtime.sendMessage(chrome.runtime.id, {
           action: 'gyazoCaptureWithSize',
           data: data,
-          tab: request.tab,
-          notificationId: request.notificationId
+          tab: request.tab
         }, function () {
           document.body.removeChild(jackup)
           unlockScroll(overflow)
