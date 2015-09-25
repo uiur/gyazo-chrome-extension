@@ -17,7 +17,7 @@
     if (navigator.platform.match(/mac/i)) {
       return event.metaKey || event.keyIdentifier === 'Meta'
     } else {
-      return event.ctrlKey || event.keyIdentifier === 'Ctrl'
+      return event.ctrlKey || event.keyIdentifier === 'Control'
     }
   }
 
@@ -285,7 +285,10 @@
           layer.style.left = rect.left + 'px'
           layer.style.top = rect.top + 'px'
         }
+        let hasMargin = false
         var takeMargin = function () {
+          if (hasMargin) return
+          hasMargin = true
           layer.style.width = parseInt(window.getComputedStyle(layer).width, 10) + MARGIN * 2 + 'px'
           layer.style.height = parseInt(window.getComputedStyle(layer).height, 10) + MARGIN * 2 + 'px'
           layer.style.left = parseInt(window.getComputedStyle(layer).left, 10) - MARGIN + 'px'
@@ -300,6 +303,7 @@
         }
         var keyUpHandler = function (event) {
           if (isPressCommandKey(event)) {
+            hasMargin = false
             layer.style.width = parseInt(window.getComputedStyle(layer).width, 10) - MARGIN * 2 + 'px'
             layer.style.height = parseInt(window.getComputedStyle(layer).height, 10) - MARGIN * 2 + 'px'
             layer.style.left = parseInt(window.getComputedStyle(layer).left, 10) + MARGIN + 'px'
