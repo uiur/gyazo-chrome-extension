@@ -118,7 +118,7 @@ chrome.browserAction.onClicked.addListener(function (tab) {
   }, function () {
     chrome.tabs.sendMessage(tab.id, {action: 'insertMenu', tab: tab}, function () {
       chrome && chrome.runtime && chrome.runtime.lastError &&
-      window.confirm('This extension requires reloading tabs after install. Could you reload current tab now?') &&
+      window.confirm(chrome.i18n.getMessage('confirmReload')) &&
       chrome.tabs.reload(tab.id)
     })
   })
