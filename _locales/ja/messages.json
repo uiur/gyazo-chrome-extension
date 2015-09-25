@@ -1,15 +1,9 @@
 {
-  "uploadingTitle": {
-    "message": "Gyazoにアップロード"
-  },
-  "uploadingMessage": {
-    "message": "アップロード中..."
-  },
   "uploadingFinishTitle": {
-    "message": "アップロード完了"
+    "message": "完了!"
   },
   "uploadingFinishMessage": {
-    "message": "Gyazo URLがコピーされました!"
+    "message": "Gyazoのリンクがコピーされました"
   },
   "captureTitle": {
     "message": "キャプチャー中..."
@@ -20,16 +14,16 @@
   "contextMenuImage": {
     "message": "この画像をアップロード"
   },
-  "contextMenuSelect": {
-    "message": "範囲を指定してキャプチャー"
+  "selectArea": {
+    "message": "範囲選択"
   },
-  "contextMenuWhole": {
-    "message": "ページ全体をキャプチャー"
+  "topToBottom": {
+    "message": "ページ全体"
   },
-  "contextMenuSelectElement": {
-    "message": "要素を選択してキャプチャー"
+  "selectElement": {
+    "message": "部品"
   },
-  "captureVisibleArea": {
-    "message": "今表示している領域をキャプチャー"
+  "captureWindow": {
+    "message": "ページ"
   }
 }

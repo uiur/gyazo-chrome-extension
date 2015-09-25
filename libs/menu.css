@@ -1,0 +1,165 @@
+body.gyazo-select-element-mode *:not(.gyazo-crop-select-element):not(.gyazo-menu-element) {
+  cursor: default !important;
+}
+.gyazo-menu {
+  box-sizing: border-box;
+  position: fixed;
+  right: 0;
+  top: 0;
+  padding: 0;
+  width: 364px;
+  z-index: 2147483647;
+  background-color: #e8e8e8;
+  color: #595959;
+  border: 1px solid #ccc;
+  border-top: none;
+  border-radius: 0;
+  font-family: Helvetica, Arial, sans-serif;
+  letter-spacing: 0;
+  animation-duration: 0.3s;
+  animation-name: slidein;
+  animation-timing-function: ease-out;
+}
+
+@keyframes slidein {
+  from {
+    top: -60px;
+  }
+
+  to {
+    top: 0;
+  }
+}
+
+.gyazo-menu.gyazo-notification {
+  text-align: center;
+}
+.gyazo-notification > .gyazo-notification-title {
+  margin: 15px 0 0px;
+  font-size: 20px;
+}
+.gyazo-notification > .gyazo-notification-message {
+  font-size: 12px;
+  margin: 0 0 15px;
+}
+.gyazo-notification .image {
+  max-width: 200px;
+  margin-bottom: 20px;
+}
+.gyazo-menu > .gyazo-close-button {
+  width: 20px;
+  float: right;
+}
+.gyazo-menu > .gyazo-button {
+  box-sizing: border-box;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  width: 85px;
+  height: 53px;
+  float: left;
+  font-size: 12px;
+  cursor: pointer;
+}
+.gyazo-menu > .gyazo-button.gyazo-button-active {
+  color: rgb(9, 132, 222);
+}
+.gyazo-menu > .gyazo-button.gyazo-button-active:hover {
+  color: rgb(9, 132, 222);
+}
+.gyazo-menu > .gyazo-button:hover {
+  border-bottom: 5px solid #cccccc;
+  color: #000;
+}
+.gyazo-menu > .gyazo-button > .gyazo-button-icon {
+  box-sizing: border-box;
+  font-size: 20px;
+  margin: 8px 0 3px;
+  pointer-events: none;
+}
+.gyazo-menu > .gyazo-button > .gyazo-button-text {
+  box-sizing: border-box;
+  font-size: 12px;
+  line-height: 18px;
+  pointer-events: none;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.gyazo-menu > .gyazo-close-button {
+  box-sizing: border-box;
+  text-align: left;
+  margin: 0;
+  padding: 0;
+  width: 22px;
+  height: 53px;
+  float: left;
+  color: #aaa;
+  font-size: 15px;
+  cursor: pointer;
+  padding-top: 6px;
+}
+.gyazo-menu > .gyazo-close-button:hover {
+  color: #000;
+}
+
+.gyazo-menu > .gyazo-spin {
+  animation: gyazo-spin 2s infinite linear;
+  font-size: 24px;
+  line-height: 53px;
+}
+
+@keyframes gyazo-spin {
+  0% {
+    transform:rotate(0deg);
+  }
+  100% {
+    transform:rotate(359deg);
+  }
+}
+
+/* Icons */
+@font-face {
+  font-family: 'gyazo-icomoon';
+  src:url('chrome-extension://__MSG_@@extension_id__/fonts/icomoon.eot?-jmg6j');
+  src:url('chrome-extension://__MSG_@@extension_id__/fonts/icomoon.eot?#iefix-jmg6j') format('embedded-opentype'),
+    url('chrome-extension://__MSG_@@extension_id__/fonts/icomoon.woff2?-jmg6j') format('woff2'),
+    url('chrome-extension://__MSG_@@extension_id__/fonts/icomoon.ttf?-jmg6j') format('truetype'),
+    url('chrome-extension://__MSG_@@extension_id__/fonts/icomoon.woff?-jmg6j') format('woff'),
+    url('chrome-extension://__MSG_@@extension_id__/fonts/icomoon.svg?-jmg6j#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="gyazo-icon-"], [class*=" gyazo-icon-"] {
+  font-family: 'gyazo-icomoon';
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.gyazo-icon-cross:before {
+  content: "\e117";
+}
+.gyazo-icon-spinner3:before {
+  content: "\e604";
+}
+.gyazo-icon-window-scroll:before {
+  content: "\e600";
+}
+.gyazo-icon-crop:before {
+  content: "\e601";
+}
+.gyazo-icon-window:before {
+  content: "\e602";
+}
+.gyazo-icon-selection:before {
+  content: "\e603";
+}

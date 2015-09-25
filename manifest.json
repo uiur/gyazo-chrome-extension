@@ -2,27 +2,35 @@
   "name": "Gyazo",
   "description": "Grab any image on the web and share it instantly.",
   "short_name": "Gyazo",
-  "version": "1.2.8",
+  "version": "2.0.0",
   "author": "Nota inc.",
   "permissions": [
     "<all_urls>",
+    "activeTab",
     "notifications",
     "contextMenus",
     "tabs",
     "clipboardWrite",
-    "clipboardRead"
+    "clipboardRead",
+    "storage"
   ],
   "background": {
-    "scripts": ["main.js","libs/jquery-1.10.2.min.js", "libs/utils.js"],
+    "scripts": ["main.js", "libs/jquery-1.10.2.min.js", "libs/utils.js"],
     "persistent": false
   },
   "browser_action": {
-    "default_popup": "popup/popup.html",
     "default_icon": {
         "19": "/icons/gyazo-19.png",
         "38": "/icons/gyazo-96.png"
       }
   },
+  "web_accessible_resources": [
+    "fonts/icomoon.eot",
+    "fonts/icomoon.svg",
+    "fonts/icomoon.ttf",
+    "fonts/icomoon.woff",
+    "fonts/icomoon.woff2"
+  ],
   "icons": {
     "16": "/icons/gyazo-16.png",
     "32": "/icons/gyazo-32.png",
@@ -31,7 +39,10 @@
     "128": "/icons/gyazo-128.png",
     "256": "/icons/gyazo-256.png"
   },
-  "web_accessible_resources": ["jquery-1.10.2.min.map"],
+  "options_ui": {
+    "page": "option/options.html",
+    "chrome_style": false
+  },
   "manifest_version": 2,
   "default_locale": "en"
 }
