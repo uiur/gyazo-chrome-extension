@@ -116,6 +116,9 @@ chrome.browserAction.onClicked.addListener(function (tab) {
   chrome.tabs.insertCSS(tab.id, {
     file: './libs/menu.css'
   }, function () {
+    if (!chrome || !chrome.runtime || !chrome.runtime.lastError) {
+      window.alert('Please try again after reload this tab.')
+    }
     chrome.tabs.sendMessage(tab.id, {action: 'insertMenu', tab: tab}, function () {})
   })
 })
