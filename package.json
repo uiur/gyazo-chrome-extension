@@ -3,13 +3,28 @@
   "version": "1.0.1",
   "dependencies": {},
   "devDependencies": {
+    "chrome-webstore-manager": "^0.0.2",
     "standard": "^4.5.4"
   },
   "scripts": {
     "test": "standard \"./**/*js\""
   },
   "standard": {
-    "global": [ "chrome" ,"saveToClipboard", "canvasUtils", "location", "window", "document", "screen", "Image", "$", "jQuery", "FileReader", "MouseEvent", "KeyboardEvent"],
+    "global": [
+      "chrome",
+      "saveToClipboard",
+      "canvasUtils",
+      "location",
+      "window",
+      "document",
+      "screen",
+      "Image",
+      "$",
+      "jQuery",
+      "FileReader",
+      "MouseEvent",
+      "KeyboardEvent"
+    ],
     "ignore": [
       "libs/jquery-1.10.2.min.js"
     ]
