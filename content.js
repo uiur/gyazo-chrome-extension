@@ -14,7 +14,7 @@
     if (!(event instanceof MouseEvent || event instanceof KeyboardEvent)) {
       return false
     }
-    if (navigator.platform.match(/mac/i).length > 0) {
+    if (navigator.platform.match(/mac/i)) {
       return event.metaKey || event.keyIdentifier === 'Meta'
     } else {
       return event.ctrlKey || event.keyIdentifier === 'Ctrl'
@@ -268,6 +268,9 @@
           return !item.classList.contains('gyazo-crop-select-element') &&
                  !item.classList.contains('gyazo-menu-element')
         })
+        allElms.forEach(function (item) {
+          item.classList.add('gyazo-select-element-cursor-overwrite')
+        })
         var moveLayer = function (event) {
           var item = event.target
           event.stopPropagation()
@@ -303,30 +306,6 @@
             layer.style.top = parseInt(window.getComputedStyle(layer).top, 10) + MARGIN + 'px'
           }
         }
-        var cancel = function () {
-          if (document.body.contains(jackup)) {
-            document.body.removeChild(jackup)
-          }
-          if (document.body.contains(layer)) {
-            document.body.removeChild(layer)
-          }
-          document.body.classList.remove('gyazo-select-element-mode')
-          window.removeEventListener('contextmenu', cancel)
-          document.removeEventListener('keydown', keydownHandler)
-          document.removeEventListener('keyup', keyUpHandler)
-          Array.prototype.slice.apply(document.querySelectorAll('.gyazo-select-element-cursor-overwrite')).forEach(function (item) {
-            item.classList.remove('gyazo-select-element-cursor-overwrite')
-          })
-          restoreFixedElement()
-        }
-        let removedGyazoMenu = function () {
-          window.removeEventListener('removeGyazoMenu', removedGyazoMenu)
-          cancel()
-        }
-        window.addEventListener('removeGyazoMenu', removedGyazoMenu)
-        window.addEventListener('contextmenu', cancel)
-        document.addEventListener('keydown', keydownHandler)
-        document.addEventListener('keyup', keyUpHandler)
         var clickElement = function (event) {
           event.stopPropagation()
           event.preventDefault()
@@ -392,6 +371,32 @@
           }
           window.requestAnimationFrame(finish)
         }
+        var cancel = function () {
+          if (document.body.contains(jackup)) {
+            document.body.removeChild(jackup)
+          }
+          if (document.body.contains(layer)) {
+            document.body.removeChild(layer)
+          }
+          document.body.classList.remove('gyazo-select-element-mode')
+          window.removeEventListener('contextmenu', cancel)
+          document.removeEventListener('keydown', keydownHandler)
+          document.removeEventListener('keyup', keyUpHandler)
+          Array.prototype.slice.apply(document.querySelectorAll('.gyazo-select-element-cursor-overwrite')).forEach(function (item) {
+            item.classList.remove('gyazo-select-element-cursor-overwrite')
+            item.removeEventListener('mouseover', moveLayer)
+            item.removeEventListener('click', clickElement)
+          })
+          restoreFixedElement()
+        }
+        let removedGyazoMenu = function () {
+          window.removeEventListener('removeGyazoMenu', removedGyazoMenu)
+          cancel()
+        }
+        window.addEventListener('removeGyazoMenu', removedGyazoMenu)
+        window.addEventListener('contextmenu', cancel)
+        document.addEventListener('keydown', keydownHandler)
+        document.addEventListener('keyup', keyUpHandler)
         window.requestAnimationFrame(function () {
           allElms.forEach(function (item) {
             item.addEventListener('mouseover', moveLayer)
