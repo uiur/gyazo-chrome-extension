@@ -96,8 +96,26 @@ function onClickHandler (info, tab) {
   }
 }
 
+chrome.tabs.onActivated.addListener(function (activeInfo) {
+  chrome.tabs.get(activeInfo.tabId, function (tab){
+    if (tab.url.match(/^https?:/)) {
+      chrome.browserAction.setIcon({path: "/icons/gyazo-38.png"})
+    } else {
+      chrome.browserAction.setIcon({path: "/icons/gyazo-38-gray.png"})
+      chrome.browserAction.disable(tab.id)
+    }
+  })
+})
+
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo) {
-  if (changeInfo.status === 'complete') {
+  if (changeInfo.status === 'loading'){
+    if (changeInfo.url.match(/^https?:/)) {
+      chrome.browserAction.setIcon({path: "/icons/gyazo-38.png"})
+    } else {
+      chrome.browserAction.setIcon({path: "/icons/gyazo-38-gray.png"})
+      chrome.browserAction.disable(tabId)
+    }
+  } else if (changeInfo.status === 'complete') {
     chrome.tabs.executeScript(tabId, {
       file: './content.js'
     }, function () {})
@@ -113,9 +131,6 @@ chrome.contextMenus.create({
 })
 
 chrome.browserAction.onClicked.addListener(function (tab) {
-  if (!tab.url.match(/^https?:/)) {
-    return window.alert("You can't gyazo on Chrome internal URLs")
-  }
   chrome.tabs.insertCSS(tab.id, {
     file: './libs/menu.css'
   }, function () {
