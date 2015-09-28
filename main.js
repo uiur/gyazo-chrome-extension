@@ -96,34 +96,42 @@ function onClickHandler (info, tab) {
   }
 }
 
+function disableButton (tabId) {
+  chrome.browserAction.setIcon({path: '/icons/gyazo-38-gray.png'})
+  chrome.browserAction.disable(tabId)
+}
+
+function enableButton (tabId) {
+  chrome.browserAction.setIcon({path: '/icons/gyazo-38.png'})
+  chrome.browserAction.enable(tabId)
+}
+
 chrome.tabs.onActivated.addListener(function (activeInfo) {
   chrome.tabs.get(activeInfo.tabId, function (tab) {
     if (tab.status === 'loading') {
-      return
+      return disableButton(tab.id)
     }
     if (tab.url.match(/^https?:/)) {
-      chrome.browserAction.setIcon({path: '/icons/gyazo-38.png'})
+      enableButton(tab.id)
     } else {
-      chrome.browserAction.setIcon({path: '/icons/gyazo-38-gray.png'})
-      chrome.browserAction.disable(tab.id)
+      disableButton(tab.id)
     }
   })
 })
 
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo) {
   if (changeInfo.status === 'loading') {
-    chrome.browserAction.setIcon({path: '/icons/gyazo-38-gray.png'})
-    chrome.browserAction.disable(tabId)
+    disableButton(tabId)
   } else if (changeInfo.status === 'complete') {
     chrome.tabs.get(tabId, function (tab) {
-      if (!tab.url.match(/^https?:/)) {
-        return
+      if (tab.url.match(/^https?:/)) {
+        enableButton(tab.id)
+        chrome.tabs.executeScript(tab.id, {
+          file: './content.js'
+        }, function () {})
+      } else {
+        disableButton(tab.id)
       }
-      chrome.browserAction.setIcon({path: '/icons/gyazo-38.png'})
-      chrome.browserAction.enable(tab.id)
-      chrome.tabs.executeScript(tab.id, {
-        file: './content.js'
-      }, function () {})
     })
   }
 })
