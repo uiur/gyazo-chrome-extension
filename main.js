@@ -124,14 +124,13 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo) {
     disableButton(tabId)
   } else if (changeInfo.status === 'complete') {
     chrome.tabs.get(tabId, function (tab) {
-      if (tab.url.match(/^https?:/)) {
-        enableButton(tab.id)
-        chrome.tabs.executeScript(tab.id, {
-          file: './content.js'
-        }, function () {})
-      } else {
-        disableButton(tab.id)
+      if (!tab.url.match(/^https?:/)) {
+        return
       }
+      enableButton(tab.id)
+      chrome.tabs.executeScript(tab.id, {
+        file: './content.js'
+      }, function () {})
     })
   }
 })
