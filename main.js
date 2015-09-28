@@ -116,7 +116,11 @@ chrome.browserAction.onClicked.addListener(function (tab) {
   chrome.tabs.insertCSS(tab.id, {
     file: './libs/menu.css'
   }, function () {
-    chrome.tabs.sendMessage(tab.id, {action: 'insertMenu', tab: tab}, function () {})
+    chrome.tabs.sendMessage(tab.id, {action: 'insertMenu', tab: tab}, function () {
+      chrome && chrome.runtime && chrome.runtime.lastError &&
+      window.confirm(chrome.i18n.getMessage('confirmReload')) &&
+      chrome.tabs.reload(tab.id)
+    })
   })
 })
 

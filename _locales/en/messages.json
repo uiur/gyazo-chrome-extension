@@ -25,5 +25,8 @@
   },
   "captureWindow": {
     "message": "Page"
+  },
+  "confirmReload": {
+    "message": "This extension requires you to reload tabs after install. Could you reload the current tab now?"
   }
 }
