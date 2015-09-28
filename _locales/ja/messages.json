@@ -25,5 +25,8 @@
   },
   "captureWindow": {
     "message": "ページ"
+  },
+  "confirmReload": {
+    "message": "この拡張を使うためには一度タブをリロードする必要があります。今すぐリロードしますか？"
   }
 }
