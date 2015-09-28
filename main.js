@@ -113,6 +113,9 @@ chrome.contextMenus.create({
 })
 
 chrome.browserAction.onClicked.addListener(function (tab) {
+  if (!tab.url.match(/^https?:/)) {
+    return window.alert("You can't gyazo on Chrome internal URLs")
+  }
   chrome.tabs.insertCSS(tab.id, {
     file: './libs/menu.css'
   }, function () {
