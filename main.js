@@ -43,7 +43,8 @@ function postToGyazo (data) {
       image_url: data.imageData,
       title: data.title,
       referer_url: data.url,
-      scale: data.scale || ''
+      scale: data.scale || '',
+      desc: data.desc || ''
     },
     crossDomain: true
   })
@@ -216,7 +217,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             url: request.data.u,
             width: request.data.w,
             height: request.data.h,
-            scale: request.data.s
+            scale: request.data.s,
+            desc: request.data.desc
           })
           return sendResponse()
         }
