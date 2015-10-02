@@ -44,7 +44,7 @@ function postToGyazo (data) {
       title: data.title,
       referer_url: data.url,
       scale: data.scale || '',
-      desc: data.desc || ''
+      desc: data.desc.replace(/^\s+|\s+$/g, '').replace(/^[\n\r]/, '') || ''
     },
     crossDomain: true
   })
