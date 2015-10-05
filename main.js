@@ -43,8 +43,6 @@ function postToGyazo (data) {
       image_url: data.imageData,
       title: data.title,
       referer_url: data.url,
-      width: data.width || '',
-      height: data.height || '',
       scale: data.scale || ''
     },
     crossDomain: true
