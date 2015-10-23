@@ -126,10 +126,15 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo) {
       if (!tab.url.match(/^https?:/)) {
         return
       }
-      enableButton(tab.id)
       chrome.tabs.executeScript(tab.id, {
         file: './content.js'
-      }, function () {})
+      }, function () {
+        if (chrome.runtime.lastError.message.match(/cannot be scripted/)) {
+          disableButton(tab.id)
+        } else {
+          enableButton(tab.id)
+        }
+      })
     })
   }
 })
@@ -143,9 +148,14 @@ chrome.contextMenus.create({
 })
 
 chrome.browserAction.onClicked.addListener(function (tab) {
+  console.log(chrome.runtime.lastError)
   chrome.tabs.insertCSS(tab.id, {
     file: './libs/menu.css'
   }, function () {
+    if (chrome.runtime.lastError.message.match(/cannot be scripted/)) {
+      alert('Sorry, this page cannot gyazo because blocked by Chrome. Please use native application.')
+      return disableButton(tab.id)
+    }
     chrome.tabs.sendMessage(tab.id, {action: 'insertMenu', tab: tab}, function () {
       chrome && chrome.runtime && chrome.runtime.lastError &&
       window.confirm(chrome.i18n.getMessage('confirmReload')) &&
