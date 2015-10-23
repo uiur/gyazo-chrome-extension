@@ -1,5 +1,11 @@
 (function () {
   'use strict'
+
+  if (window.__embededGyazoContentJS) {
+    return
+  }
+  window.__embededGyazoContentJS = true
+
   const ESC_KEY_CODE = 27
   const JACKUP_HEIGHT = 30
   const REMOVE_GYAZOMENU_EVENT = new window.Event('removeGyazoMenu')
