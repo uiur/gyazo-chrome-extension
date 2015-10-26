@@ -1,5 +1,11 @@
 (function () {
   'use strict'
+
+  if (window.__embededGyazoContentJS) {
+    return
+  }
+  window.__embededGyazoContentJS = true
+
   const ESC_KEY_CODE = 27
   const JACKUP_HEIGHT = 30
   const REMOVE_GYAZOMENU_EVENT = new window.Event('removeGyazoMenu')
@@ -41,15 +47,22 @@
   function lockScroll () {
     var overflow = document.documentElement.style.overflow
     var overflowY = document.documentElement.style.overflowY
+    var marginRight = document.documentElement.style.marginRight
+    var _w = document.documentElement.getBoundingClientRect().width
     document.documentElement.style.overflow = 'hidden'
     document.documentElement.style.overflowY = 'hidden'
-    return {overflow: overflow, overflowY: overflowY}
+    var w = document.documentElement.getBoundingClientRect().width
+    var scrollBarWidth = w - _w
+    console.log(scrollBarWidth)
+    document.documentElement.style.marginRight = `${scrollBarWidth}px`
+    return {overflow: overflow, overflowY: overflowY, marginRight: marginRight}
   }
 
   function unlockScroll (old) {
     old = old || {overflow: 'auto', overflowY: 'auto'}
     document.documentElement.style.overflow = old.overflow
     document.documentElement.style.overflowY = old.overflowY
+    document.documentElement.style.marginRight = old.marginRight
   }
 
   function getZoomAndScale () {
