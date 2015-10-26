@@ -152,7 +152,7 @@ chrome.browserAction.onClicked.addListener(function (tab) {
     file: './libs/menu.css'
   }, function () {
     if (chrome.runtime.lastError && chrome.runtime.lastError.message.match(/cannot be scripted/)) {
-      alert('Sorry, this page cannot gyazo because blocked by Chrome. Please use native application.')
+      window.alert('Sorry, this page cannot gyazo because blocked by Chrome. Please use native application.')
       return disableButton(tab.id)
     }
     chrome.tabs.sendMessage(tab.id, {action: 'insertMenu', tab: tab}, function () {
