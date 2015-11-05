@@ -126,10 +126,11 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo) {
       if (!tab.url.match(/^https?:/)) {
         return
       }
-      enableButton(tab.id)
       chrome.tabs.executeScript(tab.id, {
         file: './content.js'
-      }, function () {})
+      }, function () {
+        enableButton(tab.id)
+      })
     })
   }
 })
@@ -143,9 +144,17 @@ chrome.contextMenus.create({
 })
 
 chrome.browserAction.onClicked.addListener(function (tab) {
+  if (tab.url.match(/chrome\.google\.com\/webstore\//)) {
+    window.alert(chrome.i18n.getMessage('welcomeMessage'))
+    return disableButton(tab.id)
+  }
   chrome.tabs.insertCSS(tab.id, {
     file: './libs/menu.css'
   }, function () {
+    if (chrome.runtime.lastError && chrome.runtime.lastError.message.match(/cannot be scripted/)) {
+      window.alert('It is not allowed to use Gyazo extension in this page.')
+      return disableButton(tab.id)
+    }
     chrome.tabs.sendMessage(tab.id, {action: 'insertMenu', tab: tab}, function () {
       chrome && chrome.runtime && chrome.runtime.lastError &&
       window.confirm(chrome.i18n.getMessage('confirmReload')) &&
