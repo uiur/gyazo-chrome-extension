@@ -29,6 +29,7 @@ request({
   },
   body: {
     ref: ref,
+    required_contexts: [],
     auto_merge: 'false',
     environment: 'alpha_build',
     description: ''
@@ -41,7 +42,7 @@ request({
   var crxUploadUrl = `http://storage.googleapis.com/${path}chrome.crx`
   if (res.statusCode < 400) {
     try {
-      exec(`gsutil cp -z crx -a public-read chrome.crx gs://${path}`)
+      exec(`gsutil cp -z crx -a public-read build/chrome.crx gs://${path}`)
     } catch (e) {
       err = true
     }
