@@ -336,6 +336,14 @@
           })
           var data = {}
           var scaleObj = getZoomAndScale()
+
+          // Sanitize gyazo desc for ivy-search
+          var dup_target = event.target.cloneNode(true)
+          var desc_scripts = dup_target.getElementsByTagName('script')
+          Array.from(desc_scripts).forEach(function(script){ script.parentNode.removeChild(script) })
+          var desc_css = dup_target.getElementsByTagName('style')
+          Array.from(desc_css).forEach(function(css){ css.parentNode.removeChild(css) })
+
           data.w = parseFloat(layer.style.width)
           data.h = parseFloat(layer.style.height)
           data.x = window.scrollX + layer.offsetLeft
@@ -347,7 +355,7 @@
           data.positionX = window.scrollX
           data.positionY = window.scrollY
           data.innerHeight = window.innerHeight
-          data.desc = event.target.innerHTML
+          data.desc = dup_target.textContent
           if (document.body.contains(layer)) {
             document.body.removeChild(layer)
           }
