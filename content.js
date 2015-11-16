@@ -347,7 +347,7 @@
           data.positionX = window.scrollX
           data.positionY = window.scrollY
           data.innerHeight = window.innerHeight
-          data.desc = event.target.textContent
+          data.desc = event.target.innerHTML
           if (document.body.contains(layer)) {
             document.body.removeChild(layer)
           }
