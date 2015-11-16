@@ -339,13 +339,16 @@
 
           // Sanitize gyazo desc for ivy-search
           var dup_target = event.target.cloneNode(true)
-          Array.from(dup_target.querySelectorAll('*')).forEach((elm) => {
-            if (elm.tagName === 'SCRIPT' || elm.tagName === 'STYLE') {
-                elm.remove()
-                continue;
-            }
+          Array.from(dup_target.querySelectorAll('*')).forEach(function (elm) {
             if (getComputedStyle(elm).display === 'none' || getComputedStyle(elm).visibility === 'hidden') {
-                elm.remove()
+                return elm.remove()
+            }
+          })
+          Array.from(dup_target.querySelectorAll('*')).forEach(function (elm) {
+            switch (elm.tagName) {
+              case 'SCRIPT':
+              case 'STYLE':
+                return elm.remove()
             }
           })
 
