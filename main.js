@@ -19,12 +19,12 @@ var UploadNotification = function (callback) {
       chrome.tabs.sendMessage(tab[0].id, option, callback)
     })
   }
-  this.finish = function (imagePageUrl, callback) {
+  this.finish = function (imagePageUrl, imageDataUrl, callback) {
     this.update({
       title: chrome.i18n.getMessage('uploadingFinishTitle'),
       message: chrome.i18n.getMessage('uploadingFinishMessage'),
       imagePageUrl: imagePageUrl,
-      imageUrl: imagePageUrl + '/raw',
+      imageUrl: imageDataUrl,
       isFinish: true
     }, callback)
   }.bind(this)
@@ -48,14 +48,14 @@ function postToGyazo (data) {
     },
     crossDomain: true
   })
-    .done(function (data) {
+    .done(function (_data) {
       // Use pure XHR for get XHR.responseURL
       let xhr = new window.XMLHttpRequest()
-      xhr.open('GET', data.get_image_url)
+      xhr.open('GET', _data.get_image_url)
       xhr.onreadystatechange = function () {
         if (xhr.readyState === 4) {
           saveToClipboard(xhr.responseURL)
-          notification.finish(xhr.responseURL)
+          notification.finish(xhr.responseURL, data.imageData)
         }
       }
       xhr.send()
