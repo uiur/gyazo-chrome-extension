@@ -11,13 +11,11 @@ let waitForDelay = function (callback) {
     window.setTimeout(callback, delay)
   })
 }
-var UploadNotification = function (callback) {
+var UploadNotification = function (tabId, callback) {
   this.update = function (option, callback) {
     callback = callback || function () {}
-    chrome.tabs.query({currentWindow: true, active: true}, function (tab) {
-      option.action = 'notification'
-      chrome.tabs.sendMessage(tab[0].id, option, callback)
-    })
+    option.action = 'notification'
+    chrome.tabs.sendMessage(tabId, option, callback)
   }
   this.finish = function (imagePageUrl, imageDataUrl, callback) {
     this.update({
@@ -33,8 +31,8 @@ var UploadNotification = function (callback) {
   }, callback)
 }
 
-function postToGyazo (data) {
-  var notification = new UploadNotification()
+function postToGyazo (tabId, data) {
+  var notification = new UploadNotification(tabId)
   $.ajax({
     type: 'POST',
     url: host,
@@ -78,7 +76,7 @@ function onClickHandler (info, tab) {
         var blob = xhr.response
         var fileReader = new FileReader()
         fileReader.onload = function (e) {
-          postToGyazo({
+          postToGyazo(tab.id, {
             imageData: fileReader.result,
             title: tab.title,
             url: tab.url
@@ -217,10 +215,10 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
           return true
         }
         if (scrollHeight >= request.data.h) {
-          chrome.tabs.executeScript(null, {
+          chrome.tabs.executeScript(request.tab.id, {
             code: 'window.scrollTo(' + request.data.positionX + ', ' + request.data.positionY + ' )'
           })
-          postToGyazo({
+          postToGyazo(request.tab.id, {
             imageData: canvasData,
             title: request.data.t,
             url: request.data.u,
@@ -231,7 +229,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
           })
           return sendResponse()
         }
-        chrome.tabs.executeScript(null, {
+        chrome.tabs.executeScript(request.tab.id, {
           code: 'window.scrollTo(' + request.data.positionX + ', ' + (scrollHeight + request.data.y) + ' )'
         }, function () {
           chrome.tabs.sendMessage(request.tab.id, {
