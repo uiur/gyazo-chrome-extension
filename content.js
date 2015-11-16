@@ -339,10 +339,15 @@
 
           // Sanitize gyazo desc for ivy-search
           var dup_target = event.target.cloneNode(true)
-          var desc_scripts = dup_target.getElementsByTagName('script')
-          Array.from(desc_scripts).forEach(function (script) { script.parentNode.removeChild(script) })
-          var desc_css = dup_target.getElementsByTagName('style')
-          Array.from(desc_css).forEach(function (css) { css.parentNode.removeChild(css) })
+          Array.from(dup_target.querySelectorAll('*')).forEach((elm) => {
+            if (elm.tagName === 'SCRIPT' || elm.tagName === 'STYLE') {
+                elm.remove()
+                continue;
+            }
+            if (getComputedStyle(elm).display === 'none' || getComputedStyle(elm).visibility === 'hidden') {
+                elm.remove()
+            }
+          })
 
           data.w = parseFloat(layer.style.width)
           data.h = parseFloat(layer.style.height)
