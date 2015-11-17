@@ -338,18 +338,24 @@
           var scaleObj = getZoomAndScale()
 
           // Sanitize gyazo desc for ivy-search
-          var dup_target = event.target.cloneNode(true)
-          Array.from(dup_target.querySelectorAll('*')).forEach(function (elm) {
+          Array.from(window.document.querySelectorAll('*')).forEach(function (elm) {
             if (getComputedStyle(elm).display === 'none' || getComputedStyle(elm).visibility === 'hidden') {
-                return elm.remove()
+              elm.classList.add('gyazo-hidden')
             }
           })
+          var dup_target = event.target.cloneNode(true)
           Array.from(dup_target.querySelectorAll('*')).forEach(function (elm) {
             switch (elm.tagName) {
               case 'SCRIPT':
               case 'STYLE':
                 return elm.remove()
             }
+            if (elm.classList.contains('gyazo-hidden')) {
+              elm.remove()
+            }
+          })
+          Array.from(window.document.getElementsByClassName('gyazo-hidden')).forEach(function (elm) {
+            elm.classList.remove('gyazo-hidden')
           })
 
           data.w = parseFloat(layer.style.width)
