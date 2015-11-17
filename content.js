@@ -339,7 +339,7 @@
 
           // Sanitize gyazo desc for ivy-search
           Array.from(window.document.querySelectorAll('*')).forEach(function (elm) {
-            if (getComputedStyle(elm).display === 'none' || getComputedStyle(elm).visibility === 'hidden') {
+            if (window.getComputedStyle(elm).display === 'none' || window.getComputedStyle(elm).visibility === 'hidden') {
               elm.classList.add('gyazo-hidden')
             }
           })
