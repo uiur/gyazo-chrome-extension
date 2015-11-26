@@ -1,7 +1,15 @@
+machine:
+  node:
+    version: 4.1.0
 dependencies:
   pre:
     - npm install standard
     - npm install -g chrome-webstore-manager
+test:
+  post:
+    - echo $GCS_KEY | base64 --decode > gcs_key.json
+    - gcloud auth activate-service-account --key-file gcs_key.json
+    - ./script/branch2crx
 deployment:
   production:
     branch: production

@@ -336,6 +336,28 @@
           })
           var data = {}
           var scaleObj = getZoomAndScale()
+
+          // Sanitize gyazo desc for ivy-search
+          Array.from(document.querySelectorAll('*')).forEach(function (elm) {
+            if (window.getComputedStyle(elm).display === 'none' || window.getComputedStyle(elm).visibility === 'hidden') {
+              elm.classList.add('gyazo-hidden')
+            }
+          })
+          var dupTarget = event.target.cloneNode(true)
+          Array.from(dupTarget.querySelectorAll('*')).forEach(function (elm) {
+            switch (elm.tagName) {
+              case 'SCRIPT':
+              case 'STYLE':
+                return elm.remove()
+            }
+            if (elm.classList.contains('gyazo-hidden')) {
+              elm.remove()
+            }
+          })
+          Array.from(document.getElementsByClassName('gyazo-hidden')).forEach(function (elm) {
+            elm.classList.remove('gyazo-hidden')
+          })
+
           data.w = parseFloat(layer.style.width)
           data.h = parseFloat(layer.style.height)
           data.x = window.scrollX + layer.offsetLeft
@@ -347,7 +369,7 @@
           data.positionX = window.scrollX
           data.positionY = window.scrollY
           data.innerHeight = window.innerHeight
-          data.desc = event.target.textContent
+          data.desc = dupTarget.textContent
           if (document.body.contains(layer)) {
             document.body.removeChild(layer)
           }

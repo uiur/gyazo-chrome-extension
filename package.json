@@ -4,10 +4,14 @@
   "dependencies": {},
   "devDependencies": {
     "chrome-webstore-manager": "^0.0.2",
+    "crx": "github:pastak/crx",
+    "request-promise": "^1.0.2",
     "standard": "^4.5.4"
   },
   "scripts": {
-    "test": "standard \"./**/*js\""
+    "test": "standard \"./**/*.js\"",
+    "pack": "crx pack ./ --zip-output ./build/chrome.zip -o ./build/chrome.crx",
+    "token": "chrome-webstore-manager token --client_id \"429190263566-vt3rvfgtro0olbhdnledb25r0rfb2lu3.apps.googleusercontent.com\" --client_secret \"wyS1sXSLv0cLtjev6g4hTZZ2\""
   },
   "standard": {
     "global": [
