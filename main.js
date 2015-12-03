@@ -68,26 +68,35 @@ function onClickHandler (info, tab) {
     file: './libs/menu.css'
   })
   var GyazoFuncs = {gyazoIt: function () {
-    var xhr = jQuery.ajaxSettings.xhr()
-    xhr.open('GET', info.srcUrl, true)
-    xhr.responseType = 'blob'
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState === 4) {
-        var blob = xhr.response
-        var fileReader = new FileReader()
-        fileReader.onload = function (e) {
-          postToGyazo(tab.id, {
-            imageData: fileReader.result,
-            title: tab.title,
-            url: tab.url
-          })
+    if (info.srcUrl.match(/^data:/)) {
+      postToGyazo(tab.id, {
+        imageData: info.srcUrl,
+        title: tab.title,
+        url: tab.url
+      })
+    } else {
+      var xhr = jQuery.ajaxSettings.xhr()
+      xhr.open('GET', info.srcUrl, true)
+      xhr.responseType = 'blob'
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+          var blob = xhr.response
+          var fileReader = new FileReader()
+          fileReader.onload = function (e) {
+            postToGyazo(tab.id, {
+              imageData: fileReader.result,
+              title: tab.title,
+              url: tab.url
+            })
+          }
+          fileReader.readAsDataURL(blob)
         }
-        fileReader.readAsDataURL(blob)
       }
+      xhr.send()
     }
-    xhr.send()
   }
 }
+
   if (info.menuItemId in GyazoFuncs) {
     GyazoFuncs[info.menuItemId]()
   }

@@ -1,9 +1,9 @@
 {
   "name": "Gyazo-Extension",
-  "version": "1.0.1",
+  "version": "2.0.11",
   "dependencies": {},
   "devDependencies": {
-    "chrome-webstore-manager": "^0.0.2",
+    "chrome-webstore-manager": "^0.1.1",
     "crx": "github:pastak/crx",
     "request-promise": "^1.0.2",
     "standard": "^4.5.4"
