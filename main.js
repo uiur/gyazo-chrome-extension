@@ -103,20 +103,20 @@ function onClickHandler (info, tab) {
 }
 
 function disableButton (tabId) {
-  chrome.browserAction.setIcon({path:
-    {
-      '19': '/icons/gyazo-19-gray.png',
-      '38': '/icons/gyazo-38-gray.png'
+  chrome.browserAction.setIcon({
+    path: {
+      19: '/icons/gyazo-19-gray.png',
+      38: '/icons/gyazo-38-gray.png'
     }
   })
   chrome.browserAction.disable(tabId)
 }
 
 function enableButton (tabId) {
-  chrome.browserAction.setIcon({path:
-    {
-      '19': '/icons/gyazo-19.png',
-      '38': '/icons/gyazo-38.png'
+  chrome.browserAction.setIcon({
+    path: {
+      19: '/icons/gyazo-19.png',
+      38: '/icons/gyazo-38.png'
     }
   })
   chrome.browserAction.enable(tabId)
