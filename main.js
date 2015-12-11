@@ -103,6 +103,7 @@ function onClickHandler (info, tab) {
 }
 
 function disableButton (tabId) {
+  return
   chrome.browserAction.setIcon({
     path: {
       19: '/icons/gyazo-19-gray.png',
@@ -113,6 +114,7 @@ function disableButton (tabId) {
 }
 
 function enableButton (tabId) {
+  return
   chrome.browserAction.setIcon({
     path: {
       19: '/icons/gyazo-19.png',
