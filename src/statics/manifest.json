@@ -15,7 +15,7 @@
     "storage"
   ],
   "background": {
-    "scripts": ["main.js", "libs/jquery-1.10.2.min.js", "libs/utils.js"],
+    "scripts": ["main.js"],
     "persistent": false
   },
   "browser_action": {
