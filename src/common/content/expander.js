@@ -30,7 +30,7 @@ const isEnabledHost = function (_url) {
     return false
   }
   return parsedUrl.host.match(/^github\.com$/) ||
-    parsedUrl.host.match(/^(.+\.)?.zendesk\.com$/) ||
+    parsedUrl.host.match(/^(.+\.)?zendesk\.com$/) ||
     parsedUrl.host.match(/chatwork\.com$/)
 }
 
