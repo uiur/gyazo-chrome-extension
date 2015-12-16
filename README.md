@@ -27,5 +27,11 @@ Whenever you capture an image the original address and title of the page the ima
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
 
+### How To Development
+
+- `$ npm install`
+- `$ npm run build`
+- `$ npm run pack`
+
 ## Coding Style
 https://github.com/feross/standard
