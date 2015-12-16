@@ -1,7 +1,7 @@
 const gyazoIdFromUrl = function (str) {
   let parsedUrl = ''
   try {
-    parsedUrl = new URL(str)
+    parsedUrl = new window.URL(str)
   } catch (e) {
     return
   }
@@ -25,7 +25,7 @@ const onNewElement = function (cb) {
 const isEnabledHost = function (_url) {
   let parsedUrl = ''
   try {
-    parsedUrl = new URL(_url)
+    parsedUrl = new window.URL(_url)
   } catch (e) {
     return false
   }
@@ -42,18 +42,18 @@ if (isEnabledHost(location.href)) {
     const hasChildren = el.children.length > 0
     if (isGyazoUrl && !hasChildren) {
       chrome.runtime.sendMessage(chrome.runtime.id, {
-        action: 'gyazoGetOembed',
+        action: 'gyazoGetImageBlob',
         gyazoUrl: href
       }, (response) => {
-        const xhr = new XMLHttpRequest()
+        const xhr = new window.XMLHttpRequest()
         xhr.open('GET', response.imageBlobUrl, true)
         xhr.responseType = 'arraybuffer'
         xhr.onload = () => {
-          const blob = new Blob([xhr.response], {type: "image/png"})
+          const blob = new window.Blob([xhr.response], {type: 'image/png'})
           el.insertAdjacentHTML('afterend',
           `<p>
-            <a href=${ href } target="_blank" data-gyazo-id="checked">
-              <img src=${ URL.createObjectURL(blob) } style="max-width: 100%;" />
+            <a href=${ href } target='_blank' data-gyazo-id='checked'>
+              <img src=${ window.URL.createObjectURL(blob) } style='max-width: 100%;' />
             </a>
           </p>`)
         }

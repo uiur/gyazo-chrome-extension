@@ -168,13 +168,13 @@ chrome.browserAction.onClicked.addListener(function (tab) {
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   var messageHandlers = {
-    gyazoGetOembed: function () {
-      const xhr = new XMLHttpRequest()
+    gyazoGetImageBlob: function () {
+      const xhr = new window.XMLHttpRequest()
       xhr.open('GET', request.gyazoUrl + '/raw', true)
       xhr.responseType = 'arraybuffer'
       xhr.onload = () => {
-        const blob = new Blob([xhr.response], {type: "image/png"})
-        sendResponse({imageBlobUrl: URL.createObjectURL(blob)})
+        const blob = new window.Blob([xhr.response], {type: 'image/png'})
+        sendResponse({imageBlobUrl: window.URL.createObjectURL(blob)})
       }
       xhr.send()
     },
