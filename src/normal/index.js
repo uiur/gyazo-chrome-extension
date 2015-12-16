@@ -1,4 +1,8 @@
-'use strict'
+const $ = require('jquery')
+const UploadNotification = require('../common/libs/UploadNotification')
+const saveToClipboard = require('../common/libs/saveToClipboard')
+const canvasUtils = require('../common/libs/canvasUtils')
+
 var host = 'https://upload.gyazo.com/api/upload/easy_auth'
 var clientId = 'df9edab530e84b4c56f9fcfa209aff1131c7d358a91d85cc20b9229e515d67dd'
 const DELAY_TIMES = [0, 200, 400, 700, 1000]
@@ -11,28 +15,10 @@ let waitForDelay = function (callback) {
     window.setTimeout(callback, delay)
   })
 }
-var UploadNotification = function (tabId, callback) {
-  this.update = function (option, callback) {
-    callback = callback || function () {}
-    option.action = 'notification'
-    chrome.tabs.sendMessage(tabId, option, callback)
-  }
-  this.finish = function (imagePageUrl, imageDataUrl, callback) {
-    this.update({
-      title: chrome.i18n.getMessage('uploadingFinishTitle'),
-      message: chrome.i18n.getMessage('uploadingFinishMessage'),
-      imagePageUrl: imagePageUrl,
-      imageUrl: imageDataUrl,
-      isFinish: true
-    }, callback)
-  }.bind(this)
-  this.update({
-    message: chrome.i18n.getMessage('uploadingMessage')
-  }, callback)
-}
 
 function postToGyazo (tabId, data) {
   var notification = new UploadNotification(tabId)
+  notification.update({message: chrome.i18n.getMessage('uploadingMessage')})
   $.ajax({
     type: 'POST',
     url: host,
@@ -65,7 +51,7 @@ function postToGyazo (tabId, data) {
 
 function onClickHandler (info, tab) {
   chrome.tabs.insertCSS(tab.id, {
-    file: './libs/menu.css'
+    file: '/menu.css'
   })
   var GyazoFuncs = {gyazoIt: function () {
     if (info.srcUrl.match(/^data:/)) {
@@ -166,7 +152,7 @@ chrome.browserAction.onClicked.addListener(function (tab) {
     return disableButton(tab.id)
   }
   chrome.tabs.insertCSS(tab.id, {
-    file: './libs/menu.css'
+    file: '/menu.css'
   }, function () {
     if (chrome.runtime.lastError && chrome.runtime.lastError.message.match(/cannot be scripted/)) {
       window.alert('It is not allowed to use Gyazo extension in this page.')

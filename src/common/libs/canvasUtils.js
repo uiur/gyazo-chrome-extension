@@ -6,20 +6,7 @@ function imageLoader (imgSrc, callback) {
   img.src = imgSrc
 }
 
-function saveToClipboard (str) { // eslint-disable-line
-  var textArea = document.createElement('textarea')
-  textArea.style.cssText = 'position:absolute;left:-100%'
-
-  document.body.appendChild(textArea)
-
-  textArea.value = str
-  textArea.select()
-  document.execCommand('copy')
-
-  document.body.removeChild(textArea)
-}
-
-var canvasUtils = { // eslint-disable-line
+module.exports = {
   appendImageToCanvas: function (argObj) {
     var scale = argObj.scale || 1.0
     var zoom = argObj.zoom || 1.0

@@ -1,8 +1,13 @@
 {
   "name": "Gyazo-Extension",
   "version": "2.0.11",
-  "dependencies": {},
+  "dependencies": {
+    "jquery": "^2.1.4"
+  },
   "devDependencies": {
+    "babel-preset-es2015": "^6.3.13",
+    "babelify": "^7.2.0",
+    "browserify": "^12.0.1",
     "chrome-webstore-manager": "^0.1.1",
     "crx": "github:pastak/crx",
     "request-promise": "^1.0.2",
@@ -10,8 +15,12 @@
   },
   "scripts": {
     "test": "standard \"./**/*.js\"",
-    "pack": "crx pack ./ --zip-output ./build/chrome.zip -o ./build/chrome.crx",
+    "build": "mkdir -p dist && cp -r src/statics/* dist && browserify src/normal/index.js -o dist/main.js && browserify src/common/content/*.js -o dist/content.js",
+    "pack": "crx pack ./dist --zip-output ./build/chrome.zip -o ./build/chrome.crx",
     "token": "chrome-webstore-manager token --client_id \"429190263566-vt3rvfgtro0olbhdnledb25r0rfb2lu3.apps.googleusercontent.com\" --client_secret \"wyS1sXSLv0cLtjev6g4hTZZ2\""
+  },
+  "browserify": {
+    "transform": [ "babelify" ]
   },
   "standard": {
     "global": [
@@ -28,9 +37,6 @@
       "FileReader",
       "MouseEvent",
       "KeyboardEvent"
-    ],
-    "ignore": [
-      "libs/jquery-1.10.2.min.js"
     ]
   }
 }

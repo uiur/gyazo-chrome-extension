@@ -1,6 +1,4 @@
 (function () {
-  'use strict'
-
   if (window.__embededGyazoContentJS) {
     return
   }
