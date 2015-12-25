@@ -1,3 +1,5 @@
+const delegate = require('delegate')
+
 function gyazoIdFromUrl (str) {
   let parsedUrl = ''
   try {
@@ -31,17 +33,6 @@ function fetchImage (url, callback) {
   })
 }
 
-const onNewElement = function (cb) {
-  setInterval(() => {
-    Array.from(document.querySelectorAll('a')).forEach((el) => {
-      if (!el.getAttribute('data-gyazo-id')) {
-        el.setAttribute('data-gyazo-id', 'checked')
-        cb(el)
-      }
-    })
-  }, 1000)
-}
-
 function isEnabledHost (_url) {
   let parsedUrl = ''
   try {
@@ -60,19 +51,48 @@ function isEnabledHost (_url) {
 }
 
 if (isEnabledHost(window.location.href)) {
-  onNewElement((el) => {
-    const href = el.getAttribute('href')
-
+  delegate(document.body, 'a', 'mouseover', (event) => {
+    const element = event.target
+    const href = element.getAttribute('href')
     const isGyazoUrl = !!gyazoIdFromUrl(href)
-    const hasChildren = el.children.length > 0
-    if (isGyazoUrl && !hasChildren) {
+
+    if (isGyazoUrl) {
+      let container
+      let leaved = false
+
+      function onLeave (event) {
+        leaved = true
+
+        if (element !== event.target) return
+        if (!container) return
+        document.body.removeChild(container)
+
+        element.removeEventListener('mouseleave', onLeave)
+      }
+
+      element.addEventListener('mouseleave', onLeave)
+
       fetchImage(href, (e, blob) => {
-        el.insertAdjacentHTML('afterend',
-        `<p>
+        if (leaved) return
+
+        container = document.createElement('div')
+        const rect = element.getBoundingClientRect()
+
+        container.style.position = 'absolute'
+        container.style.left = document.body.scrollLeft + rect.left + 'px'
+        container.style.top = document.body.scrollTop + rect.top + rect.height + 'px'
+        container.style.zIndex = 1000000
+        container.style.maxWidth = '500px'
+        container.style.boxShadow = '0 0 8px rgba(0,0,0,.6)'
+
+        container.innerHTML = `
           <a href=${ href } target='_blank' data-gyazo-id='checked'>
             <img src=${ window.URL.createObjectURL(blob) } style='max-width: 100%;' />
           </a>
-        </p>`)
+        `
+
+        document.body.appendChild(container)
+
       })
     }
   })
