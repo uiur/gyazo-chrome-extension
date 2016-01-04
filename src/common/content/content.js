@@ -65,13 +65,13 @@
 
   function getZoomAndScale () {
     var zoom = Math.round(window.outerWidth / window.innerWidth * 100) / 100
-    var scale = window.devicePixelRatio / zoom
     // XXX: on Windows, when window is not maximum, it should tweak zoom.(Chrome zoom level 1 is 1.10)
     var isWindows = navigator.platform.match(/^win/i)
     var isMaximum = (window.outerHeight === screen.availHeight && window.outerWidth === screen.availWidth)
     if (isWindows && !isMaximum && zoom > 1.00 && zoom < 1.05) {
       zoom = 1.00
     }
+    var scale = window.devicePixelRatio / zoom
     return {
       zoom: zoom,
       scale: scale
