@@ -23,27 +23,7 @@ function fetchImage (url, callback) {
   })
 }
 
-function adjacentStyle (element) {
-  const rect = element.getBoundingClientRect()
-
-  const offsetY = 10
-  const centerY = Math.floor(window.innerHeight / 2)
-
-  if (rect.top > centerY) {
-    return {
-      left: rect.left,
-      bottom: Math.round((window.innerHeight - rect.top + offsetY)),
-      maxHeight: Math.round(Math.min(rect.top - offsetY * 2, 500))
-    }
-  } else {
-    const rectBottom = rect.top + rect.height
-    return {
-      left: rect.left,
-      top: Math.round(rectBottom + offsetY),
-      maxHeight: Math.round(Math.min(window.innerHeight - rectBottom, 500))
-    }
-  }
-}
+const adjacentStyle = require('../libs/adjacentStyle')
 
 function createLoader (position = {}) {
   const loader = document.createElement('div')
@@ -76,8 +56,8 @@ function createImagePreview ({ url, boxStyle }) {
 delegate(document.body, 'a', 'mouseover', (event) => {
   const element = event.target
   const href = element.getAttribute('href')
-  const isGyazoUrl = !!gyazoIdFromUrl(href)
 
+  const isGyazoUrl = !!gyazoIdFromUrl(href)
   if (isGyazoUrl) {
     let container
 
