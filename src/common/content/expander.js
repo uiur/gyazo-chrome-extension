@@ -1,4 +1,6 @@
 const delegate = require('delegate')
+const style = require('dom-style')
+const extend = require('xtend')
 
 function gyazoIdFromUrl (str) {
   let parsedUrl = ''
@@ -33,67 +35,63 @@ function fetchImage (url, callback) {
   })
 }
 
-function isEnabledHost (_url) {
-  let parsedUrl = ''
-  try {
-    parsedUrl = new window.URL(_url)
-  } catch (e) {
-    return false
-  }
+delegate(document.body, 'a', 'mouseover', (event) => {
+  const element = event.target
+  const href = element.getAttribute('href')
+  const isGyazoUrl = !!gyazoIdFromUrl(href)
 
-  const hosts = [
-    /^github\.com$/,
-    /^(.+\.)?zendesk\.com$/,
-    /chatwork\.com$/
-  ]
+  if (isGyazoUrl) {
+    let container
+    let leaved = false
 
-  return hosts.some((host) => host.test(parsedUrl.host))
-}
+    const onLeave = (event) => {
+      leaved = true
 
-if (isEnabledHost(window.location.href)) {
-  delegate(document.body, 'a', 'mouseover', (event) => {
-    const element = event.target
-    const href = element.getAttribute('href')
-    const isGyazoUrl = !!gyazoIdFromUrl(href)
+      if (element !== event.target) return
+      if (!container) return
+      document.body.removeChild(container)
 
-    if (isGyazoUrl) {
-      let container
-      let leaved = false
+      element.removeEventListener('mouseleave', onLeave)
+    }
 
-      function onLeave (event) {
-        leaved = true
+    element.addEventListener('mouseleave', onLeave)
 
-        if (element !== event.target) return
-        if (!container) return
-        document.body.removeChild(container)
+    fetchImage(href, (e, blob) => {
+      if (leaved) return
 
-        element.removeEventListener('mouseleave', onLeave)
+      container = document.createElement('div')
+      const rect = element.getBoundingClientRect()
+
+      let position
+
+      const offsetY = 10
+      const centerY = Math.floor(window.innerHeight / 2)
+      if (rect.top > centerY) {
+        position = {
+          bottom: (window.innerHeight - rect.top + offsetY) + 'px'
+        }
+      } else {
+        position = {
+          top: rect.top + rect.height + offsetY + 'px'
+        }
       }
 
-      element.addEventListener('mouseleave', onLeave)
+      style(container, extend({
+        position: 'fixed',
+        left: document.body.scrollLeft + rect.left + 'px',
+        zIndex: 1000000,
+        maxWidth: '500px',
+        maxHeight: '500px',
+        boxShadow: '0 0 8px rgba(0,0,0,.6)'
+      }, position))
 
-      fetchImage(href, (e, blob) => {
-        if (leaved) return
+      container.innerHTML = `
+        <a href=${ href } target='_blank'>
+          <img src=${ window.URL.createObjectURL(blob) } style='max-width: 100%;' />
+        </a>
+      `
 
-        container = document.createElement('div')
-        const rect = element.getBoundingClientRect()
-
-        container.style.position = 'absolute'
-        container.style.left = document.body.scrollLeft + rect.left + 'px'
-        container.style.top = document.body.scrollTop + rect.top + rect.height + 'px'
-        container.style.zIndex = 1000000
-        container.style.maxWidth = '500px'
-        container.style.boxShadow = '0 0 8px rgba(0,0,0,.6)'
-
-        container.innerHTML = `
-          <a href=${ href } target='_blank' data-gyazo-id='checked'>
-            <img src=${ window.URL.createObjectURL(blob) } style='max-width: 100%;' />
-          </a>
-        `
-
-        document.body.appendChild(container)
-
-      })
-    }
-  })
-}
+      document.body.appendChild(container)
+    })
+  }
+})
