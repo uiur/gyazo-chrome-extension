@@ -35,6 +35,56 @@ function fetchImage (url, callback) {
   })
 }
 
+function adjacentStyle (element) {
+  const rect = element.getBoundingClientRect()
+
+  const offsetY = 10
+  const centerY = Math.floor(window.innerHeight / 2)
+
+  if (rect.top > centerY) {
+    return {
+      left: rect.left + 'px',
+      bottom: Math.round((window.innerHeight - rect.top + offsetY)) + 'px',
+      maxHeight: Math.round(Math.min(rect.top - offsetY * 2, 500)) + 'px'
+    }
+  } else {
+    const rectBottom = rect.top + rect.height
+    return {
+      left: rect.left + 'px',
+      top: Math.round(rectBottom + offsetY) + 'px',
+      maxHeight: Math.round(Math.min(window.innerHeight - rectBottom, 500)) + 'px'
+    }
+  }
+}
+
+function createLoader (position = {}) {
+  const loader = document.createElement('div')
+  loader.innerHTML = '<span>Loading...</span>'
+
+  style(loader, extend({
+    position: 'fixed',
+    width: '100px',
+    height: '100px'
+  }, position))
+
+  return loader
+}
+
+function createImagePreview ({ url, boxStyle }) {
+  const img = document.createElement('img')
+  img.src = url
+
+  style(img, extend({
+    display: 'inline-block',
+    position: 'fixed',
+    zIndex: 1000000,
+    maxWidth: '500px',
+    boxShadow: '0 0 8px rgba(0,0,0,.6)'
+  }, boxStyle))
+
+  return img
+}
+
 delegate(document.body, 'a', 'mouseover', (event) => {
   const element = event.target
   const href = element.getAttribute('href')
@@ -42,6 +92,10 @@ delegate(document.body, 'a', 'mouseover', (event) => {
 
   if (isGyazoUrl) {
     let container
+
+    const loader = createLoader(adjacentStyle(element))
+    document.body.appendChild(loader)
+
     let leaved = false
 
     const onLeave = (event) => {
@@ -57,38 +111,13 @@ delegate(document.body, 'a', 'mouseover', (event) => {
     element.addEventListener('mouseleave', onLeave)
 
     fetchImage(href, (e, blob) => {
+      document.body.removeChild(loader)
       if (leaved) return
 
-      container = document.createElement('img')
-      const rect = element.getBoundingClientRect()
-
-      const offsetY = 10
-      const centerY = Math.floor(window.innerHeight / 2)
-
-      let position
-      if (rect.top > centerY) {
-        position = {
-          bottom: Math.round((window.innerHeight - rect.top + offsetY)) + 'px',
-          maxHeight: Math.round(Math.min(rect.top - offsetY * 2, 500)) + 'px'
-        }
-      } else {
-        const rectBottom = rect.top + rect.height
-        position = {
-          top: Math.round(rectBottom + offsetY) + 'px',
-          maxHeight: Math.round(Math.min(window.innerHeight - rectBottom, 500)) + 'px'
-        }
-      }
-
-      container.src = window.URL.createObjectURL(blob)
-
-      style(container, extend({
-        display: 'inline-block',
-        position: 'fixed',
-        left: document.body.scrollLeft + rect.left + 'px',
-        zIndex: 1000000,
-        maxWidth: '500px',
-        boxShadow: '0 0 8px rgba(0,0,0,.6)'
-      }, position))
+      container = createImagePreview({
+        url: window.URL.createObjectURL(blob),
+        boxStyle: adjacentStyle(element)
+      })
 
       document.body.appendChild(container)
     })
