@@ -59,37 +59,36 @@ delegate(document.body, 'a', 'mouseover', (event) => {
     fetchImage(href, (e, blob) => {
       if (leaved) return
 
-      container = document.createElement('div')
+      container = document.createElement('img')
       const rect = element.getBoundingClientRect()
-
-      let position
 
       const offsetY = 10
       const centerY = Math.floor(window.innerHeight / 2)
+
+      let position
       if (rect.top > centerY) {
         position = {
-          bottom: (window.innerHeight - rect.top + offsetY) + 'px'
+          bottom: Math.round((window.innerHeight - rect.top + offsetY)) + 'px',
+          maxHeight: Math.round(Math.min(rect.top - offsetY * 2, 500)) + 'px'
         }
       } else {
+        const rectBottom = rect.top + rect.height
         position = {
-          top: rect.top + rect.height + offsetY + 'px'
+          top: Math.round(rectBottom + offsetY) + 'px',
+          maxHeight: Math.round(Math.min(window.innerHeight - rectBottom, 500)) + 'px'
         }
       }
 
+      container.src = window.URL.createObjectURL(blob)
+
       style(container, extend({
+        display: 'inline-block',
         position: 'fixed',
         left: document.body.scrollLeft + rect.left + 'px',
         zIndex: 1000000,
         maxWidth: '500px',
-        maxHeight: '500px',
         boxShadow: '0 0 8px rgba(0,0,0,.6)'
       }, position))
-
-      container.innerHTML = `
-        <a href=${ href } target='_blank'>
-          <img src=${ window.URL.createObjectURL(blob) } style='max-width: 100%;' />
-        </a>
-      `
 
       document.body.appendChild(container)
     })
