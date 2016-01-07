@@ -1,5 +1,5 @@
 const delegate = require('delegate')
-const style = require('dom-style')
+const css = require('dom-css')
 const extend = require('xtend')
 
 function gyazoIdFromUrl (str) {
@@ -43,16 +43,16 @@ function adjacentStyle (element) {
 
   if (rect.top > centerY) {
     return {
-      left: rect.left + 'px',
-      bottom: Math.round((window.innerHeight - rect.top + offsetY)) + 'px',
-      maxHeight: Math.round(Math.min(rect.top - offsetY * 2, 500)) + 'px'
+      left: rect.left,
+      bottom: Math.round((window.innerHeight - rect.top + offsetY)),
+      maxHeight: Math.round(Math.min(rect.top - offsetY * 2, 500))
     }
   } else {
     const rectBottom = rect.top + rect.height
     return {
-      left: rect.left + 'px',
-      top: Math.round(rectBottom + offsetY) + 'px',
-      maxHeight: Math.round(Math.min(window.innerHeight - rectBottom, 500)) + 'px'
+      left: rect.left,
+      top: Math.round(rectBottom + offsetY),
+      maxHeight: Math.round(Math.min(window.innerHeight - rectBottom, 500))
     }
   }
 }
@@ -61,10 +61,10 @@ function createLoader (position = {}) {
   const loader = document.createElement('div')
   loader.innerHTML = '<span>Loading...</span>'
 
-  style(loader, extend({
+  css(loader, extend({
     position: 'fixed',
-    width: '100px',
-    height: '100px'
+    width: 100,
+    height: 100
   }, position))
 
   return loader
@@ -74,11 +74,11 @@ function createImagePreview ({ url, boxStyle }) {
   const img = document.createElement('img')
   img.src = url
 
-  style(img, extend({
+  css(img, extend({
     display: 'inline-block',
     position: 'fixed',
     zIndex: 1000000,
-    maxWidth: '500px',
+    maxWidth: 500,
     boxShadow: '0 0 8px rgba(0,0,0,.6)'
   }, boxStyle))
 

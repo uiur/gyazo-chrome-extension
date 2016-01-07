@@ -3,7 +3,7 @@
   "version": "2.0.11",
   "dependencies": {
     "delegate": "^3.0.0",
-    "dom-style": "0.0.3",
+    "dom-css": "^2.0.0",
     "jquery": "^2.1.4",
     "xtend": "^4.0.1"
   },
