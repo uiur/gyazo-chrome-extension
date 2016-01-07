@@ -23,16 +23,49 @@ function fetchImage (url, callback) {
   })
 }
 
+const node = document.createElement('style')
+node.innerHTML = `
+.gz-circle-loader {
+  display: inline-block;
+  text-indent: -9999em;
+  margin: 0;
+  border-top: 8px solid rgba(0, 0, 0, .2);
+  border-right: 8px solid rgba(0, 0, 0, .2);
+  border-bottom: 8px solid rgba(0, 0, 0, .2);
+  border-left: 8px solid #000;
+  animation: spin 1.1s infinite linear;
+
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+
+  &:after {
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+`
+
+document.body.appendChild(node)
+
 const adjacentStyle = require('../libs/adjacentStyle')
 
 function createLoader (position = {}) {
   const loader = document.createElement('div')
-  loader.innerHTML = '<span>Loading...</span>'
+  loader.className = 'gz-circle-loader'
 
   css(loader, extend({
-    position: 'fixed',
-    width: 100,
-    height: 100
+    position: 'fixed'
   }, position))
 
   return loader
