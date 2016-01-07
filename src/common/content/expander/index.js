@@ -60,7 +60,7 @@ delegate(document.body, 'a', 'mouseover', (event) => {
   if (isGyazoUrl) {
     let container
 
-    const loader = createLoader(adjacentStyle(element))
+    let loader = createLoader(adjacentStyle(element))
     document.body.appendChild(loader)
 
     let leaved = false
@@ -69,8 +69,8 @@ delegate(document.body, 'a', 'mouseover', (event) => {
       leaved = true
 
       if (element !== event.target) return
-      if (!container) return
-      document.body.removeChild(container)
+      if (container) document.body.removeChild(container)
+      if (loader) document.body.removeChild(loader)
 
       element.removeEventListener('mouseleave', onLeave)
     }
@@ -78,8 +78,10 @@ delegate(document.body, 'a', 'mouseover', (event) => {
     element.addEventListener('mouseleave', onLeave)
 
     fetchImage(href, (e, blob) => {
-      document.body.removeChild(loader)
       if (leaved) return
+
+      document.body.removeChild(loader)
+      loader = null
 
       container = createImagePreview({
         url: window.URL.createObjectURL(blob),
