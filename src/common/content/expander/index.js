@@ -1,7 +1,8 @@
 const delegate = require('delegate')
 const css = require('dom-css')
 const extend = require('xtend')
-const gyazoIdFromUrl = require('../libs/gyazoIdFromUrl')
+const gyazoIdFromUrl = require('./lib/gyazoIdFromUrl')
+const adjacentStyle = require('./lib/adjacentStyle')
 
 function fetchImage (url, callback) {
   chrome.runtime.sendMessage(chrome.runtime.id, {
@@ -57,8 +58,6 @@ node.innerHTML = `
 `
 
 document.body.appendChild(node)
-
-const adjacentStyle = require('../libs/adjacentStyle')
 
 function createLoader (position = {}) {
   const loader = document.createElement('div')
