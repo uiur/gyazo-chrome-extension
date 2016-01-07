@@ -1,19 +1,7 @@
 const delegate = require('delegate')
 const css = require('dom-css')
 const extend = require('xtend')
-
-function gyazoIdFromUrl (str) {
-  let parsedUrl = ''
-  try {
-    parsedUrl = new window.URL(str)
-  } catch (e) {
-    return
-  }
-
-  if ((/^(.+\.)?gyazo\.com$/).test(parsedUrl.host) && (/^\/[0-9a-f]+$/).test(parsedUrl.pathname)) {
-    return parsedUrl.pathname.slice(1)
-  }
-}
+const gyazoIdFromUrl = require('../libs/gyazoIdFromUrl')
 
 function fetchImage (url, callback) {
   chrome.runtime.sendMessage(chrome.runtime.id, {
