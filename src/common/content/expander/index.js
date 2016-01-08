@@ -28,10 +28,15 @@ function fetchImage (url, callback) {
 
 function createLoader (position = {}) {
   const loader = document.createElement('div')
-  loader.className = 'gz-circle-loader'
+  loader.innerHTML = `<div class='gz-circle-loader'></div>`
 
   css(loader, extend({
-    position: 'fixed'
+    position: 'fixed',
+    boxShadow: '0 0 8px rgba(0,0,0,.6)',
+    backgroundColor: '#fff',
+    width: 40,
+    height: 40,
+    padding: 4
   }, position))
 
   return loader
@@ -55,6 +60,8 @@ function createImagePreview ({ url, boxStyle }) {
 delegate(document.body, 'a', 'mouseover', (event) => {
   const element = event.target
   const href = element.getAttribute('href')
+
+  if (element.querySelector('img')) return
 
   const isGyazoUrl = !!gyazoIdFromUrl(href)
   if (isGyazoUrl) {
