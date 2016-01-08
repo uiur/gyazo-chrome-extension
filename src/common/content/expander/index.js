@@ -34,9 +34,11 @@ function createLoader (position = {}) {
     position: 'fixed',
     boxShadow: '0 0 8px rgba(0,0,0,.6)',
     backgroundColor: '#fff',
+    zIndex: 1000000,
     width: 40,
     height: 40,
-    padding: 4
+    padding: 4,
+    boxSizing: 'border-box'
   }, position))
 
   return loader

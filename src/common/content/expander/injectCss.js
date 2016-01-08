@@ -1,5 +1,7 @@
 const css = `
 .gz-circle-loader {
+  box-sizing: border-box;
+
   display: inline-block;
   text-indent: -9999em;
   margin: 0;
