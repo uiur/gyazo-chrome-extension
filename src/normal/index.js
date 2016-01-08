@@ -132,7 +132,9 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo) {
       chrome.tabs.executeScript(tab.id, {
         file: './content.js'
       }, function () {
-        enableButton(tab.id)
+        chrome.tabs.insertCSS(tab.id, {
+          file: '/content.css'
+        }, () => enableButton(tab.id))
       })
     })
   }

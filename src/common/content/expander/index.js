@@ -4,8 +4,6 @@ const extend = require('xtend')
 const gyazoIdFromUrl = require('./lib/gyazoIdFromUrl')
 const adjacentStyle = require('./lib/adjacentStyle')
 
-require('./injectCss')()
-
 function fetchImage (url, callback) {
   chrome.runtime.sendMessage(chrome.runtime.id, {
     action: 'gyazoGetImageBlob',
