@@ -61,7 +61,7 @@ function onClickHandler (info, tab) {
         url: tab.url
       })
     } else {
-      var xhr = jQuery.ajaxSettings.xhr()
+      var xhr = $.ajaxSettings.xhr()
       xhr.open('GET', info.srcUrl, true)
       xhr.responseType = 'blob'
       xhr.onreadystatechange = function () {
