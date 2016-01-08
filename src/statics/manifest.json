@@ -15,19 +15,14 @@
     "storage"
   ],
   "background": {
-    "scripts": ["main.js", "libs/jquery-1.10.2.min.js", "libs/utils.js"],
+    "scripts": ["main.js"],
     "persistent": false
   },
   "browser_action": {
     "default_icon": {
-        "19": "/icons/gyazo-38.png",
-        "38": "/icons/gyazo-96.png"
+        "19": "icons/gyazo-19.png",
+        "38": "icons/gyazo-38.png"
       }
-  },
-  "icons": {
-    "16": "icon32.png",
-    "48": "icon96.png",
-    "128": "icon256.png"
   },
   "web_accessible_resources": [
     "fonts/icomoon.eot",
@@ -37,12 +32,12 @@
     "fonts/icomoon.woff2"
   ],
   "icons": {
-    "16": "/icons/gyazo-16.png",
-    "32": "/icons/gyazo-32.png",
-    "48": "/icons/gyazo-48.png",
-    "96": "/icons/gyazo-96.png",
-    "128": "/icons/gyazo-128.png",
-    "256": "/icons/gyazo-256.png"
+    "16": "icons/gyazo-16.png",
+    "32": "icons/gyazo-32.png",
+    "48": "icons/gyazo-48.png",
+    "96": "icons/gyazo-96.png",
+    "128": "icons/gyazo-128.png",
+    "256": "icons/gyazo-256.png"
   },
   "options_ui": {
     "page": "option/options.html",
