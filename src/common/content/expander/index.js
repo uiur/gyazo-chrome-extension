@@ -50,6 +50,7 @@ function createImagePreview ({ url, boxStyle }) {
     display: 'inline-block',
     position: 'fixed',
     zIndex: 1000000,
+    backgroundColor: '#fff',
     maxWidth: 500,
     boxShadow: '0 0 8px rgba(0,0,0,.6)'
   }, boxStyle))
