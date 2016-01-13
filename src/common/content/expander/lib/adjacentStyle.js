@@ -17,7 +17,7 @@ module.exports = function adjacentStyle (element) {
     return {
       left: rect.left,
       top: Math.round(rectBottom + offsetY),
-      maxHeight: Math.round(Math.min(window.innerHeight - rectBottom, 500))
+      maxHeight: Math.round(Math.min(window.innerHeight - rectBottom - offsetY * 2, 500))
     }
   }
 }
