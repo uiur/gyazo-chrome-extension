@@ -3,7 +3,7 @@
 module.exports = function adjacentStyle (element) {
   const rect = element.getBoundingClientRect()
 
-  const offsetY = 10
+  const offsetY = 20
   const centerY = Math.floor(window.innerHeight / 2)
 
   if (rect.top > centerY) {
