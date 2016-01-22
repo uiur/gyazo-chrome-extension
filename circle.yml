@@ -1,9 +1,6 @@
 machine:
   node:
     version: 4.1.0
-dependencies:
-  pre:
-    - npm install -g chrome-webstore-manager
 test:
   post:
     - |
